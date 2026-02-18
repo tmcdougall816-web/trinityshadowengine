@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trinity Engine V10.2.8 - SIU Shadow-Center</title>
+    <title>Trinity Engine V10.6.0 - DEBUGGER MODE</title>
     <style>
         :root {
             --matrix-green: #00ff41;
@@ -36,28 +36,8 @@
             opacity: 0.25;
         }
 
-        /* --- THE VAULT SENTRY (LOGIN) --- */
-        #security-lock {
-            width: 450px;
-            padding: 50px;
-            border: 3px solid var(--matrix-green);
-            background: rgba(0, 0, 0, 0.98);
-            box-shadow: 0 0 50px rgba(0, 255, 65, 0.4);
-            text-align: center;
-            z-index: 1000;
-            transition: all 0.5s ease;
-        }
-
-        .lock-header {
-            font-size: 1.8rem;
-            letter-spacing: 8px;
-            margin-bottom: 30px;
-            text-shadow: 0 0 10px var(--matrix-green);
-        }
-
-        /* --- MAIN SIU INTERFACE --- */
         #main-interface {
-            display: none;
+            display: block;
             width: 95%;
             max-width: 1300px;
             height: 92vh;
@@ -105,8 +85,6 @@
             width: 100%;
             box-sizing: border-box;
         }
-
-        input:focus { border-color: var(--matrix-green); outline: none; box-shadow: 0 0 10px var(--matrix-green); }
 
         button {
             background: var(--matrix-green);
@@ -157,10 +135,20 @@
             font-size: 0.8rem;
             overflow-y: auto;
             color: var(--matrix-green);
+            white-space: pre-wrap;
         }
 
-        .glitch { animation: glitch 2s infinite; }
-        @keyframes glitch { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+        .mic-active {
+            animation: pulse-red 1.5s infinite;
+            background-color: var(--danger-red) !important;
+            color: #fff !important;
+        }
+
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 0, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); }
+        }
 
     </style>
 </head>
@@ -168,25 +156,17 @@
 
 <canvas id="matrix"></canvas>
 
-<div id="security-lock">
-    <div class="lock-header glitch">ACCESS RESTRICTED</div>
-    <p style="color: #fff; font-size: 0.8rem; margin-bottom: 25px;">TRZ-7789 ENCRYPTED INTERFACE</p>
-    <input type="text" id="access-id" placeholder="ARCHITECT ACCESS ID" autocomplete="off" style="margin-bottom: 15px; text-align: center;">
-    <input type="password" id="protocol-key" placeholder="PROTOCOL SECURITY KEY" style="margin-bottom: 25px; text-align: center;">
-    <button onclick="unlock()">INITIALIZE SHADOW-CENTER</button>
-    <p id="err" style="color: var(--danger-red); font-size: 0.75rem; margin-top: 15px;"></p>
-</div>
-
 <div id="main-interface">
     <header>
-        <h1 style="margin: 0; letter-spacing: 10px;">TRINITY ENGINE V10.2.8</h1>
-        <div style="font-size: 0.8rem; color: #fff; margin-top: 5px;">SIU AUDIT SUITE // $2B RECOVERY LOGIC // ARCHITECT: TY</div>
+        <h1 style="margin: 0; letter-spacing: 10px;">TRINITY ENGINE V10.6.0</h1>
+        <div style="font-size: 0.8rem; color: #fff; margin-top: 5px;">SIU AUDIT SUITE // DEBUGGER MODE // ARCHITECT: TY</div>
     </header>
 
     <div class="grid-layout">
         <div class="panel">
             <h2>I. INITIALIZE CLAIM INTERVIEW</h2>
-            <button onclick="addLog('INITIALIZING SPEECH-TO-REALITY SYNC...')">START VOICE CAPTURE</button>
+            <button id="mic-btn" onclick="toggleVoice()">START VOICE CAPTURE</button>
+            <div id="status-msg" style="font-size: 0.7rem; color: #fff; margin-top: 5px; border-bottom: 1px solid #333; padding-bottom: 5px;">MIC STATUS: STANDBY</div>
             <button onclick="addLog('EXTERNAL DATA STREAMING...')">INITIALIZE EXTERNAL AUDIT</button>
         </div>
 
@@ -217,75 +197,5 @@
                 <option value="verified">VERIFIED CREDIBLE (REALITY LOCK)</option>
             </select>
             <button onclick="commitVault()">COMMIT TO ADJUDICATION</button>
-            <div id="audit-log">> SYSTEM READY. AWAITING DATA...</div>
-            <button style="background: #fff; padding: 10px;" onclick="window.print()">EXPORT FINAL CLAIM REPORT</button>
-        </div>
-    </div>
-</div>
-
-<script>
-    // SECURE HANDSHAKE
-    function unlock() {
-        const id = document.getElementById('access-id').value.toUpperCase();
-        const key = document.getElementById('protocol-key').value;
-        if(id === "TY-ARCHITECT-01" && key === "TRZ-7789-APEX") {
-            document.getElementById('security-lock').style.display = 'none';
-            document.getElementById('main-interface').style.display = 'block';
-        } else {
-            document.getElementById('err').innerText = "CREDENTIALS REJECTED BY TRZ-7789";
-        }
-    }
-
-    // LOGIC CORE
-    function addLog(m) {
-        const l = document.getElementById('audit-log');
-        l.innerHTML += `<br>> ${m}`;
-        l.scrollTop = l.scrollHeight;
-    }
-
-    function runAudit() {
-        if(!document.getElementById('case-id').value) return alert("CLAIM ID REQUIRED");
-        addLog(`AUDITING CASE AGAINST BC STATUTES...`);
-        setTimeout(() => {
-            document.getElementById('bar').style.width = "72%";
-            document.getElementById('p-text').innerText = "72% CERTAINTY";
-            addLog("LIABILITY ANCHORED. CROSS-REFERENCING SCENE INJECTION.");
-        }, 1200);
-    }
-
-    function commitVault() {
-        const val = document.getElementById('cash').value;
-        const status = document.getElementById('assess').value;
-        if(status === 'verified' && val) {
-            document.getElementById('bar').style.width = "100%";
-            document.getElementById('p-text').innerText = "100% - FLAWLESS VICTORY";
-            document.getElementById('p-text').style.color = "#00ff41";
-            document.getElementById('media-theater').innerText = "EVIDENCE REALITY SECURED";
-            document.getElementById('media-theater').style.color = "#00ff41";
-            addLog(`RECOVERY OF $${val} FINALIZED IN VAULT.`);
-        }
-    }
-
-    // MATRIX BACKGROUND (HIGH DENSITY)
-    const canvas = document.getElementById('matrix');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    const chars = "1010101TRINITY7789APEX";
-    const drops = Array(Math.floor(canvas.width/18)).fill(1);
-    function draw() {
-        ctx.fillStyle = "rgba(0,0,0,0.05)"; ctx.fillRect(0,0,canvas.width,canvas.height);
-        ctx.fillStyle = "#0F0"; ctx.font = "15px monospace";
-        drops.forEach((y, i) => {
-            const txt = chars[Math.floor(Math.random()*chars.length)];
-            ctx.fillText(txt, i*18, y*18);
-            if(y*18 > canvas.height && Math.random() > 0.975) drops[i] = 0;
-            drops[i]++;
-        });
-    }
-    setInterval(draw, 50);
-</script>
-</body>
-</html>
-
+            <div id="audit-log">> SYSTEM READY. V10
 
