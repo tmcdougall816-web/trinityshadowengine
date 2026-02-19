@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trinity Engine V10.2.8.1-BASE - SIU Shadow-Center</title>
+    <title>Trinity Engine V10.2.8.2 - SIU Shadow-Center</title>
     <style>
         :root {
             --matrix-green: #00ff41;
@@ -134,6 +134,18 @@
 
         button:hover { background: #fff; box-shadow: 0 0 20px #fff; }
 
+        .btn-active {
+            background: var(--danger-red) !important;
+            color: #fff !important;
+            animation: pulse-red 1s infinite;
+        }
+
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0px var(--danger-red); }
+            50% { box-shadow: 0 0 20px var(--danger-red); }
+            100% { box-shadow: 0 0 0px var(--danger-red); }
+        }
+
         #media-theater {
             flex-grow: 1;
             min-height: 350px;
@@ -205,8 +217,8 @@
 
 <div id="main-interface">
     <header>
-        <h1 style="margin: 0; letter-spacing: 10px;">TRINITY ENGINE V10.2.8.1-BASE</h1>
-        <div style="font-size: 0.9rem; color: #fff; margin-top: 5px;">SIU AUDIT SUITE // KINETIC PHYSICS ACTIVE // ARCHITECT: TY</div>
+        <h1 style="margin: 0; letter-spacing: 10px;">TRINITY ENGINE V10.2.8.2</h1>
+        <div style="font-size: 0.9rem; color: #fff; margin-top: 5px;">SIU AUDIT SUITE // VOICE RECOGNITION ACTIVE // ARCHITECT: TY</div>
     </header>
 
     <div class="tier" id="tier-1">
@@ -217,7 +229,7 @@
                 <input type="text" id="case-id" placeholder="CLAIM ID" oninput="calculateProbability()">
                 <input type="text" id="statute" placeholder="STATUTORY ANCHOR" oninput="calculateProbability()">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <button onclick="addLog('VOICE CAPTURE STANDBY...')">VOICE CAPTURE</button>
+                    <button id="voice-btn" onclick="toggleVoice()">START VOICE CAPTURE</button>
                     <button onclick="addLog('SCANNING EXTERNAL DATABASES...')">EXTERNAL AUDIT</button>
                 </div>
             </div>
@@ -288,6 +300,50 @@
 </div>
 
 <script>
+    // --- VOICE RECOGNITION CORE ---
+    let recognition;
+    let isListening = false;
+
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = false;
+        recognition.lang = 'en-US';
+
+        recognition.onresult = (event) => {
+            const transcript = event.results[event.results.length - 1][0].transcript;
+            addLog(`<span style="color:#fff">[VOICE INTERCEPT]:</span> ${transcript.toUpperCase()}`);
+        };
+
+        recognition.onerror = (event) => {
+            addLog(`<span style="color:red">VOICE ERROR: ${event.error}</span>`);
+            stopVoice();
+        };
+    }
+
+    function toggleVoice() {
+        if (!recognition) return alert("SPEECH RECOGNITION NOT SUPPORTED ON THIS DEVICE.");
+        isListening ? stopVoice() : startVoice();
+    }
+
+    function startVoice() {
+        isListening = true;
+        recognition.start();
+        document.getElementById('voice-btn').innerText = "LISTENING...";
+        document.getElementById('voice-btn').classList.add('btn-active');
+        addLog("VOICE CAPTURE ARRAY ENGAGED.");
+    }
+
+    function stopVoice() {
+        isListening = false;
+        recognition.stop();
+        document.getElementById('voice-btn').innerText = "START VOICE CAPTURE";
+        document.getElementById('voice-btn').classList.remove('btn-active');
+        addLog("VOICE CAPTURE ARRAY STANDBY.");
+    }
+
+    // --- BASE LOGIC (NO STRIPPING) ---
     function unlock() {
         const id = document.getElementById('access-id').value.toUpperCase();
         const key = document.getElementById('protocol-key').value;
@@ -309,20 +365,11 @@
         const v = document.getElementById('velocity').value;
         const g = document.getElementById('impact').value;
         const eOut = document.getElementById('energy-out');
-        
         document.getElementById('vel-out').innerText = v ? v.padStart(3, '0') : '000';
         document.getElementById('imp-out').innerText = g ? parseFloat(g).toFixed(1).padStart(4, '0') : '00.0';
-        
-        if (g > 8) {
-            eOut.innerText = "CRITICAL";
-            eOut.style.color = "red";
-        } else if (v > 60) {
-            eOut.innerText = "HIGH";
-            eOut.style.color = "orange";
-        } else {
-            eOut.innerText = "MODERATE";
-            eOut.style.color = "cyan";
-        }
+        if (g > 8) { eOut.innerText = "CRITICAL"; eOut.style.color = "red"; }
+        else if (v > 60) { eOut.innerText = "HIGH"; eOut.style.color = "orange"; }
+        else { eOut.innerText = "MODERATE"; eOut.style.color = "cyan"; }
         calculateProbability();
     }
 
@@ -335,7 +382,6 @@
         if(document.getElementById('cash').value) score += 10;
         if(document.getElementById('assess').value === 'verified') score += 30;
         if(document.getElementById('assess').value === 'adverse') score = 0;
-
         const bar = document.getElementById('bar');
         const pText = document.getElementById('p-text');
         bar.style.width = score + "%";
