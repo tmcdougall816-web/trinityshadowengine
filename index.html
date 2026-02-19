@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trinity Engine V10.2.8.2 - SIU Shadow-Center</title>
+    <title>Trinity Engine V10.2.8.3 - SIU Shadow-Center</title>
     <style>
         :root {
             --matrix-green: #00ff41;
@@ -134,17 +134,8 @@
 
         button:hover { background: #fff; box-shadow: 0 0 20px #fff; }
 
-        .btn-active {
-            background: var(--danger-red) !important;
-            color: #fff !important;
-            animation: pulse-red 1s infinite;
-        }
-
-        @keyframes pulse-red {
-            0% { box-shadow: 0 0 0px var(--danger-red); }
-            50% { box-shadow: 0 0 20px var(--danger-red); }
-            100% { box-shadow: 0 0 0px var(--danger-red); }
-        }
+        .btn-active { background: var(--danger-red) !important; color: #fff !important; animation: pulse-red 1s infinite; }
+        @keyframes pulse-red { 0% { box-shadow: 0 0 0px var(--danger-red); } 50% { box-shadow: 0 0 20px var(--danger-red); } 100% { box-shadow: 0 0 0px var(--danger-red); } }
 
         #media-theater {
             flex-grow: 1;
@@ -194,6 +185,26 @@
             text-shadow: 0 0 5px var(--kinetic-cyan);
         }
 
+        #judgment-display {
+            display: none;
+            background: rgba(0, 255, 65, 0.1);
+            border: 1px solid var(--matrix-green);
+            padding: 20px;
+            margin-top: 15px;
+            color: #fff;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        @media print {
+            body { background: white !important; color: black !important; overflow: visible !important; }
+            #main-interface { display: block !important; width: 100% !important; border: none !important; box-shadow: none !important; height: auto !important; position: static !important; }
+            button, #security-lock, canvas { display: none !important; }
+            .tier { page-break-inside: avoid; border-bottom: 2px solid #000 !important; }
+            .panel { border: 1px solid #000 !important; background: none !important; }
+            h2, .tier-header { color: #000 !important; text-shadow: none !important; }
+        }
+
         .glitch { animation: glitch 2s infinite; }
         @keyframes glitch { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
 
@@ -217,8 +228,8 @@
 
 <div id="main-interface">
     <header>
-        <h1 style="margin: 0; letter-spacing: 10px;">TRINITY ENGINE V10.2.8.2</h1>
-        <div style="font-size: 0.9rem; color: #fff; margin-top: 5px;">SIU AUDIT SUITE // VOICE RECOGNITION ACTIVE // ARCHITECT: TY</div>
+        <h1 style="margin: 0; letter-spacing: 10px;">TRINITY ENGINE V10.2.8.3</h1>
+        <div style="font-size: 0.9rem; color: #fff; margin-top: 5px;">SIU AUDIT SUITE // VAULT FINALIZATION ACTIVE // ARCHITECT: TY</div>
     </header>
 
     <div class="tier" id="tier-1">
@@ -291,8 +302,11 @@
                         <option value="verified">VERIFIED CREDIBLE</option>
                     </select>
                 </div>
-                <button onclick="commitVault()">COMMIT EVIDENCE TO ADJUDICATION</button>
-                <div id="audit-log">> TRZ-7789 BASE SYSTEM SECURED.</div>
+                <button onclick="commitVault()" id="commit-btn">COMMIT EVIDENCE TO ADJUDICATION</button>
+                
+                <div id="judgment-display"></div>
+
+                <div id="audit-log">> TRZ-7789 SYSTEM STANDBY.</div>
                 <button style="background: #fff; padding: 15px; color: #000;" onclick="window.print()">EXPORT FINAL TRINITY REPORT</button>
             </div>
         </div>
@@ -300,9 +314,9 @@
 </div>
 
 <script>
-    // --- VOICE RECOGNITION CORE ---
     let recognition;
     let isListening = false;
+    let voiceTranscript = "";
 
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -313,46 +327,25 @@
 
         recognition.onresult = (event) => {
             const transcript = event.results[event.results.length - 1][0].transcript;
+            voiceTranscript += transcript + " | ";
             addLog(`<span style="color:#fff">[VOICE INTERCEPT]:</span> ${transcript.toUpperCase()}`);
-        };
-
-        recognition.onerror = (event) => {
-            addLog(`<span style="color:red">VOICE ERROR: ${event.error}</span>`);
-            stopVoice();
         };
     }
 
     function toggleVoice() {
-        if (!recognition) return alert("SPEECH RECOGNITION NOT SUPPORTED ON THIS DEVICE.");
+        if (!recognition) return alert("SPEECH NOT SUPPORTED.");
         isListening ? stopVoice() : startVoice();
     }
+    function startVoice() { isListening = true; recognition.start(); document.getElementById('voice-btn').innerText = "LISTENING..."; document.getElementById('voice-btn').classList.add('btn-active'); addLog("VOICE ARRAY ENGAGED."); }
+    function stopVoice() { isListening = false; recognition.stop(); document.getElementById('voice-btn').innerText = "START VOICE CAPTURE"; document.getElementById('voice-btn').classList.remove('btn-active'); addLog("VOICE ARRAY STANDBY."); }
 
-    function startVoice() {
-        isListening = true;
-        recognition.start();
-        document.getElementById('voice-btn').innerText = "LISTENING...";
-        document.getElementById('voice-btn').classList.add('btn-active');
-        addLog("VOICE CAPTURE ARRAY ENGAGED.");
-    }
-
-    function stopVoice() {
-        isListening = false;
-        recognition.stop();
-        document.getElementById('voice-btn').innerText = "START VOICE CAPTURE";
-        document.getElementById('voice-btn').classList.remove('btn-active');
-        addLog("VOICE CAPTURE ARRAY STANDBY.");
-    }
-
-    // --- BASE LOGIC (NO STRIPPING) ---
     function unlock() {
         const id = document.getElementById('access-id').value.toUpperCase();
         const key = document.getElementById('protocol-key').value;
         if(id === "TY-ARCHITECT-01" && key === "TRZ-7789-APEX") {
             document.getElementById('security-lock').style.display = 'none';
             document.getElementById('main-interface').style.display = 'block';
-        } else {
-            document.getElementById('err').innerText = "CREDENTIALS REJECTED";
-        }
+        } else { document.getElementById('err').innerText = "REJECTED"; }
     }
 
     function addLog(m) {
@@ -387,6 +380,7 @@
         bar.style.width = score + "%";
         pText.innerText = score + "% CERTAINTY";
         pText.style.color = score < 50 ? "#f00" : (score < 90 ? "#ff0" : "#0f0");
+        return score;
     }
 
     function loadCamera() {
@@ -399,32 +393,31 @@
         }
     }
 
-    function runAudit() {
-        addLog("KINETIC DATA SYNCING WITH BC ACCIDENT MODELS...");
-        setTimeout(() => { addLog("PHYSICS VALIDATED. IMPACT VECTOR CONSISTENT."); calculateProbability(); }, 1000);
+    function commitVault() {
+        const score = calculateProbability();
+        const caseId = document.getElementById('case-id').value || "UNIDENTIFIED";
+        const val = document.getElementById('cash').value || "0.00";
+        const g = document.getElementById('imp-out').innerText;
+        
+        const display = document.getElementById('judgment-display');
+        display.style.display = "block";
+        display.innerHTML = `
+            <strong>[ SEALED JUDGMENT: ${caseId} ]</strong><br>
+            REALITY LOCK: ${score}% CERTAINTY<br>
+            KINETIC PEAK: ${g} Gs<br>
+            RECOVERY TARGET: $${val}<br>
+            VOICE ANALYTICS: ${voiceTranscript ? voiceTranscript : "NO VOICE DATA RECORDED"}<br>
+            <span style="color:var(--matrix-green)">STATUS: COMMIT SUCCESSFUL. AUDIT TRAIL ANCHORED.</span>
+        `;
+        addLog("VAULT SEALED. DIGITAL LEDGER CREATED.");
+        document.getElementById('commit-btn').style.display = "none";
     }
 
-    function commitVault() {
-        addLog("LOCKING DATA TO TRZ-7789 ENCRYPTED STORAGE...");
-        setTimeout(() => { addLog("VAULT COMMIT SUCCESSFUL."); }, 800);
+    function runAudit() {
+        addLog("KINETIC DATA SYNCING...");
+        setTimeout(() => { addLog("PHYSICS VALIDATED."); calculateProbability(); }, 1000);
     }
 
     const canvas = document.getElementById('matrix');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-    const chars = "1010101TRINITY7789APEX";
-    const drops = Array(Math.floor(canvas.width/18)).fill(1);
-    function draw() {
-        ctx.fillStyle = "rgba(0,0,0,0.05)"; ctx.fillRect(0,0,canvas.width,canvas.height);
-        ctx.fillStyle = "#0F0"; ctx.font = "15px monospace";
-        drops.forEach((y, i) => {
-            ctx.fillText(chars[Math.floor(Math.random()*chars.length)], i*18, y*18);
-            if(y*18 > canvas.height && Math.random() > 0.975) drops[i] = 0;
-            drops[i]++;
-        });
-    }
-    setInterval(draw, 50);
-</script>
-</body>
-</html>
+    const ctx = canvas
 
