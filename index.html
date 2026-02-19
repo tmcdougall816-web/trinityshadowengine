@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trinity Engine V10.2.8 - SIU Shadow-Center</title>
+    <title>Trinity Engine V10.2.8.1 - SIU Shadow-Center</title>
     <style>
         :root {
             --matrix-green: #00ff41;
@@ -12,6 +12,8 @@
             --void-black: #0d0208;
             --terminal-gray: #1a1a1a;
         }
+
+        *, *::before, *::after { box-sizing: border-box; }
 
         body, html {
             background-color: var(--void-black);
@@ -34,6 +36,7 @@
             height: 100%;
             z-index: -1;
             opacity: 0.25;
+            pointer-events: none;
         }
 
         /* --- THE VAULT SENTRY (LOGIN) --- */
@@ -59,52 +62,71 @@
         #main-interface {
             display: none;
             width: 95%;
-            max-width: 1300px;
-            height: 92vh;
+            max-width: 1400px;
+            height: 94vh;
             border: 2px solid var(--matrix-green);
-            padding: 30px;
-            background: rgba(13, 2, 8, 0.98);
+            padding: 30px 40px;
+            background: rgba(13, 2, 8, 0.95);
             box-shadow: 0 0 30px var(--matrix-green);
             overflow-y: auto; 
             overflow-x: hidden;
-            box-sizing: border-box;
-        }
-
-        .grid-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: auto 1fr auto;
-            gap: 25px;
-            min-height: 100%; 
+            scroll-behavior: smooth;
         }
 
         header {
-            grid-column: span 2;
             text-align: center;
             border-bottom: 2px solid var(--matrix-green);
-            padding-bottom: 15px;
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+        }
+
+        /* --- TIER SYSTEM STYLES --- */
+        .tier {
+            margin-bottom: 60px;
+            padding-bottom: 40px;
+            border-bottom: 2px dashed rgba(0, 255, 65, 0.3);
+        }
+        
+        .tier:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .tier-header {
+            font-size: 1.4rem;
+            color: #fff;
+            letter-spacing: 5px;
+            margin-bottom: 25px;
+            text-shadow: 0 0 10px var(--matrix-green);
+            text-align: center;
+        }
+
+        .tier-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
         }
 
         .panel {
             border: 1px solid var(--matrix-green);
-            padding: 20px;
-            background: rgba(20, 20, 20, 0.5);
+            padding: 25px;
+            background: rgba(20, 20, 20, 0.6);
             display: flex;
             flex-direction: column;
             gap: 15px;
+            box-shadow: inset 0 0 20px rgba(0,255,65,0.05);
         }
 
-        h2 { font-size: 0.9rem; margin: 0; color: #fff; text-transform: uppercase; border-left: 4px solid var(--matrix-green); padding-left: 10px; }
+        h2 { font-size: 1rem; margin: 0; color: #fff; text-transform: uppercase; border-left: 4px solid var(--matrix-green); padding-left: 10px; }
 
         input, select {
             background: #000;
             border: 1px solid #333;
             color: var(--matrix-green);
-            padding: 12px;
+            padding: 15px;
             font-family: inherit;
-            font-size: 0.9rem;
+            font-size: 1rem;
             width: 100%;
-            box-sizing: border-box;
         }
 
         input:focus, select:focus { border-color: var(--matrix-green); outline: none; box-shadow: 0 0 10px var(--matrix-green); }
@@ -119,15 +141,17 @@
             cursor: pointer;
             letter-spacing: 2px;
             transition: 0.2s;
+            font-size: 0.9rem;
         }
 
         button:hover { background: #fff; box-shadow: 0 0 20px #fff; }
 
+        /* THEATER (Expanded for Tier 2) */
         #media-theater {
             flex-grow: 1;
-            min-height: 250px;
+            min-height: 350px;
             background: #000;
-            border: 1px dashed #444;
+            border: 2px dashed #444;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -135,6 +159,7 @@
             font-size: 0.8rem;
             text-transform: uppercase;
             overflow: hidden;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
         }
         
         #media-theater img {
@@ -144,7 +169,7 @@
         }
 
         .prob-container {
-            height: 50px;
+            height: 60px;
             background: #111;
             border: 2px solid #333;
             position: relative;
@@ -155,21 +180,41 @@
             height: 100%;
             width: 0%;
             background: linear-gradient(90deg, #ff0000, #ffff00, #00ff41);
-            transition: width 0.8s cubic-bezier(0.1, 0.7, 1.0, 0.1); /* Sped up for visual reactivity */
+            transition: width 0.8s cubic-bezier(0.1, 0.7, 1.0, 0.1);
         }
 
         #audit-log {
-            height: 150px;
+            height: 200px;
             background: #000;
             border: 1px solid var(--matrix-green);
-            padding: 10px;
-            font-size: 0.8rem;
+            padding: 15px;
+            font-size: 0.9rem;
             overflow-y: auto;
             color: var(--matrix-green);
         }
 
+        /* TRZ-7789 METER STYLES */
+        .telemetry-readout {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #0ff;
+            text-shadow: 0 0 5px #0ff;
+            background: #050505;
+            padding: 15px;
+            border: 1px solid #0ff;
+            margin-top: -5px;
+            letter-spacing: 2px;
+        }
+
         .glitch { animation: glitch 2s infinite; }
         @keyframes glitch { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+
+        /* Scrollbar Styling for Terminal Vibe */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #000; border-left: 1px solid #333; }
+        ::-webkit-scrollbar-thumb { background: var(--matrix-green); }
+        ::-webkit-scrollbar-thumb:hover { background: #fff; }
 
     </style>
 </head>
@@ -188,60 +233,88 @@
 
 <div id="main-interface">
     <header>
-        <h1 style="margin: 0; letter-spacing: 10px;">TRINITY ENGINE V10.2.8</h1>
-        <div style="font-size: 0.8rem; color: #fff; margin-top: 5px;">SIU AUDIT SUITE // $2B RECOVERY LOGIC // ARCHITECT: TY</div>
+        <h1 style="margin: 0; letter-spacing: 10px;">TRINITY ENGINE V10.2.8.1</h1>
+        <div style="font-size: 0.9rem; color: #fff; margin-top: 5px;">SIU AUDIT SUITE // DEEP DECK ARCHITECTURE // ARCHITECT: TY</div>
     </header>
 
-    <div class="grid-layout">
-        <div class="panel">
-            <h2>I. INITIALIZE CLAIM INTERVIEW</h2>
-            <button onclick="addLog('INITIALIZING SPEECH-TO-REALITY SYNC...')">START VOICE CAPTURE</button>
-            <button onclick="addLog('EXTERNAL DATA STREAMING...')">INITIALIZE EXTERNAL AUDIT</button>
-        </div>
-
-        <div class="panel">
-            <h2>IV. SETTLEMENT PROBABILITY</h2>
-            <div class="prob-container">
-                <div id="bar" class="prob-bar"></div>
+    <div class="tier" id="tier-1">
+        <h2 class="tier-header">TIER I : CORE INITIATION & TELEMETRY</h2>
+        <div class="tier-grid">
+            <div class="panel">
+                <h2>CLAIM INITIATION</h2>
+                <input type="text" id="case-id" placeholder="CLAIM ID (e.g. TC-2023-PILEUP-3.5M)" oninput="calculateProbability()">
+                <input type="text" id="statute" placeholder="STATUTORY ANCHOR (RSBC 1996 c.318 s.144)" oninput="calculateProbability()">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                    <button onclick="addLog('INITIALIZING SPEECH-TO-REALITY SYNC...')">VOICE CAPTURE</button>
+                    <button onclick="addLog('EXTERNAL DATA STREAMING...')">EXTERNAL AUDIT</button>
+                </div>
             </div>
-            <div id="p-text" style="text-align: center; font-weight: bold; font-size: 1.2rem; color: #ff0000;">0% CERTAINTY</div>
-        </div>
 
-        <div class="panel">
-            <h2>II. GEO-SPATIAL ACCIDENT RECON</h2>
-            <input type="text" id="case-id" placeholder="CLAIM ID (e.g. TC-2023-PILEUP-3.5M)" oninput="calculateProbability()">
-            <input type="text" id="statute" placeholder="STATUTORY ANCHOR (RSBC 1996 c.318 s.144)" oninput="calculateProbability()">
-            <button onclick="runAudit()">VALIDATE LIABILITY DATA</button>
-            
-            <label style="font-size: 0.7rem; color: #666; margin-top: 10px; margin-bottom: -5px;">III. LIVE SCENE INJECTION</label>
-            
-            <select id="cam-presets" onchange="document.getElementById('cam-url').value = this.value; calculateProbability();">
-                <option value="">-- SELECT TARGET HIGHWAY CAM --</option>
-                <option value="https://images.drivebc.ca/bchighwaycam/pub/cameras/34.jpg">HWY 3B - SMELTER HILL</option>
-                <option value="https://images.drivebc.ca/bchighwaycam/pub/cameras/104.jpg">HWY 3 - PAULSON SUMMIT</option>
-                <option value="https://images.drivebc.ca/bchighwaycam/pub/cameras/116.jpg">HWY 22 - CASTLEGAR</option>
-                <option value="https://images.drivebc.ca/bchighwaycam/pub/cameras/35.jpg">HWY 3 - NANCY GREENE LAKE</option>
-            </select>
-
-            <input type="text" id="cam-url" placeholder="TRAFFIC CAMERA URL CLOUD LINK" oninput="calculateProbability()">
-            <button style="background: #005495; color: #fff;" onclick="loadCamera()">INJECT LIVE FEED</button>
-            
-            <div id="media-theater">[ CAMERA INJECTION STANDBY ]</div>
-        </div>
-
-        <div class="panel">
-            <h2>V. CAMERA INJECTION STORAGE</h2>
-            <input type="number" id="cash" placeholder="TOTAL RECOVERY TARGET ($)" oninput="calculateProbability()">
-            <select id="assess" onchange="calculateProbability()">
-                <option value="none">-- SELECT ASSESSMENT --</option>
-                <option value="adverse">ADVERSE (FRAUD DETECTED)</option>
-                <option value="verified">VERIFIED CREDIBLE (REALITY LOCK)</option>
-            </select>
-            <button onclick="commitVault()">COMMIT TO ADJUDICATION</button>
-            <div id="audit-log">> SYSTEM READY. AWAITING DATA...</div>
-            <button style="background: #fff; padding: 10px;" onclick="window.print()">EXPORT FINAL CLAIM REPORT</button>
+            <div class="panel">
+                <h2>KINETIC RECONSTRUCTION</h2>
+                <div style="display: flex; gap: 10px;">
+                    <input type="number" id="velocity" placeholder="VELOCITY (KM/H)" oninput="updateMeters()">
+                    <input type="number" id="impact" placeholder="IMPACT (G-FORCE)" step="0.1" oninput="updateMeters()">
+                </div>
+                <div class="telemetry-readout">
+                    <span>[ V-CORE: <span id="vel-out">000</span> KM/H ]</span>
+                    <span>[ G-SHOCK: <span id="imp-out">00.0</span> Gs ]</span>
+                </div>
+                <button onclick="runAudit()" style="margin-top: 10px;">VALIDATE LIABILITY DATA</button>
+            </div>
         </div>
     </div>
+
+    <div class="tier" id="tier-2">
+        <h2 class="tier-header">TIER II : VISUAL RECON & PROBABILITY</h2>
+        <div class="tier-grid">
+            <div class="panel">
+                <h2>LIVE SCENE INJECTION</h2>
+                <select id="cam-presets" onchange="document.getElementById('cam-url').value = this.value; calculateProbability();">
+                    <option value="">-- SELECT TARGET HIGHWAY CAM --</option>
+                    <option value="https://images.drivebc.ca/bchighwaycam/pub/cameras/34.jpg">HWY 3B - SMELTER HILL</option>
+                    <option value="https://images.drivebc.ca/bchighwaycam/pub/cameras/104.jpg">HWY 3 - PAULSON SUMMIT</option>
+                    <option value="https://images.drivebc.ca/bchighwaycam/pub/cameras/116.jpg">HWY 22 - CASTLEGAR</option>
+                    <option value="https://images.drivebc.ca/bchighwaycam/pub/cameras/35.jpg">HWY 3 - NANCY GREENE LAKE</option>
+                </select>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="cam-url" placeholder="URL CLOUD LINK" oninput="calculateProbability()">
+                    <button style="background: #005495; color: #fff;" onclick="loadCamera()">INJECT</button>
+                </div>
+                <div id="media-theater">[ CAMERA INJECTION STANDBY ]</div>
+            </div>
+
+            <div class="panel">
+                <h2>SETTLEMENT PROBABILITY ENGINE</h2>
+                <p style="color: #666; font-size: 0.8rem; margin: 0;">REAL-TIME ALGORITHMIC WEIGHTING BASED ON TIER I & II DATA</p>
+                <div class="prob-container" style="margin-top: auto; margin-bottom: 20px;">
+                    <div id="bar" class="prob-bar"></div>
+                </div>
+                <div id="p-text" style="text-align: center; font-weight: bold; font-size: 1.5rem; color: #ff0000; letter-spacing: 2px;">0% CERTAINTY</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tier" id="tier-3">
+        <h2 class="tier-header">TIER III : ADJUDICATION VAULT</h2>
+        <div class="tier-grid" style="grid-template-columns: 1fr;">
+            <div class="panel">
+                <h2>VAULT STORAGE & FINALIZATION</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <input type="number" id="cash" placeholder="TOTAL RECOVERY TARGET ($)" oninput="calculateProbability()">
+                    <select id="assess" onchange="calculateProbability()">
+                        <option value="none">-- SELECT ASSESSMENT --</option>
+                        <option value="adverse">ADVERSE (FRAUD DETECTED)</option>
+                        <option value="verified">VERIFIED CREDIBLE (REALITY LOCK)</option>
+                    </select>
+                </div>
+                <button onclick="commitVault()">COMMIT EVIDENCE TO ADJUDICATION</button>
+                <div id="audit-log">> SYSTEM READY. AWAITING DATA INPUT...</div>
+                <button style="background: #fff; padding: 15px;" onclick="window.print()">EXPORT FINAL TRINITY REPORT</button>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <script>
@@ -264,31 +337,42 @@
         l.scrollTop = l.scrollHeight;
     }
 
+    // TRZ-7789 TELEMETRY ENGINE
+    function updateMeters() {
+        const velInput = document.getElementById('velocity').value;
+        const impInput = document.getElementById('impact').value;
+        
+        document.getElementById('vel-out').innerText = velInput ? velInput.padStart(3, '0') : '000';
+        document.getElementById('imp-out').innerText = impInput ? parseFloat(impInput).toFixed(1).padStart(4, '0') : '00.0';
+        
+        calculateProbability();
+    }
+
     // TRZ-7789 PROBABILITY ENGINE
     function calculateProbability() {
         let score = 0;
         
-        // 1. Check Panel II Data (30% total)
-        if(document.getElementById('case-id').value.trim() !== '') score += 15;
-        if(document.getElementById('statute').value.trim() !== '') score += 15;
+        // Tier I Data (30% weight)
+        if(document.getElementById('case-id').value.trim() !== '') score += 10;
+        if(document.getElementById('statute').value.trim() !== '') score += 10;
+        if(document.getElementById('velocity').value.trim() !== '' && document.getElementById('impact').value.trim() !== '') score += 10;
         
-        // 2. Check Panel III Live Scene Injection (30% total)
+        // Tier II Data (30% weight)
         const theater = document.getElementById('media-theater').innerHTML;
         if(theater.includes('<img') || document.getElementById('cam-url').value.trim() !== '') {
             score += 30;
         }
         
-        // 3. Check Panel V Storage Data (40% total)
+        // Tier III Data (40% weight)
         if(document.getElementById('cash').value.trim() !== '') score += 10;
         
         const assessVal = document.getElementById('assess').value;
         if(assessVal === 'verified') {
             score += 30;
         } else if (assessVal === 'adverse') {
-            score = 0; // Fraud completely invalidates settlement probability
+            score = 0; // Fraud lock
         }
 
-        // Cap score safely at 100
         if(score > 100) score = 100;
 
         // Visual Updates
@@ -302,20 +386,20 @@
             pText.innerText = "0% - FRAUD DETECTED";
             pText.style.color = "#ff0000";
         } else if(score < 50) {
-            pText.style.color = "#ff0000"; // Red
+            pText.style.color = "#ff0000";
         } else if(score < 90) {
-            pText.style.color = "#ffff00"; // Yellow
+            pText.style.color = "#ffff00";
         } else {
-            pText.style.color = "#00ff41"; // Matrix Green
+            pText.style.color = "#00ff41";
         }
     }
 
     function runAudit() {
-        if(!document.getElementById('case-id').value) return alert("CLAIM ID REQUIRED");
-        addLog(`AUDITING CASE AGAINST BC STATUTES...`);
+        if(!document.getElementById('case-id').value) return alert("CLAIM ID REQUIRED IN TIER I");
+        addLog(`AUDITING TIER I DATA AGAINST BC STATUTES...`);
         setTimeout(() => {
-            calculateProbability(); // Force calculate to ensure UI is synced
-            addLog("LIABILITY ANCHORED. CROSS-REFERENCING SCENE INJECTION.");
+            calculateProbability(); 
+            addLog("LIABILITY & TELEMETRY ANCHORED. READY FOR TIER II INJECTION.");
         }, 1200);
     }
 
@@ -326,8 +410,8 @@
         if(url) {
             const cacheBypass = url.includes('?') ? '&t=' : '?t=';
             theater.innerHTML = `<img src="${url}${cacheBypass}${new Date().getTime()}" alt="LIVE HIGHWAY FEED">`;
-            addLog(`INJECTING TRAFFIC CAM STREAM: ${url}`);
-            calculateProbability(); // Re-calculate upon image load
+            addLog(`TIER II: INJECTING TRAFFIC CAM STREAM -> ${url}`);
+            calculateProbability(); 
         } else {
             theater.innerHTML = "<span style='color:red;'>[ INVALID OR MISSING STREAM URL ]</span>";
         }
@@ -341,13 +425,13 @@
         
         if(status === 'verified' && val && pText.innerText.includes("100%")) {
             pText.innerText = "100% - FLAWLESS VICTORY";
-            document.getElementById('media-theater').innerText = "EVIDENCE REALITY SECURED";
+            document.getElementById('media-theater').innerText = "EVIDENCE REALITY SECURED IN VAULT";
             document.getElementById('media-theater').style.color = "#00ff41";
             addLog(`RECOVERY OF $${val} FINALIZED IN VAULT.`);
         } else if (status === 'adverse') {
             addLog(`CLAIM DENIED. ADVERSE FRAUD LOCK ENGAGED.`);
         } else {
-            addLog(`WARNING: INCOMPLETE DATA FOR ADJUDICATION.`);
+            addLog(`WARNING: INCOMPLETE DATA FOR TIER III ADJUDICATION.`);
         }
     }
 
