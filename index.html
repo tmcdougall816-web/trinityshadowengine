@@ -1,146 +1,72 @@
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TRINITY CORE | TACTICAL INJECTOR V10.2.8</title>
-    <style>
-        :root { --matrix-green: #00ff41; --shadow-bg: #000; --panel-bg: rgba(0, 15, 0, 0.9); --win-gold: #ffcc00; }
-        body { background-color: var(--shadow-bg); color: var(--matrix-green); font-family: 'Courier New', monospace; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-        canvas#matrix { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.3; }
-        #header { padding: 10px 20px; border-bottom: 2px solid var(--matrix-green); display: flex; justify-content: space-between; align-items: center; background: rgba(0, 10, 0, 0.95); }
-        .main-container { display: grid; grid-template-columns: 320px 1fr 320px; grid-template-rows: 1fr 140px; gap: 10px; padding: 10px; flex-grow: 1; }
-        .panel { background: var(--panel-bg); border: 1px solid var(--matrix-green); box-shadow: 0 0 10px rgba(0, 255, 65, 0.3); padding: 12px; overflow-y: auto; display: flex; flex-direction: column; backdrop-filter: blur(3px); }
-        .panel-header { border-bottom: 1px solid var(--matrix-green); margin-bottom: 8px; padding-bottom: 4px; font-weight: bold; font-size: 0.75rem; text-transform: uppercase; color: #fff; }
-        #win-percentage { font-size: 2.5rem; color: var(--win-gold); text-align: center; font-weight: bold; text-shadow: 0 0 15px var(--win-gold); }
-        #visualizer { width: 100%; height: 120px; background: rgba(0,0,0,0.8); border: 1px solid #004400; }
-        #cam-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 5px; }
-        .cam { height: 50px; background: #000; border: 1px solid #004400; font-size: 0.55rem; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #00ff41; text-align: center; padding: 2px; }
-        .cam span { color: #555; font-size: 0.45rem; }
-        .feed-list { font-size: 0.65rem; color: #88ff88; margin-top: 10px; background: rgba(0,20,0,0.5); padding: 5px; border: 1px solid #003300; }
-        .feed-item { margin-bottom: 4px; border-bottom: 1px solid #002200; padding-bottom: 2px; cursor: pointer; transition: 0.2s; }
-        .feed-item:hover { color: #fff; background: rgba(0,255,65,0.1); }
-        #streams { color: #fff; font-size: 0.9rem; padding: 8px; border: 1px dashed #004400; margin-top: 5px; min-height: 40px; background: rgba(0,25,0,0.4); }
-        .truth-meter { height: 15px; width: 100%; background: #200; border: 1px solid #400; margin-top: 5px; position: relative; }
-        #truth-bar { height: 100%; width: 30%; background: var(--matrix-green); transition: 0.8s; }
-        button { background: transparent; color: var(--matrix-green); border: 1px solid var(--matrix-green); padding: 5px 10px; cursor: pointer; font-size: 0.65rem; text-transform: uppercase; margin-top: 5px; }
-        button:hover { background: var(--matrix-green); color: black; }
-        .stat-box { font-size: 0.7rem; padding: 5px; border: 1px solid #004400; margin-bottom: 4px; background: rgba(0,0,0,0.5); }
-        #terminal { grid-column: 1 / span 3; background: rgba(0,0,0,0.95); }
-    </style>
-</head>
-<body>
-    <canvas id="matrix"></canvas>
-    <div id="header">
-        <div>TRINITY SIU <span style="color:#fff">V10.2.8</span></div>
-        <div style="font-size: 0.7rem;">STATUS: <span style="color:var(--matrix-green)">CORE ACTIVE</span></div>
-        <div id="sys-clock">00:00:00</div>
-    </div>
-    <div class="main-container">
-        <div class="panel">
-            <div class="panel-header">Win Probability</div>
-            <div id="win-percentage">92%</div>
-            <div class="stat-box">TRUTH WEIGHT: 0.92</div>
-            <div class="panel-header" style="margin-top:10px;">Subject Dossier</div>
-            <div class="stat-box" style="color:#fff;">NAME: TY MCDOUGALL<br>FILE: #4492-TRZ</div>
-        </div>
-
-        <div class="panel">
-            <div class="panel-header">Acoustic Logic Stream</div>
-            <canvas id="visualizer"></canvas>
-            <div id="streams">[ CORE STANDBY ]</div>
-            <div class="truth-meter"><div id="truth-bar"></div></div>
-            <div style="display:flex; justify-content:space-between; font-size:0.5rem; margin-top:3px;"><span>TRUTH</span><span>DECEPTION</span></div>
-            <div style="display:flex; gap:10px; justify-content:center; margin-top:10px;">
-                <button onclick="startEngine()">Engage</button>
-                <button onclick="stopEngine()">Kill</button>
-            </div>
-        </div>
-
-        <div class="panel">
-            <div class="panel-header">Traffic Cam Feeds</div>
-            <div id="cam-grid">
-                <div class="cam" id="c1">CAM 01 <span>OFFLINE</span></div>
-                <div class="cam" id="c2">CAM 02 <span>OFFLINE</span></div>
-                <div class="cam" id="c3">CAM 03 <span>OFFLINE</span></div>
-                <div class="cam" id="c4">CAM 04 <span>OFFLINE</span></div>
-            </div>
-            <div class="feed-list">
-                <div class="panel-header" style="border:none; font-size:0.6rem;">Tactical Node List (Click to Inject)</div>
-                <div class="feed-item" onclick="injectCam('c1', 'VIC ST BRIDGE')">1. Victoria St Bridge</div>
-                <div class="feed-item" onclick="injectCam('c2', 'HWY 3B @ ROSS')">2. Hwy 3B @ Rossland</div>
-                <div class="feed-item" onclick="injectCam('c3', 'HWY 22 @ TOP')">3. Hwy 22 @ Topping</div>
-                <div class="feed-item" onclick="injectCam('c4', 'WANETA CROSS')">4. Waneta Crossing</div>
-            </div>
-            <button onclick="log('CLEARING CAM FEEDS...')">Reset Cams</button>
-        </div>
-
-        <div class="panel" id="terminal">
-            <div id="log-output" style="font-size:0.8rem;">> TRINITY TACTICAL HUB ACTIVE.</div>
-        </div>
+<div id="trinity-interface">
+    <div id="hud-overlay">
+        <p>SYSTEM: V10.2.8.2-EYES</p>
+        <p id="security-display">STATUS: ACTIVE</p>
+        <p id="mode-display">MODE: NEW TRUTH AUDIT</p>
     </div>
 
-    <script>
-        // Matrix Rain
-        const canvas = document.getElementById('matrix'); const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        const alphabet = "アカサタナハマヤ0123456789";
-        const rainDrops = Array.from({ length: Math.floor(canvas.width/16) }).fill(0);
-        function drawRain() {
-            ctx.fillStyle = "rgba(0, 0, 0, 0.05)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "#0F0"; ctx.font = "16px monospace";
-            rainDrops.forEach((y, i) => {
-                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
-                ctx.fillText(text, i * 16, y * 16);
-                if (y * 16 > canvas.height && Math.random() > 0.975) rainDrops[i] = 0;
-                rainDrops[i]++;
-            });
-        }
-        setInterval(drawRain, 35);
-        setInterval(() => { document.getElementById('sys-clock').innerText = new Date().toLocaleTimeString(); }, 1000);
+    <video id="eyeballs-feed" autoplay playsinline></video>
+    <canvas id="vision-canvas"></canvas>
 
-        function log(m) {
-            const out = document.getElementById('log-output');
-            out.innerHTML += `<br>> ${m}`;
-            document.getElementById('terminal').scrollTop = document.getElementById('terminal').scrollHeight;
+    <div id="command-center">
+        <input type="text" id="architect-input" placeholder="Enter Command or Trigger Phrase...">
+    </div>
+</div>
+
+<script>
+const architectKeys = {
+    lockdown: "the grass is not greener on the other side it's just fertilized with b*******",
+    release: "he who dies with the most toys still dies"
+};
+
+let systemState = "ACTIVE";
+
+async function initEyeballs() {
+    const video = document.getElementById('eyeballs-feed');
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+        video.srcObject = stream;
+        console.log("[TRZ-7789] Eyeballs Initialized.");
+    } catch (err) {
+        console.error("Vision Core Error: ", err);
+    }
+}
+
+document.getElementById('architect-input').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        const cmd = this.value.toLowerCase();
+        
+        // VOID-LOCK TRIGGER
+        if (cmd.includes(architectKeys.lockdown)) {
+            systemState = "VOID-LOCK";
+            document.getElementById('security-display').innerText = "STATUS: VOID-LOCK";
+            document.getElementById('trinity-interface').style.filter = "grayscale(100%) brightness(50%)";
+            document.getElementById('eyeballs-feed').style.display = "none";
+            alert("System Purged. Entering Benign Mode.");
+        } 
+        
+        // RELEASE KEY
+        else if (cmd.includes(architectKeys.release)) {
+            systemState = "ACTIVE";
+            document.getElementById('security-display').innerText = "STATUS: ACTIVE";
+            document.getElementById('trinity-interface').style.filter = "none";
+            document.getElementById('eyeballs-feed').style.display = "block";
+            console.log("Welcome back, Architect.");
         }
 
-        // Camera Injection Logic
-        function injectCam(id, location) {
-            document.getElementById(id).innerHTML = `${location} <span style="color:red; font-weight:bold;">● LIVE (TEXT)</span>`;
-            log(`INJECTED NODE DATA TO ${id.toUpperCase()}: ${location}`);
-        }
+        this.value = '';
+    }
+});
 
-        let audioCtx, analyzer, stream;
-        async function startEngine() {
-            log("ENGAGING TACTICAL CORE...");
-            try {
-                stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                analyzer = audioCtx.createAnalyser();
-                const source = audioCtx.createMediaStreamSource(stream);
-                source.connect(analyzer);
-                drawVisualizer();
-            } catch(e) { log("MIC ERROR."); }
-        }
-        function drawVisualizer() {
-            const vCanvas = document.getElementById('visualizer'); const vCtx = vCanvas.getContext('2d');
-            const data = new Uint8Array(analyzer.frequencyBinCount);
-            function animate() {
-                requestAnimationFrame(animate); analyzer.getByteFrequencyData(data);
-                vCtx.fillStyle = 'rgba(0,0,0,0.8)'; vCtx.fillRect(0,0,vCanvas.width,vCanvas.height);
-                let x = 0;
-                for(let i=0; i<data.length; i++) {
-                    const h = data[i]/1.8; vCtx.fillStyle = `rgb(0, ${h+150}, 50)`;
-                    vCtx.fillRect(x, vCanvas.height-h, 2, h); x += 3;
-                }
-            }
-            animate();
-        }
-    </script>
-</body>
-</html>
+// Start the core
+initEyeballs();
+</script>
 
-
+<style>
+#trinity-interface { background: #000; color: #0f0; font-family: 'Courier New', monospace; padding: 20px; position: relative; }
+#hud-overlay { position: absolute; top: 10px; left: 20px; z-index: 10; pointer-events: none; }
+#eyeballs-feed { width: 100%; border: 2px solid #0f0; border-radius: 8px; }
+#command-center { margin-top: 15px; }
+#architect-input { width: 100%; background: #111; border: 1px solid #0f0; color: #0f0; padding: 10px; }
+</style>
 
