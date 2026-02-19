@@ -3,70 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TRINITY SIU | TACTICAL COMMAND V10.2.8</title>
+    <title>TRINITY CORE | TRZ-7789 TRUTH ENGINE</title>
     <style>
-        :root { --matrix-green: #00ff41; --shadow-bg: #030303; --panel-bg: rgba(0, 20, 0, 0.95); --border-glow: 0 0 15px rgba(0, 255, 65, 0.5); }
+        :root { --matrix-green: #00ff41; --shadow-bg: #020202; --panel-bg: rgba(0, 15, 0, 0.95); --win-gold: #ffcc00; }
         body { background-color: var(--shadow-bg); color: var(--matrix-green); font-family: 'Courier New', monospace; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         canvas#matrix { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.1; }
         #header { padding: 10px 20px; border-bottom: 2px solid var(--matrix-green); display: flex; justify-content: space-between; align-items: center; background: var(--panel-bg); }
-        .main-container { display: grid; grid-template-columns: 320px 1fr 320px; grid-template-rows: 1fr 180px; gap: 10px; padding: 10px; flex-grow: 1; }
-        .panel { background: rgba(0, 8, 0, 0.9); border: 1px solid var(--matrix-green); box-shadow: var(--border-glow); padding: 12px; overflow-y: auto; display: flex; flex-direction: column; border-radius: 2px; }
-        .panel-header { border-bottom: 1px solid var(--matrix-green); margin-bottom: 10px; padding-bottom: 5px; font-weight: bold; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: #fff; text-shadow: 0 0 5px var(--matrix-green); }
-        #visualizer { width: 100%; height: 160px; background: #000; border: 1px solid #004400; }
-        #cam-grid { width: 100%; height: 140px; background: #111; border: 1px solid #004400; display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
-        .cam-feed { background: #000; border: 1px solid #002200; font-size: 0.5rem; display: flex; align-items: center; justify-content: center; color: #333; }
-        .data-grid { display: grid; grid-template-columns: 1fr; gap: 5px; font-size: 0.75rem; }
-        .data-box { border: 1px solid #004400; padding: 6px; background: rgba(0, 20, 0, 0.3); }
-        #terminal { grid-column: 1 / span 3; background: #000; font-size: 0.85rem; padding: 10px; border-top: 2px solid var(--matrix-green); }
-        button { background: transparent; color: var(--matrix-green); border: 1px solid var(--matrix-green); padding: 5px 10px; cursor: pointer; font-size: 0.65rem; text-transform: uppercase; margin-top: 5px; }
+        .main-container { display: grid; grid-template-columns: 320px 1fr 320px; grid-template-rows: 1fr 150px; gap: 10px; padding: 10px; flex-grow: 1; }
+        .panel { background: rgba(0, 10, 0, 0.9); border: 1px solid var(--matrix-green); box-shadow: 0 0 10px rgba(0, 255, 65, 0.3); padding: 12px; overflow-y: auto; display: flex; flex-direction: column; }
+        .panel-header { border-bottom: 1px solid var(--matrix-green); margin-bottom: 8px; padding-bottom: 4px; font-weight: bold; font-size: 0.8rem; text-transform: uppercase; color: #fff; }
+        
+        /* Win Gauge Styles */
+        #win-percentage { font-size: 2.5rem; color: var(--win-gold); text-align: center; font-weight: bold; text-shadow: 0 0 10px var(--win-gold); }
+        .gauge-label { text-align: center; font-size: 0.7rem; color: #aaa; margin-bottom: 10px; }
+        
+        #visualizer { width: 100%; height: 140px; background: #000; border: 1px solid #004400; }
+        #streams { color: #fff; font-size: 1rem; padding: 10px; border: 1px dashed #004400; margin-top: 5px; min-height: 50px; background: rgba(0,20,0,0.4); }
+        
+        .truth-meter { height: 15px; width: 100%; background: #200; border: 1px solid #400; margin-top: 5px; position: relative; }
+        #truth-bar { height: 100%; width: 50%; background: var(--matrix-green); transition: 0.5s; }
+        
+        button { background: transparent; color: var(--matrix-green); border: 1px solid var(--matrix-green); padding: 5px 10px; cursor: pointer; font-size: 0.65rem; text-transform: uppercase; }
         button:hover { background: var(--matrix-green); color: black; }
-        #streams { color: #fff; font-size: 1rem; text-shadow: 0 0 5px var(--matrix-green); padding: 10px; border: 1px dashed #004400; margin-top: 5px; min-height: 60px; }
-        .dossier-text { font-size: 0.7rem; color: #88ff88; line-height: 1.2; }
+        .stat-box { font-size: 0.75rem; padding: 5px; border: 1px solid #004400; margin-bottom: 5px; }
     </style>
 </head>
 <body>
     <canvas id="matrix"></canvas>
     <div id="header">
-        <div>SIU SHADOW-CENTER <span style="color:#fff">V10.2.8</span></div>
-        <div style="font-size: 0.7rem;">ACTIVE NODE: <span style="color:#fff">TRAIL, BC</span></div>
+        <div>TRINITY CORE <span style="color:#fff">PROTOTYPE</span></div>
+        <div style="font-size: 0.7rem;">DECEPTION MATRIX: <span id="matrix-status" style="color:var(--matrix-green)">ACTIVE</span></div>
         <div id="sys-clock">00:00:00</div>
     </div>
 
     <div class="main-container">
         <div class="panel">
-            <div class="panel-header">Subject Dossier</div>
-            <div class="data-box dossier-text" id="dossier-display">
-                NAME: UNKNOWN<br>STATUS: TRACKING...<br>PRIORITY: LEVEL 1<br>TRZ-BIAS: NONE
-            </div>
-            <div class="panel-header" style="margin-top:15px;">Witness Input</div>
-            <textarea id="witness-input" style="background:#000; color:#0f0; border:1px solid #004400; font-size:0.7rem; height:60px;" placeholder="ENTER STATEMENT..."></textarea>
-            <button onclick="logWitness()">Log Statement</button>
+            <div class="panel-header">Win Probability (PoW)</div>
+            <div id="win-percentage">0%</div>
+            <div class="gauge-label">CRAWFORD CROSS-REF RATIO</div>
+            
+            <div class="panel-header" style="margin-top:10px;">Crawford Matrix</div>
+            <div class="stat-box">LIES DETECTED: <span id="lies-count">0</span></div>
+            <div class="stat-box">DISCREPANCIES: <span id="disc-count">0</span></div>
+            <div class="stat-box">TRUTH WEIGHT: <span id="truth-weight">0.0</span></div>
+            
+            <button onclick="runCrossReference()" style="margin-top:10px;">Run Cross-Ref</button>
         </div>
 
         <div class="panel">
-            <div class="panel-header">TRZ-7789 Frequency Analysis</div>
+            <div class="panel-header">Acoustic Truth Analysis</div>
             <canvas id="visualizer"></canvas>
-            <div id="streams">CORE STANDBY</div>
-            <div style="display:flex; gap:10px; justify-content:center; margin-top:10px;">
+            <div id="streams">LISTENING...</div>
+            <div class="gauge-label">TRZ-7789 FREQUENCY SYNC</div>
+            
+            <div class="panel-header" style="margin-top:10px;">Deception Meter</div>
+            <div class="truth-meter"><div id="truth-bar"></div></div>
+            <div style="display:flex; justify-content:space-between; font-size:0.6rem;"><span>TRUTH</span><span>DECEPTION</span></div>
+            
+            <div style="display:flex; gap:10px; justify-content:center; margin-top:15px;">
                 <button onclick="startEngine()">Engage</button>
                 <button onclick="stopEngine()">Kill</button>
             </div>
         </div>
 
         <div class="panel">
-            <div class="panel-header">Traffic Cam Feeds</div>
-            <div id="cam-grid">
-                <div class="cam-feed">CAM 01 - ACTIVE</div>
-                <div class="cam-feed">CAM 02 - SIGNAL LOST</div>
-                <div class="cam-feed">CAM 03 - ACTIVE</div>
-                <div class="cam-feed">CAM 04 - STANDBY</div>
+            <div class="panel-header">Witness Statement</div>
+            <textarea id="witness-input" style="background:#000; color:#0f0; border:1px solid #004400; height:100px; font-size:0.7rem;" placeholder="INPUT TESTIMONY..."></textarea>
+            
+            <div class="panel-header" style="margin-top:15px;">Subject Dossier</div>
+            <div class="stat-box" style="color:#88ff88;">
+                NAME: <input type="text" id="subj-name" value="Ty McDougall" style="background:none; border:none; color:#fff; font-family:inherit; width:100px;"><br>
+                FILE: #4492-TRZ<br>
+                HISTORY: RECOVERED
             </div>
-            <div class="panel-header" style="margin-top:15px;">Shadow Log</div>
-            <div id="shadow-log" style="font-size:0.6rem; color:#00ff4177;">System Ready...</div>
+            <button onclick="updateDossier()">Update Dossier</button>
         </div>
 
-        <div class="panel" id="terminal">
-            <div id="log-output">> TRINITY TACTICAL OVERLAY LOADED.</div>
+        <div class="panel" id="terminal" style="grid-column: 1 / span 3;">
+            <div id="log-output">> TRINITY TRUTH ENGINE V10.2.8 ARMED. WAITING FOR INPUT.</div>
         </div>
     </div>
 
@@ -88,6 +102,7 @@
         setInterval(drawM, 33);
 
         let audioCtx, analyzer, stream, animationId, recognition;
+        let lieCount = 0;
 
         function log(m) {
             const out = document.getElementById('log-output');
@@ -95,16 +110,8 @@
             document.getElementById('terminal').scrollTop = document.getElementById('terminal').scrollHeight;
         }
 
-        function logWitness() {
-            const val = document.getElementById('witness-input').value;
-            if(val) {
-                log("WITNESS STATEMENT LOGGED: " + val.substring(0, 30) + "...");
-                document.getElementById('witness-input').value = '';
-            }
-        }
-
         async function startEngine() {
-            log("BOOTING TACTICAL LINK...");
+            log("ENGAGING TRZ-7789 TRUTH MATRIX...");
             try {
                 stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -113,18 +120,16 @@
                 source.connect(analyzer);
                 startSpeech();
                 draw();
-                log("SYSTEM ONLINE.");
-            } catch(e) { log("LINK ERROR: " + e.message); }
+            } catch(e) { log("LINK FAILED."); }
         }
 
-        function stopEngine() {
-            if(stream) {
-                stream.getTracks().forEach(t => t.stop());
-                if(audioCtx) audioCtx.close();
-                if(recognition) recognition.stop();
-                cancelAnimationFrame(animationId);
-                log("SYSTEM DISENGAGED.");
-            }
+        function runCrossReference() {
+            log("RUNNING CRAWFORD CROSS-REFERENCE...");
+            const win = Math.floor(Math.random() * 40) + 60; // Simulation
+            document.getElementById('win-percentage').innerText = win + "%";
+            document.getElementById('disc-count').innerText = Math.floor(Math.random() * 5);
+            document.getElementById('truth-weight').innerText = (win / 100).toFixed(2);
+            log("WIN PROBABILITY CALCULATED: " + win + "%");
         }
 
         function startSpeech() {
@@ -139,6 +144,15 @@
                     text += e.results[i][0].transcript;
                 }
                 document.getElementById('streams').innerText = text;
+                
+                // Lie Detection Simulation
+                if(text.includes("maybe") || text.includes("don't know") || text.includes("I think")) {
+                    document.getElementById('truth-bar').style.width = "80%";
+                    document.getElementById('truth-bar').style.background = "red";
+                } else {
+                    document.getElementById('truth-bar').style.width = "30%";
+                    document.getElementById('truth-bar').style.background = "var(--matrix-green)";
+                }
             };
             recognition.start();
         }
@@ -153,13 +167,20 @@
                 vCtx.fillStyle = '#000'; vCtx.fillRect(0,0,vCanvas.width,vCanvas.height);
                 let x = 0;
                 for(let i=0; i<data.length; i++) {
-                    const h = data[i]/1.5;
+                    const h = data[i]/2;
                     vCtx.fillStyle = `rgb(0, ${h+120}, 40)`;
                     vCtx.fillRect(x, vCanvas.height-h, 2, h);
                     x += 3;
                 }
             }
             animate();
+        }
+        
+        function stopEngine() {
+            if(stream) {
+                stream.getTracks().forEach(t => t.stop());
+                log("CORE STANDBY.");
+            }
         }
     </script>
 </body>
