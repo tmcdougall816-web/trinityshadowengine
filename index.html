@@ -3,153 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TRINITY SIU | CONTROL CENTER V10.2.8</title>
+    <title>TRINITY SIU | SYNC V10.2.8</title>
     <style>
-        :root {
-            --matrix-green: #00ff41;
-            --shadow-bg: #030303;
-            --panel-bg: rgba(0, 20, 0, 0.9);
-            --border-glow: 0 0 10px rgba(0, 255, 65, 0.5);
-        }
-        body {
-            background-color: var(--shadow-bg);
-            color: var(--matrix-green);
-            font-family: 'Courier New', Courier, monospace;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
-        }
-        canvas#matrix {
-            position: fixed;
-            top: 0; left: 0; z-index: -1; opacity: 0.2;
-        }
-        #header {
-            padding: 10px 20px;
-            border-bottom: 2px solid var(--matrix-green);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--panel-bg);
-        }
-        .main-container {
-            display: grid;
-            grid-template-columns: 300px 1fr 300px;
-            grid-template-rows: 1fr 200px;
-            gap: 10px;
-            padding: 10px;
-            flex-grow: 1;
-        }
-        .panel {
-            background: rgba(0, 5, 0, 0.8);
-            border: 1px solid var(--matrix-green);
-            box-shadow: var(--border-glow);
-            padding: 10px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-        }
-        .panel-header {
-            border-bottom: 1px solid var(--matrix-green);
-            margin-bottom: 10px;
-            padding-bottom: 5px;
-            font-weight: bold;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-        }
-        #visualizer {
-            width: 100%;
-            height: 150px;
-            background: #000;
-            border: 1px solid #004400;
-        }
-        .data-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 5px;
-            font-size: 0.75rem;
-        }
-        .data-box {
-            border: 1px solid #004400;
-            padding: 5px;
-            background: rgba(0, 20, 0, 0.3);
-        }
-        #terminal {
-            grid-column: 1 / span 3;
-            height: 100%;
-            background: black;
-            font-size: 0.85rem;
-            padding: 10px;
-        }
-        button {
-            background: transparent;
-            color: var(--matrix-green);
-            border: 1px solid var(--matrix-green);
-            padding: 5px 15px;
-            cursor: pointer;
-            font-size: 0.7rem;
-            margin-top: 5px;
-        }
+        :root { --matrix-green: #00ff41; --shadow-bg: #030303; --panel-bg: rgba(0, 20, 0, 0.9); --border-glow: 0 0 10px rgba(0, 255, 65, 0.5); }
+        body { background-color: var(--shadow-bg); color: var(--matrix-green); font-family: 'Courier New', monospace; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        canvas#matrix { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.15; }
+        #header { padding: 10px 20px; border-bottom: 2px solid var(--matrix-green); display: flex; justify-content: space-between; align-items: center; background: var(--panel-bg); }
+        .main-container { display: grid; grid-template-columns: 300px 1fr 300px; grid-template-rows: 1fr 180px; gap: 10px; padding: 10px; flex-grow: 1; }
+        .panel { background: rgba(0, 5, 0, 0.85); border: 1px solid var(--matrix-green); box-shadow: var(--border-glow); padding: 12px; overflow-y: auto; display: flex; flex-direction: column; }
+        .panel-header { border-bottom: 1px solid var(--matrix-green); margin-bottom: 10px; padding-bottom: 5px; font-weight: bold; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+        #visualizer { width: 100%; height: 200px; background: #000; border: 1px solid #004400; box-shadow: inset 0 0 10px #00ff4133; }
+        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; font-size: 0.75rem; }
+        .data-box { border: 1px solid #004400; padding: 8px; background: rgba(0, 20, 0, 0.4); }
+        #terminal { grid-column: 1 / span 3; background: black; font-size: 0.85rem; padding: 10px; border-top: 2px solid var(--matrix-green); }
+        button { background: transparent; color: var(--matrix-green); border: 1px solid var(--matrix-green); padding: 8px 15px; cursor: pointer; font-size: 0.7rem; text-transform: uppercase; transition: 0.2s; }
         button:hover { background: var(--matrix-green); color: black; }
-        .active { color: #fff; text-shadow: 0 0 5px var(--matrix-green); }
+        #streams { color: #fff; font-size: 1.1rem; text-shadow: 0 0 8px var(--matrix-green); min-height: 100px; line-height: 1.4; padding: 10px; border: 1px dashed #004400; background: rgba(0,10,0,0.5); }
+        .active-text { color: #fff; text-shadow: 0 0 5px var(--matrix-green); }
     </style>
 </head>
 <body>
     <canvas id="matrix"></canvas>
-
     <div id="header">
-        <div>TRINITY ENGINE <span class="active">V10.2.8</span></div>
-        <div style="font-size: 0.7rem;">CORE PROTOCOL: <span class="active">TRZ-7789</span></div>
+        <div>TRINITY ENGINE <span class="active-text">V10.2.8</span></div>
+        <div style="font-size: 0.7rem;">SIU STATUS: <span id="master-status" style="color:red">OFFLINE</span></div>
         <div id="sys-clock">00:00:00</div>
     </div>
 
     <div class="main-container">
         <div class="panel">
-            <div class="panel-header">System Intelligence</div>
+            <div class="panel-header">TRZ-7789 Analytics</div>
             <div class="data-grid">
-                <div class="data-box">CPU: <span id="cpu-load">2.4%</span></div>
-                <div class="data-box">MEM: <span id="mem-use">128MB</span></div>
                 <div class="data-box">FREQ: <span id="cur-freq">0Hz</span></div>
+                <div class="data-box">AMP: <span id="amp-val">0.0</span></div>
+                <div class="data-box">STRESS: <span id="stress-lvl">LOW</span></div>
                 <div class="data-box">BIAS: <span id="bias-val">0.00</span></div>
             </div>
-            <div class="panel-header" style="margin-top:20px;">TRZ-7789 Status</div>
-            <div id="status-box" style="font-size: 0.7rem;">READY...</div>
+            <div class="panel-header" style="margin-top:20px;">Voice Pattern</div>
+            <div id="pattern-status" style="font-size: 0.7rem;">Waiting...</div>
         </div>
 
         <div class="panel">
-            <div class="panel-header">Frequency Spectrum Analysis</div>
+            <div class="panel-header">Active Voice Capture & Frequency Analysis</div>
             <canvas id="visualizer"></canvas>
-            <div class="controls" style="display:flex; gap:10px; justify-content:center; margin-top:10px;">
-                <button onclick="startCapture()">Engage Mic</button>
-                <button onclick="stopCapture()">Kill Feed</button>
+            <div id="streams" style="margin-top:15px;">[ SYSTEM READY ]</div>
+            <div style="display:flex; gap:15px; justify-content:center; margin-top:15px;">
+                <button onclick="startEngine()">Engage Core</button>
+                <button onclick="stopEngine()">Kill Feed</button>
             </div>
         </div>
 
         <div class="panel">
-            <div class="panel-header">Module Access</div>
-            <button>Shadow Center</button>
-            <button>SIU Translator</button>
-            <button>Quantum Logic</button>
-            <button>Pattern Matcher</button>
-            <div class="panel-header" style="margin-top:20px;">Active Streams</div>
-            <div id="streams" style="font-size:0.7rem;">- NO ACTIVE STREAMS -</div>
+            <div class="panel-header">SIU Modules</div>
+            <button onclick="log('SHADOW CENTER ENGAGED')">SHADOW CENTER</button>
+            <button onclick="log('TRANSLATOR ACTIVE')">SIU TRANSLATOR</button>
+            <button onclick="log('QUANTUM LOGIC INJECTED')">QUANTUM LOGIC</button>
+            <div class="panel-header" style="margin-top:20px;">Log Activity</div>
+            <div id="mini-log" style="font-size:0.65rem; color:#888;">System standing by...</div>
         </div>
 
         <div class="panel" id="terminal">
-            <div id="log-output">> TRINITY INITIALIZED. STANDING BY FOR TRZ-7789 INJECTION...</div>
+            <div id="log-output">> TRZ-7789 PROTOCOL LOADED. WAITING FOR VOICE INJECTION.</div>
         </div>
     </div>
 
     <script>
-        // Clock
-        setInterval(() => {
-            document.getElementById('sys-clock').innerText = new Date().toLocaleTimeString();
-        }, 1000);
-
-        // Matrix Effect
-        const mCanvas = document.getElementById('matrix');
-        const mCtx = mCanvas.getContext('2d');
+        setInterval(() => { document.getElementById('sys-clock').innerText = new Date().toLocaleTimeString(); }, 1000);
+        const mCanvas = document.getElementById('matrix'); const mCtx = mCanvas.getContext('2d');
         mCanvas.width = window.innerWidth; mCanvas.height = window.innerHeight;
         const drops = Array(Math.floor(mCanvas.width/16)).fill(1);
         function drawM() {
@@ -164,47 +84,82 @@
         }
         setInterval(drawM, 33);
 
-        // Audio System
-        let audioCtx, analyzer, source;
+        let audioCtx, analyzer, source, stream, animationId;
+        let recognition;
+
         function log(m) {
             const out = document.getElementById('log-output');
             out.innerHTML += `<br>> ${m}`;
-            document.getElementById('terminal').scrollTop = out.scrollHeight;
+            document.getElementById('terminal').scrollTop = document.getElementById('terminal').scrollHeight;
         }
 
-        async function startCapture() {
-            log("ATTEMPTING HARDWARE LINK...");
+        async function startEngine() {
+            log("INITIATING TRZ-7789 SYNC...");
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 analyzer = audioCtx.createAnalyser();
                 source = audioCtx.createMediaStreamSource(stream);
                 source.connect(analyzer);
-                log("LINK ESTABLISHED. ANALYZER ONLINE.");
-                drawSpectrum();
-            } catch(e) { log("LINK FAILED: " + e.message); }
+                
+                document.getElementById('master-status').innerText = "LIVE";
+                document.getElementById('master-status').style.color = "#00ff41";
+                
+                startSpeech();
+                draw();
+                log("SYNC ESTABLISHED. LISTENING FOR VOICE PATTERNS.");
+            } catch(e) { log("LINK ERROR: " + e.message); }
         }
 
-        function drawSpectrum() {
-            if(!analyzer) return;
+        function stopEngine() {
+            if(stream) {
+                stream.getTracks().forEach(t => t.stop());
+                if(audioCtx) audioCtx.close();
+                if(recognition) recognition.stop();
+                cancelAnimationFrame(animationId);
+                document.getElementById('master-status').innerText = "OFFLINE";
+                document.getElementById('master-status').style.color = "red";
+                log("CORE DISENGAGED.");
+            }
+        }
+
+        function startSpeech() {
+            const SpeechSDK = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if(!SpeechSDK) return log("SPEECH SDK NOT FOUND");
+            recognition = new SpeechSDK();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.onresult = (e) => {
+                let text = "";
+                for(let i = e.resultIndex; i < e.results.length; i++) {
+                    text += e.results[i][0].transcript;
+                }
+                document.getElementById('streams').innerText = text;
+            };
+            recognition.start();
+        }
+
+        function draw() {
             const vCanvas = document.getElementById('visualizer');
             const vCtx = vCanvas.getContext('2d');
-            const bufferLength = analyzer.frequencyBinCount;
-            const dataArray = new Uint8Array(bufferLength);
-            
+            const data = new Uint8Array(analyzer.frequencyBinCount);
             function animate() {
-                requestAnimationFrame(animate);
-                analyzer.getByteFrequencyData(dataArray);
-                vCtx.fillStyle = '#000';
-                vCtx.fillRect(0,0,vCanvas.width,vCanvas.height);
-                const barWidth = (vCanvas.width / bufferLength) * 2.5;
-                let x = 0;
-                for(let i=0; i<bufferLength; i++) {
-                    const barHeight = dataArray[i]/2;
-                    vCtx.fillStyle = `rgb(0, ${barHeight+100}, 0)`;
-                    vCtx.fillRect(x, vCanvas.height-barHeight, barWidth, barHeight);
-                    x += barWidth + 1;
+                animationId = requestAnimationFrame(animate);
+                analyzer.getByteFrequencyData(data);
+                vCtx.fillStyle = '#000'; vCtx.fillRect(0,0,vCanvas.width,vCanvas.height);
+                let x = 0; let sum = 0;
+                for(let i=0; i<data.length; i++) {
+                    const h = data[i]/1.5;
+                    vCtx.fillStyle = `rgb(0, ${h+120}, 40)`;
+                    vCtx.fillRect(x, vCanvas.height-h, 2, h);
+                    x += 3; sum += data[i];
                 }
+                // Analytics Wiring
+                let avg = sum / data.length;
+                document.getElementById('cur-freq').innerText = Math.floor(avg * 40) + "Hz";
+                document.getElementById('amp-val').innerText = (avg / 20).toFixed(1);
+                document.getElementById('bias-val').innerText = (avg / 60).toFixed(2);
+                document.getElementById('stress-lvl').innerText = avg > 40 ? "ELEVATED" : "STABLE";
             }
             animate();
         }
