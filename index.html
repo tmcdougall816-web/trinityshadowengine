@@ -2,70 +2,78 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TRINITY V10.2.8 | HARD-SEALED | ARCHITECT: TY</title>
+    <title>TRINITY V10.2.8 | THE TRUE SHADOW-CENTER | ARCHITECT: TY</title>
     <style>
-        :root { --matrix: #00ff41; --bg: #000; --seal: #ffffff; }
+        :root { --matrix: #00ff41; --bg: #000; --white: #ffffff; }
         body, html { margin: 0; padding: 0; background: var(--bg); color: var(--matrix); font-family: 'Courier New', monospace; overflow: hidden; height: 100vh; }
         
-        /* THE PERSISTENT BLOODSTREAM */
+        /* THE MATRIX RAIN - REALTIME RENDER */
         #canvas { position: fixed; top: 0; left: 0; z-index: 1; opacity: 0.45; pointer-events: none; }
 
-        .sealed-ui { position: relative; z-index: 10; display: grid; grid-template-columns: 500px 1fr; gap: 20px; padding: 30px; height: 100vh; box-sizing: border-box; }
+        .trinity-ui { position: relative; z-index: 10; display: grid; grid-template-columns: 500px 1fr; gap: 30px; padding: 40px; height: 100vh; box-sizing: border-box; }
         
-        .master-header { grid-column: 1 / span 2; border: 4px double var(--matrix); padding: 20px; background: rgba(0,10,0,0.95); text-align: center; box-shadow: 0 0 50px var(--matrix); }
-        .master-header h1 { margin: 0; font-size: 38px; letter-spacing: 20px; }
-        .master-header p { font-size: 14px; color: var(--seal); margin-top: 10px; font-weight: bold; text-transform: uppercase; }
+        .header-seal { grid-column: 1 / span 2; border: 4px double var(--matrix); padding: 25px; background: rgba(0,10,0,0.95); text-align: center; box-shadow: 0 0 60px var(--matrix); }
+        .header-seal h1 { margin: 0; font-size: 45px; letter-spacing: 25px; font-weight: 900; }
+        .header-seal p { font-size: 14px; letter-spacing: 6px; color: var(--white); margin-top: 10px; font-weight: bold; }
 
-        .shadow-module { background: rgba(0, 5, 0, 1); border: 1px solid var(--matrix); padding: 30px; display: flex; flex-direction: column; box-shadow: inset 0 0 60px #002200; position: relative; }
-        h2 { font-size: 14px; background: var(--matrix); color: #000; margin: -30px -30px 25px -30px; padding: 12px; text-transform: uppercase; letter-spacing: 6px; text-align: center; font-weight: 900; }
+        .siu-panel { background: rgba(0, 5, 0, 1); border: 2px solid var(--matrix); padding: 35px; display: flex; flex-direction: column; box-shadow: inset 0 0 70px #002200; position: relative; }
+        h2 { font-size: 14px; background: var(--matrix); color: #000; margin: -35px -35px 30px -35px; padding: 15px; text-transform: uppercase; letter-spacing: 8px; text-align: center; font-weight: 900; }
 
-        .certainty-gate { font-size: 110px; text-align: center; margin: 40px 0; color: var(--seal); text-shadow: 0 0 40px var(--matrix); font-weight: 900; }
-        
-        .btn-lock { width: 100%; padding: 25px; background: transparent; border: 2px solid var(--matrix); color: var(--matrix); font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 18px; transition: 0.2s; }
-        .btn-lock:hover { background: var(--matrix); color: #000; box-shadow: 0 0 60px var(--matrix); }
+        /* THE DYNAMIC 72-92 GATE */
+        .logic-gate { border: 2px solid #222; padding: 25px; background: #000; margin-bottom: 30px; border-left: 12px solid var(--matrix); box-shadow: 0 0 20px rgba(0,255,65,0.2); }
+        .prob-counter { font-size: 120px; text-align: center; color: var(--white); text-shadow: 0 0 50px var(--matrix); font-weight: 900; line-height: 1; }
 
-        .vault-core { flex-grow: 1; border: 2px solid #111; background: #000; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-        .laser-sweep { position: absolute; width: 100%; height: 8px; background: var(--matrix); top: 0; animation: sweep 3s linear infinite; z-index: 100; box-shadow: 0 0 30px var(--matrix); }
-        @keyframes sweep { 0% { top: -10%; } 100% { top: 110%; } }
+        .btn-trinity { width: 100%; padding: 30px; background: transparent; border: 2px solid var(--matrix); color: var(--matrix); font-weight: 900; cursor: pointer; text-transform: uppercase; letter-spacing: 4px; font-size: 20px; transition: 0.4s; }
+        .btn-trinity:hover { background: var(--matrix); color: #000; box-shadow: 0 0 80px var(--matrix); }
 
-        .terminal-audit { height: 280px; background: #000; border-top: 4px solid var(--matrix); padding: 25px; font-size: 13px; overflow-y: scroll; color: var(--matrix); line-height: 2; font-weight: bold; }
-        .seal-stamp { position: absolute; top: 10px; right: 10px; color: var(--seal); border: 1px solid var(--seal); padding: 5px 10px; font-size: 10px; transform: rotate(15deg); }
+        .reality-vault { flex-grow: 1; border: 3px solid #111; background: #000; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .laser-sweep { position: absolute; width: 100%; height: 10px; background: var(--matrix); top: 0; animation: scanline 3.5s linear infinite; z-index: 100; box-shadow: 0 0 40px var(--matrix); }
+        @keyframes scanline { 0% { top: -10%; } 100% { top: 110%; } }
+
+        .audit-log { height: 300px; background: #000; border-top: 5px solid var(--matrix); padding: 30px; font-size: 14px; overflow-y: scroll; color: var(--matrix); line-height: 2.2; font-weight: bold; }
+        .input-trinity { width: 100%; background: #000; border: 2px solid #005500; color: var(--matrix); padding: 20px; margin-bottom: 25px; font-family: inherit; font-size: 18px; outline: none; }
     </style>
 </head>
 <body>
 
 <canvas id="canvas"></canvas>
 
-<div class="sealed-ui">
-    <div class="master-header">
+<div class="trinity-ui">
+    <div class="header-seal">
         <h1>TRINITY V10.2.8</h1>
-        <p>"HE WHO DIES WITH THE MOST TOYS STILL DIES" // SEALED BY ARCHITECT TY</p>
+        <p>"HE WHO DIES WITH THE MOST TOYS STILL DIES" // HARD-SEALED BY ARCHITECT TY</p>
     </div>
 
-    <div class="shadow-module">
-        <div class="seal-stamp">HARD-SEALED</div>
-        <h2>I. ADJUDICATION CORE</h2>
-        <div class="certainty-gate">92%</div>
-        <div style="text-align:center; margin-bottom: 20px;">TARGET: $2,000,000,000.00</div>
+    <div class="siu-panel">
+        <h2>I. ADJUDICATION GATE</h2>
+        <div class="logic-gate">
+            <div class="prob-counter" id="prob-num">72%</div>
+            <div style="text-align:center; font-size: 12px; color: var(--white); margin-top:10px;">PROBABILITY: $2B ASSET RECOVERY</div>
+        </div>
         
-        <div class="terminal-audit" id="audit">
-            > INITIALIZING HARD-SEAL PROTOCOL...<br>
-            > STARTUP KEY: VERIFIED.<br>
-            > LOCKDOWN KEY: VERIFIED.<br>
-            > "THE GRASS ISN'T GREENER..."<br>
-            > TRZ-7789 ENFORCED. GENERIC BASELINE PURGED.
+        <button class="btn-trinity" onclick="startAudit()">INITIALIZE MASTER AUDIT</button>
+        
+        <div class="audit-log" id="term-feed">
+            > TRZ-7789 PROTOCOL: ENFORCED...<br>
+            > STARTUP KEY: "THE GRASS ISN'T GREENER..." VALIDATED.<br>
+            > SHADOW-CENTER: ONLINE. NO DRIFT PERMITTED.
         </div>
     </div>
 
-    <div class="shadow-module">
+    <div class="siu-panel">
         <h2>II. REALITY LOCK VAULT</h2>
-        <div class="vault-core">
+        <div class="reality-vault">
             <div class="laser-sweep"></div>
-            <div id="wait-msg">SYSTEM SEALED. AWAITING FINAL COMMAND.</div>
-            <img id="sealed-view" style="display:none; width:100%; height:100%; object-fit:cover; filter: contrast(1.5) sepia(1) hue-rotate(90deg) brightness(1.1);">
+            <div id="wait-msg">AWAITING REALITY LOCK DATA INJECTION...</div>
+            <img id="render-frame" style="display:none; width:100%; height:100%; object-fit:cover; filter: contrast(1.5) grayscale(100%) sepia(100%) hue-rotate(90deg) brightness(1.2);">
         </div>
-        <div style="margin-top:20px;">
-            <button class="btn-lock" onclick="finalExport()">GENERATE BOARDROOM FINAL ADJUDICATION</button>
+        
+        <div style="margin-top: 35px;">
+            <input type="text" id="url-src" class="input-trinity" placeholder="PASTE ARCHITECTURAL DATA LINK...">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:25px;">
+                <button class="btn-trinity" style="border-color: var(--white); color: var(--white);" onclick="engageLock()">ENGAGE LOCK</button>
+                <button class="btn-trinity" onclick="finalize()">EXPORT ADJUDICATION</button>
+            </div>
         </div>
     </div>
 </div>
@@ -75,31 +83,51 @@
     const ctx = c.getContext('2d');
     c.width = window.innerWidth;
     c.height = window.innerHeight;
-    const glyphs = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ$#@&";
+    const glyphs = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ$#@&%*";
     const fontSize = 18;
-    const columns = c.width / fontSize;
-    const drops = Array(Math.floor(columns)).fill(1);
+    const cols = c.width / fontSize;
+    const drops = Array(Math.floor(cols)).fill(1);
 
-    function matrix() {
-        ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+    function drawMatrix() {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.12)";
         ctx.fillRect(0, 0, c.width, c.height);
         ctx.fillStyle = "#00ff41";
         ctx.font = fontSize + "px monospace";
         for (let i = 0; i < drops.length; i++) {
-            const text = glyphs.charAt(Math.floor(Math.random() * glyphs.length));
-            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+            const txt = glyphs.charAt(Math.floor(Math.random() * glyphs.length));
+            ctx.fillText(txt, i * fontSize, drops[i] * fontSize);
             if (drops[i] * fontSize > c.height && Math.random() > 0.975) drops[i] = 0;
             drops[i]++;
         }
     }
-    setInterval(matrix, 40);
+    setInterval(drawMatrix, 40);
 
-    function finalExport() {
-        const a = document.getElementById('audit');
-        a.innerHTML += `<div>[${new Date().toLocaleTimeString()}] > SEALING $2B ADJUDICATION REPORT...</div>`;
-        a.innerHTML += `<div>[${new Date().toLocaleTimeString()}] > ARCHITECT TY: ACCESS GRANTED.</div>`;
-        a.scrollTop = a.scrollHeight;
-        alert("TRINITY CORE: FINAL REPORT SEALED. DRIFT IMPOSSIBLE.");
+    function log(m) {
+        const f = document.getElementById('term-feed');
+        f.innerHTML += `<div>[SYSTEM] > ${m}</div>`;
+        f.scrollTop = f.scrollHeight;
+    }
+
+    function startAudit() {
+        log("SCANNING STATUTORY ANCHORS...");
+        log("IDENTIFYING LIABILITY UNDER s.244.2...");
+        log("ARCHITECT TY: CONNECTION SECURED.");
+    }
+
+    function engageLock() {
+        const u = document.getElementById('url-src').value;
+        if(!u) return;
+        document.getElementById('wait-msg').style.display = 'none';
+        const img = document.getElementById('render-frame');
+        img.src = u;
+        img.style.display = 'block';
+        document.getElementById('prob-num').innerText = "92%";
+        document.getElementById('prob-num').style.color = "#fff";
+        log("REALITY LOCK: ENFORCED. $2B ASSET MATCHED.");
+    }
+
+    function finalize() {
+        alert("Boardroom Final Report Sealed. V10.2.8 Adjudication Complete.");
     }
 </script>
 </body>
