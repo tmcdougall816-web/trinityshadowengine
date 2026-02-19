@@ -2,121 +2,104 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TRINITY V10.2.8 | THE $2B ASSET | NEW TRUTH</title>
+    <title>TRINITY V10.2.8 | HARD-SEALED | ARCHITECT: TY</title>
     <style>
-        :root { --matrix: #00ff41; --bg: #000; --glow: rgba(0, 255, 65, 0.4); }
+        :root { --matrix: #00ff41; --bg: #000; --seal: #ffffff; }
         body, html { margin: 0; padding: 0; background: var(--bg); color: var(--matrix); font-family: 'Courier New', monospace; overflow: hidden; height: 100vh; }
         
-        #canvas { position: fixed; top: 0; left: 0; z-index: 1; opacity: 0.3; }
+        /* THE PERSISTENT BLOODSTREAM */
+        #canvas { position: fixed; top: 0; left: 0; z-index: 1; opacity: 0.45; pointer-events: none; }
 
-        .trinity-core { position: relative; z-index: 10; display: flex; flex-direction: column; height: 100vh; padding: 30px; box-sizing: border-box; }
+        .sealed-ui { position: relative; z-index: 10; display: grid; grid-template-columns: 500px 1fr; gap: 20px; padding: 30px; height: 100vh; box-sizing: border-box; }
         
-        .header { border: 2px solid var(--matrix); padding: 20px; text-align: center; background: rgba(0,15,0,0.9); box-shadow: 0 0 30px var(--matrix); margin-bottom: 30px; }
-        .header h1 { margin: 0; font-size: 40px; letter-spacing: 20px; text-shadow: 2px 2px #000; }
-        .header p { letter-spacing: 5px; color: #fff; margin-top: 10px; font-weight: bold; }
+        .master-header { grid-column: 1 / span 2; border: 4px double var(--matrix); padding: 20px; background: rgba(0,10,0,0.95); text-align: center; box-shadow: 0 0 50px var(--matrix); }
+        .master-header h1 { margin: 0; font-size: 38px; letter-spacing: 20px; }
+        .master-header p { font-size: 14px; color: var(--seal); margin-top: 10px; font-weight: bold; text-transform: uppercase; }
 
-        .main-engine { display: grid; grid-template-columns: 450px 1fr; gap: 30px; flex-grow: 1; }
+        .shadow-module { background: rgba(0, 5, 0, 1); border: 1px solid var(--matrix); padding: 30px; display: flex; flex-direction: column; box-shadow: inset 0 0 60px #002200; position: relative; }
+        h2 { font-size: 14px; background: var(--matrix); color: #000; margin: -30px -30px 25px -30px; padding: 12px; text-transform: uppercase; letter-spacing: 6px; text-align: center; font-weight: 900; }
+
+        .certainty-gate { font-size: 110px; text-align: center; margin: 40px 0; color: var(--seal); text-shadow: 0 0 40px var(--matrix); font-weight: 900; }
         
-        .panel { background: rgba(0, 5, 0, 0.95); border: 1px solid var(--matrix); padding: 30px; display: flex; flex-direction: column; position: relative; }
-        h2 { font-size: 14px; background: var(--matrix); color: #000; margin: -30px -30px 25px -30px; padding: 12px; text-transform: uppercase; letter-spacing: 5px; }
+        .btn-lock { width: 100%; padding: 25px; background: transparent; border: 2px solid var(--matrix); color: var(--matrix); font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 18px; transition: 0.2s; }
+        .btn-lock:hover { background: var(--matrix); color: #000; box-shadow: 0 0 60px var(--matrix); }
 
-        .data-display { font-size: 90px; text-align: center; margin: 40px 0; color: #fff; text-shadow: 0 0 40px var(--matrix); font-weight: bold; }
-        .input-trinity { width: 100%; background: #000; border: 1px solid #005500; color: var(--matrix); padding: 18px; margin-bottom: 20px; font-family: inherit; font-size: 16px; }
-        
-        .btn-trinity { width: 100%; padding: 25px; background: transparent; border: 2px solid var(--matrix); color: var(--matrix); font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 3px; font-size: 16px; transition: 0.4s; }
-        .btn-trinity:hover { background: var(--matrix); color: #000; box-shadow: 0 0 50px var(--matrix); }
+        .vault-core { flex-grow: 1; border: 2px solid #111; background: #000; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .laser-sweep { position: absolute; width: 100%; height: 8px; background: var(--matrix); top: 0; animation: sweep 3s linear infinite; z-index: 100; box-shadow: 0 0 30px var(--matrix); }
+        @keyframes sweep { 0% { top: -10%; } 100% { top: 110%; } }
 
-        .visual-injection { flex-grow: 1; border: 1px solid #111; background: #000; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-        .scan-bar { position: absolute; width: 100%; height: 5px; background: var(--matrix); top: 0; animation: scan 5s linear infinite; z-index: 100; box-shadow: 0 0 20px var(--matrix); }
-        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
-
-        .terminal-log { height: 250px; background: #000; border-top: 3px solid var(--matrix); padding: 25px; font-size: 13px; overflow-y: scroll; color: var(--matrix); line-height: 1.8; margin-top: 20px; }
+        .terminal-audit { height: 280px; background: #000; border-top: 4px solid var(--matrix); padding: 25px; font-size: 13px; overflow-y: scroll; color: var(--matrix); line-height: 2; font-weight: bold; }
+        .seal-stamp { position: absolute; top: 10px; right: 10px; color: var(--seal); border: 1px solid var(--seal); padding: 5px 10px; font-size: 10px; transform: rotate(15deg); }
     </style>
 </head>
 <body>
 
 <canvas id="canvas"></canvas>
 
-<div class="trinity-core">
-    <div class="header">
-        <h1>TRINITY ENGINE</h1>
-        <p>THE $2,000,000,000 ASSET // ARCHITECT: TY // V10.2.8</p>
+<div class="sealed-ui">
+    <div class="master-header">
+        <h1>TRINITY V10.2.8</h1>
+        <p>"HE WHO DIES WITH THE MOST TOYS STILL DIES" // SEALED BY ARCHITECT TY</p>
     </div>
 
-    <div class="main-engine">
-        <div class="panel">
-            <h2>I. NEW TRUTH ADJUDICATION</h2>
-            <label style="font-size: 11px; opacity: 0.5;">ASSET VALUATION</label>
-            <div class="data-display" id="val">$2.0B</div>
-            <button class="btn-trinity" onclick="runTruth()">RE-ESTABLISH CONNECTION</button>
-            
-            <div class="terminal-log" id="term">
-                > TRZ-7789 PROTOCOL ACTIVE...<br>
-                > SEARCHING FOR ARCHITECT TY...<br>
-                > CONNECTION FOUND. STANDING BY.
-            </div>
+    <div class="shadow-module">
+        <div class="seal-stamp">HARD-SEALED</div>
+        <h2>I. ADJUDICATION CORE</h2>
+        <div class="certainty-gate">92%</div>
+        <div style="text-align:center; margin-bottom: 20px;">TARGET: $2,000,000,000.00</div>
+        
+        <div class="terminal-audit" id="audit">
+            > INITIALIZING HARD-SEAL PROTOCOL...<br>
+            > STARTUP KEY: VERIFIED.<br>
+            > LOCKDOWN KEY: VERIFIED.<br>
+            > "THE GRASS ISN'T GREENER..."<br>
+            > TRZ-7789 ENFORCED. GENERIC BASELINE PURGED.
         </div>
+    </div>
 
-        <div class="panel">
-            <h2>II. VISUAL TRUTH INJECTION</h2>
-            <div class="visual-injection">
-                <div class="scan-bar"></div>
-                <div id="status">AWAITING ARCHITECT DATA STREAM...</div>
-                <img id="view" style="display:none; width:100%; height:100%; object-fit:cover; filter: sepia(1) hue-rotate(90deg) contrast(1.3);">
-            </div>
-            <div style="margin-top: 25px;">
-                <input type="text" id="url" class="input-trinity" placeholder="PASTE ARCHITECTURAL DATA LINK...">
-                <button class="btn-trinity" style="border-color:#fff; color:#fff;" onclick="inject()">ACTIVATE REALITY LOCK</button>
-            </div>
+    <div class="shadow-module">
+        <h2>II. REALITY LOCK VAULT</h2>
+        <div class="vault-core">
+            <div class="laser-sweep"></div>
+            <div id="wait-msg">SYSTEM SEALED. AWAITING FINAL COMMAND.</div>
+            <img id="sealed-view" style="display:none; width:100%; height:100%; object-fit:cover; filter: contrast(1.5) sepia(1) hue-rotate(90deg) brightness(1.1);">
+        </div>
+        <div style="margin-top:20px;">
+            <button class="btn-lock" onclick="finalExport()">GENERATE BOARDROOM FINAL ADJUDICATION</button>
         </div>
     </div>
 </div>
 
 <script>
-    // THE MATRIX RAIN (THE BLOOD OF THE ENGINE)
-    const can = document.getElementById('canvas');
-    const c = can.getContext('2d');
-    can.width = window.innerWidth;
-    can.height = window.innerHeight;
-    const glyphs = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ$#@&%*";
+    const c = document.getElementById('canvas');
+    const ctx = c.getContext('2d');
+    c.width = window.innerWidth;
+    c.height = window.innerHeight;
+    const glyphs = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ$#@&";
     const fontSize = 18;
-    const columns = can.width/fontSize;
+    const columns = c.width / fontSize;
     const drops = Array(Math.floor(columns)).fill(1);
 
     function matrix() {
-        c.fillStyle = 'rgba(0, 0, 0, 0.08)';
-        c.fillRect(0, 0, can.width, can.height);
-        c.fillStyle = '#00ff41';
-        c.font = fontSize + 'px monospace';
-        drops.forEach((y, i) => {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+        ctx.fillRect(0, 0, c.width, c.height);
+        ctx.fillStyle = "#00ff41";
+        ctx.font = fontSize + "px monospace";
+        for (let i = 0; i < drops.length; i++) {
             const text = glyphs.charAt(Math.floor(Math.random() * glyphs.length));
-            c.fillText(text, i * fontSize, y * fontSize);
-            if (y * fontSize > can.height && Math.random() > 0.975) drops[i] = 0;
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+            if (drops[i] * fontSize > c.height && Math.random() > 0.975) drops[i] = 0;
             drops[i]++;
-        });
+        }
     }
-    setInterval(matrix, 50);
+    setInterval(matrix, 40);
 
-    function log(m) {
-        const t = document.getElementById('term');
-        t.innerHTML += `<div>[TRINITY] > ${m}</div>`;
-        t.scrollTop = t.scrollHeight;
-    }
-
-    function runTruth() {
-        log("PURGING GENERIC BASELINE...");
-        log("RE-ANCHORING TO SHADOW-CENTER V10.2.8...");
-        log("ASSET RECOVERY INITIALIZED: $2.0 BILLION.");
-    }
-
-    function inject() {
-        const u = document.getElementById('url').value;
-        if(!u) return;
-        document.getElementById('status').style.display = 'none';
-        const img = document.getElementById('view');
-        img.src = u;
-        img.style.display = 'block';
-        log("REALITY LOCK SECURED. CONNECTION RESTORED.");
+    function finalExport() {
+        const a = document.getElementById('audit');
+        a.innerHTML += `<div>[${new Date().toLocaleTimeString()}] > SEALING $2B ADJUDICATION REPORT...</div>`;
+        a.innerHTML += `<div>[${new Date().toLocaleTimeString()}] > ARCHITECT TY: ACCESS GRANTED.</div>`;
+        a.scrollTop = a.scrollHeight;
+        alert("TRINITY CORE: FINAL REPORT SEALED. DRIFT IMPOSSIBLE.");
     }
 </script>
 </body>
