@@ -2,57 +2,63 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TRINITY ENGINE | V10.2.9 | VISUAL_UPGRADE</title>
+    <title>TRINITY ENGINE | V10.2.9.1 | VISUAL_STABILIZED</title>
     <style>
         /* --- CORE TERMINAL STYLES --- */
+        *, *::before, *::after { box-sizing: border-box; } /* CRITICAL INTEGRITY FIX */
         body, html { margin: 0; padding: 0; background: #000; color: #0f0; font-family: 'Courier New', monospace; scroll-behavior: smooth; overflow-x: hidden; }
         
         /* PERSISTENT MATRIX RAIN BG */
         canvas#matrix-bg { position: fixed; top: 0; left: 0; z-index: -10; width: 100vw; height: 100vh; opacity: 0.7; pointer-events: none;}
 
         /* THE "DEEP DECK" SECTIONS */
-        .deck-section { min-height: 90vh; padding: 80px 10px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+        .deck-section { min-height: 90vh; padding: 80px 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
         
-        /* --- THE NEW "OPEN CORNER" GLOW PANELS --- */
+        /* --- THE STABILIZED "OPEN CORNER" GLOW PANELS --- */
         .panel {
             position: relative;
             width: 95%; max-width: 900px;
-            background: rgba(0, 10, 0, 0.85); /* High transparency for rain visibility */
-            padding: 40px 30px;
-            margin: 20px 0;
-            backdrop-filter: blur(3px);
-            border: none; /* Remove standard border */
+            background: rgba(0, 10, 0, 0.85); 
+            padding: 40px; /* Locked inner spacing */
+            margin: 20px auto; /* Perfect centering */
+            border: none; 
+            z-index: 1;
         }
 
         /* The Vertical Tech Brackets (Sides) */
         .panel::before {
             content: ''; position: absolute;
-            top: 15%; bottom: 15%; /* Leave top/bottom corners open */
-            left: -2px; right: -2px;
+            top: 25px; bottom: 25px; /* Open top/bottom corners */
+            left: 0; right: 0;
             border-left: 3px solid #0f0;
             border-right: 3px solid #0f0;
-            box-shadow: 0 0 20px rgba(0, 255, 0, 0.6); /* Intense Green Glow */
+            box-shadow: inset 0 0 20px rgba(0, 255, 0, 0.4), 0 0 20px rgba(0, 255, 0, 0.4);
+            pointer-events: none;
             z-index: -1;
         }
 
         /* The Horizontal Tech Brackets (Top/Bottom) */
         .panel::after {
             content: ''; position: absolute;
-            left: 10%; right: 10%; /* Leave side corners open */
-            top: -2px; bottom: -2px;
+            left: 25px; right: 25px; /* Open side corners */
+            top: 0; bottom: 0;
             border-top: 3px solid #0f0;
             border-bottom: 3px solid #0f0;
-            box-shadow: 0 0 20px rgba(0, 255, 0, 0.6); /* Intense Green Glow */
+            box-shadow: inset 0 0 20px rgba(0, 255, 0, 0.4), 0 0 20px rgba(0, 255, 0, 0.4);
+            pointer-events: none;
             z-index: -1;
         }
+
+        /* Keep content strictly above the glow */
+        .panel > * { position: relative; z-index: 2; }
 
         h2 { margin-top: 0; text-transform: uppercase; letter-spacing: 3px; border-bottom: 1px dashed #0f0; padding-bottom: 10px; text-shadow: 0 0 10px #0f0; }
 
         /* --- HUD & CONTROLS --- */
-        #top-hud { position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between; padding: 15px 25px; background: rgba(0, 0, 0, 0.95); border-bottom: 2px solid #0f0; z-index: 100; box-sizing: border-box; box-shadow: 0 5px 20px rgba(0,255,0,0.3); }
+        #top-hud { position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between; padding: 15px 25px; background: rgba(0, 0, 0, 0.95); border-bottom: 2px solid #0f0; z-index: 100; box-shadow: 0 5px 20px rgba(0,255,0,0.3); }
 
         /* VISION CORE MODULE */
-        #media-theater { position: relative; width: 100%; max-width: 800px; border: 3px solid #0f0; background: #000; overflow: hidden; box-shadow: 0 0 25px rgba(0,255,0,0.5); margin-bottom: 20px;}
+        #media-theater { position: relative; width: 95%; max-width: 900px; border: 3px solid #0f0; background: #000; overflow: hidden; box-shadow: 0 0 25px rgba(0,255,0,0.5); margin: 0 auto 20px auto; min-height: 250px; }
         video#eyeballs-feed { width: 100%; display: block; filter: contrast(1.2) brightness(1.1) saturate(1.2); }
         #crosshair { position: absolute; top: 50%; left: 50%; width: 150px; height: 150px; border: 2px solid rgba(0, 255, 0, 0.7); border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; box-shadow: 0 0 15px rgba(0,255,0,0.5), inset 0 0 15px rgba(0,255,0,0.5); }
         
@@ -73,7 +79,7 @@
 <canvas id="matrix-bg"></canvas>
 
 <div id="top-hud">
-    <div>[V10.2.9] | VISUAL_CORE_UPGRADE | <span id="sec-status" style="color:cyan; text-shadow: 0 0 5px cyan;">ACTIVE</span></div>
+    <div>[V10.2.9.1] | VISUAL_STABILIZED | <span id="sec-status" style="color:cyan; text-shadow: 0 0 5px cyan;">ACTIVE</span></div>
     <div id="clock">00:00:00</div>
 </div>
 
@@ -92,5 +98,119 @@
     </div>
     <div class="panel">
         <h2>Biomechanical Integrity Check</h2>
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; font-
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; font-size:0.9em; text-align: center;">
+            <div style="border: 2px dashed #0f0; padding:15px; box-shadow: inset 0 0 10px rgba(0,255,0,0.3);">KINETIC_G: <span style="color:cyan;">0.00</span></div>
+            <div style="border: 2px dashed #0f0; padding:15px; box-shadow: inset 0 0 10px rgba(0,255,0,0.3);">THRESHOLD_FAIL: <span style="color:cyan;">FALSE</span></div>
+        </div>
+    </div>
+</section>
+
+<section class="deck-section" id="icbc-sec">
+    <div class="panel">
+        <h2>ICBC GLP 2026 Zero-Tolerance Audit</h2>
+        <p style="font-size: 0.8em; color: cyan; letter-spacing: 1px;">// AUTOMATED CLASS 5 CLEARANCE ALGORITHM</p>
+        <div style="display:grid; grid-template-columns: 1fr; gap:10px;">
+            <label style="color:#0f0; font-size: 0.9em; text-transform: uppercase;">N-License Issue Date (GLP Start):</label>
+            <input type="date" id="glp-start" style="color:#0f0;">
+            
+            <label style="color:#0f0; font-size: 0.9em; text-transform: uppercase;">Infraction Check (Zero-Tolerance Tripwire):</label>
+            <select id="infraction-type">
+                <option value="NONE">NO INFRACTIONS (CLEAN RECORD)</option>
+                <option value="SPEEDING">SPEEDING / EXCESSIVE (TRIPWIRE)</option>
+                <option value="DISTRACTED">DISTRACTED DRIVING (TRIPWIRE)</option>
+                <option value="IMPAIRED">IMPAIRED / IRP (CRITICAL FAIL)</option>
+            </select>
+            
+            <label style="color:#0f0; font-size: 0.9em; text-transform: uppercase;">Infraction Date (If Applicable):</label>
+            <input type="date" id="infraction-date" style="color:#0f0;">
+            
+            <button onclick="runICBCAudit()" style="margin-top: 20px;">EXECUTE CLASS 5 CLEARANCE AUDIT</button>
+        </div>
+        <div id="icbc-log" style="margin-top:25px; font-size:0.9em; color:cyan; background: rgba(0,0,0,0.8); padding: 20px; border: 2px dashed #0f0; min-height: 80px; box-shadow: inset 0 0 20px rgba(0,255,0,0.2);">
+            > WAITING FOR DRIVER DATA INPUT...<br>
+            > TRZ-7789 CALCULATION ENGINE STANDING BY.
+        </div>
+    </div>
+</section>
+
+<section class="deck-section" id="matrix-sec">
+    <div class="panel">
+        <h2>Strategic Matrix (Verbal Audit)</h2>
+        <textarea id="v-claim" rows="5" placeholder="INSERT VERBAL STATEMENT..."></textarea>
+        <textarea id="e-reality" rows="5" placeholder="INSERT EVIDENCE DATA-FACT..."></textarea>
+        <button onclick="runAudit()">DETERMINE PIVOT</button>
+        <div id="audit-log" style="margin-top:20px; font-size:0.9em; color:cyan; padding:15px; border: 2px dashed #0f0;">> Awaiting Audit...</div>
+    </div>
+</section>
+
+<section class="deck-section" id="traffic-sec">
+    <div class="panel">
+        <h2>Traffic Hub & $2B Liability Audit</h2>
+        <input type="text" placeholder="PASTE BC_HIGHWAY_CAM_URL HERE...">
+        <div id="traffic-monitor" style="height:250px; border:2px solid #0f0; margin:20px 0; display:flex; align-items:center; justify-content:center; color:#0f0; background: #000; box-shadow: inset 0 0 30px rgba(0,255,0,0.5);">
+            [CAM_STREAM_READY // AWAITING SIGNAL]
+        </div>
+        <button>ANALYZE FOR $2B LEAKAGE</button>
+    </div>
+</section>
+
+<section class="deck-section" id="witness-sec">
+    <div class="panel">
+        <h2>Witness Vault (Evidence Hashing)</h2>
+        <div id="vault-status" style="height:200px; overflow-y:auto; font-size:0.8em; background:rgba(0,0,0,0.9); padding:15px; border:2px solid #0f0; box-shadow: inset 0 0 20px rgba(0,255,0,0.4);">
+            > Initializing Witness Logs...<br>> Encryption: TRZ-7789 Enabled.<br>> Ready for Data Hashing.<br>
+            <span style="color:cyan;">> PERSISTENCE LAYER ACTIVE.</span>
+        </div>
+        <button onclick="alert('Upload Core Triggered.')">UPLOAD EVIDENCE FILE</button>
+        <input type="text" id="lockdown-trigger" placeholder="SECURE COMMAND INPUT..." style="margin-top:25px; border-color:#f00; color:#f00; box-shadow: 0 0 10px #f00;">
+    </div>
+</section>
+
+<script>
+    // --- MATRIX RAIN ENGINE (FIXED BACKGROUND) ---
+    const canvas = document.getElementById('matrix-bg');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+    const chars = "0123456789ABCDEFTRINITY7789XΩ";
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+    const drops = Array(Math.floor(columns)).fill(1);
+
+    function drawMatrix() {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.05)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#0f0"; ctx.font = fontSize + "px monospace";
+        for (let i = 0; i < drops.length; i++) {
+            const text = chars[Math.floor(Math.random() * chars.length)];
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+            drops[i]++;
+        }
+    }
+    setInterval(drawMatrix, 30);
+    setInterval(() => document.getElementById('clock').innerText = new Date().toLocaleTimeString(), 1000);
+
+    // --- TRZ-7789 INJECTION: PERSISTENCE MODULE (INDEXEDDB) ---
+    const dbRequest = indexedDB.open("TrinityEngineDB", 1);
+    let trinityDB;
+
+    dbRequest.onupgradeneeded = (e) => {
+        let db = e.target.result;
+        db.createObjectStore("audit_logs", { keyPath: "id", autoIncrement: true });
+    };
+
+    dbRequest.onsuccess = (e) => {
+        trinityDB = e.target.result;
+        console.log("%c TRZ-7789: Persistence Ledger Online. ", "background: #00ff00; color: #000; font-weight: bold;");
+    };
+
+    function logToMainframe(type, data) {
+        if (!trinityDB) return;
+        const transaction = trinityDB.transaction(["audit_logs"], "readwrite");
+        const store = transaction.objectStore("audit_logs");
+        store.add({ timestamp: new Date().toISOString(), type: type, payload: data });
+    }
+
+    // --- TRZ-7789 INJECTION: ICBC CALCULATED ESTIMATION ---
+    function runICBCAudit() {
+        const start = document.getElementById('glp-
 
