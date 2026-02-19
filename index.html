@@ -1,15 +1,18 @@
 <div id="trinity-interface">
-    <div id="hud-overlay">
-        <p>SYSTEM: V10.2.8.2-EYES</p>
-        <p id="security-display">STATUS: ACTIVE</p>
-        <p id="mode-display">MODE: NEW TRUTH AUDIT</p>
+    <div id="hud-overlay" style="display: flex; justify-content: space-between; width: 100%;">
+        <div>
+            <p>SYSTEM: SIU SHADOW-CENTER</p>
+            <p id="security-display" style="color: #0f0;">STATUS: ACTIVE</p>
+        </div>
+        <div style="text-align: right; color: #0ff;">
+            <p>BUILD: V10.2.8.3</p>
+            <p id="clock-display"></p>
+        </div>
     </div>
 
-    <video id="eyeballs-feed" autoplay playsinline></video>
-    <canvas id="vision-canvas"></canvas>
-
-    <div id="command-center">
-        <input type="text" id="architect-input" placeholder="Enter Command or Trigger Phrase...">
+    <video id="eyeballs-feed" autoplay playsinline style="width: 100%; border: 1px solid #0f0;"></video>
+    <div id="command-center" style="margin-top: 10px;">
+        <input type="text" id="architect-input" placeholder="TRZ-7789 AUTH REQUIRED..." style="width: 100%; background: #000; color: #0f0; border: 1px solid #0f0; padding: 10px;">
     </div>
 </div>
 
@@ -19,54 +22,38 @@ const architectKeys = {
     release: "he who dies with the most toys still dies"
 };
 
-let systemState = "ACTIVE";
+function updateClock() {
+    const now = new Date();
+    document.getElementById('clock-display').innerText = now.toLocaleTimeString();
+}
+setInterval(updateClock, 1000);
 
-async function initEyeballs() {
+async function startVision() {
     const video = document.getElementById('eyeballs-feed');
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
         video.srcObject = stream;
-        console.log("[TRZ-7789] Eyeballs Initialized.");
+        console.log("[TRZ-7789] V10.2.8.3 Live.");
     } catch (err) {
-        console.error("Vision Core Error: ", err);
+        document.getElementById('security-display').innerText = "ERROR: SENSOR BLOCKED";
+        document.getElementById('security-display').style.color = "red";
     }
 }
 
 document.getElementById('architect-input').addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
-        const cmd = this.value.toLowerCase();
-        
-        // VOID-LOCK TRIGGER
-        if (cmd.includes(architectKeys.lockdown)) {
-            systemState = "VOID-LOCK";
-            document.getElementById('security-display').innerText = "STATUS: VOID-LOCK";
-            document.getElementById('trinity-interface').style.filter = "grayscale(100%) brightness(50%)";
-            document.getElementById('eyeballs-feed').style.display = "none";
-            alert("System Purged. Entering Benign Mode.");
-        } 
-        
-        // RELEASE KEY
-        else if (cmd.includes(architectKeys.release)) {
-            systemState = "ACTIVE";
-            document.getElementById('security-display').innerText = "STATUS: ACTIVE";
-            document.getElementById('trinity-interface').style.filter = "none";
-            document.getElementById('eyeballs-feed').style.display = "block";
-            console.log("Welcome back, Architect.");
+        const val = this.value.toLowerCase();
+        if (val.includes(architectKeys.lockdown)) {
+            document.getElementById('trinity-interface').style.display = "none";
+            alert("VOID-LOCK ENGAGED.");
+        } else if (val.includes(architectKeys.release)) {
+            document.getElementById('trinity-interface').style.display = "block";
+            location.reload(); // Force full refresh on release
         }
-
         this.value = '';
     }
 });
 
-// Start the core
-initEyeballs();
+startVision();
 </script>
-
-<style>
-#trinity-interface { background: #000; color: #0f0; font-family: 'Courier New', monospace; padding: 20px; position: relative; }
-#hud-overlay { position: absolute; top: 10px; left: 20px; z-index: 10; pointer-events: none; }
-#eyeballs-feed { width: 100%; border: 2px solid #0f0; border-radius: 8px; }
-#command-center { margin-top: 15px; }
-#architect-input { width: 100%; background: #111; border: 1px solid #0f0; color: #0f0; padding: 10px; }
-</style>
 
