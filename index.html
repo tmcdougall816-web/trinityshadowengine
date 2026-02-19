@@ -65,7 +65,8 @@
             padding: 30px;
             background: rgba(13, 2, 8, 0.98);
             box-shadow: 0 0 30px var(--matrix-green);
-            overflow: hidden;
+            overflow-y: auto; /* TRZ-7789 FIX: Allow scrolling to prevent bottom cutoff */
+            overflow-x: hidden;
             box-sizing: border-box;
         }
 
@@ -74,7 +75,7 @@
             grid-template-columns: 1fr 1fr;
             grid-template-rows: auto 1fr auto;
             gap: 25px;
-            height: 100%;
+            min-height: 100%; /* TRZ-7789 FIX: Allow grid to expand */
         }
 
         header {
@@ -124,7 +125,7 @@
 
         #media-theater {
             flex-grow: 1;
-            min-height: 250px; /* UPGRADED: Expanded theater height */
+            min-height: 250px;
             background: #000;
             border: 1px dashed #444;
             display: flex;
@@ -139,7 +140,7 @@
         #media-theater img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain; /* TRZ-7789 FIX: Display full uncropped image */
         }
 
         .prob-container {
