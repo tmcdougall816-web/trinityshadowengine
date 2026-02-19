@@ -65,7 +65,7 @@
             padding: 30px;
             background: rgba(13, 2, 8, 0.98);
             box-shadow: 0 0 30px var(--matrix-green);
-            overflow-y: auto; /* TRZ-7789 FIX: Allow scrolling to prevent bottom cutoff */
+            overflow-y: auto; 
             overflow-x: hidden;
             box-sizing: border-box;
         }
@@ -75,7 +75,7 @@
             grid-template-columns: 1fr 1fr;
             grid-template-rows: auto 1fr auto;
             gap: 25px;
-            min-height: 100%; /* TRZ-7789 FIX: Allow grid to expand */
+            min-height: 100%; 
         }
 
         header {
@@ -140,7 +140,7 @@
         #media-theater img {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* TRZ-7789 FIX: Display full uncropped image */
+            object-fit: contain; 
         }
 
         .prob-container {
@@ -155,7 +155,7 @@
             height: 100%;
             width: 0%;
             background: linear-gradient(90deg, #ff0000, #ffff00, #00ff41);
-            transition: width 2s cubic-bezier(0.1, 0.7, 1.0, 0.1);
+            transition: width 0.8s cubic-bezier(0.1, 0.7, 1.0, 0.1); /* Sped up for visual reactivity */
         }
 
         #audit-log {
@@ -204,18 +204,18 @@
             <div class="prob-container">
                 <div id="bar" class="prob-bar"></div>
             </div>
-            <div id="p-text" style="text-align: center; font-weight: bold; font-size: 1.2rem;">0% CERTAINTY</div>
+            <div id="p-text" style="text-align: center; font-weight: bold; font-size: 1.2rem; color: #ff0000;">0% CERTAINTY</div>
         </div>
 
         <div class="panel">
             <h2>II. GEO-SPATIAL ACCIDENT RECON</h2>
-            <input type="text" id="case-id" placeholder="CLAIM ID (e.g. TC-2023-PILEUP-3.5M)">
-            <input type="text" id="statute" placeholder="STATUTORY ANCHOR (RSBC 1996 c.318 s.144)">
+            <input type="text" id="case-id" placeholder="CLAIM ID (e.g. TC-2023-PILEUP-3.5M)" oninput="calculateProbability()">
+            <input type="text" id="statute" placeholder="STATUTORY ANCHOR (RSBC 1996 c.318 s.144)" oninput="calculateProbability()">
             <button onclick="runAudit()">VALIDATE LIABILITY DATA</button>
             
             <label style="font-size: 0.7rem; color: #666; margin-top: 10px; margin-bottom: -5px;">III. LIVE SCENE INJECTION</label>
             
-            <select id="cam-presets" onchange="document.getElementById('cam-url').value = this.value;">
+            <select id="cam-presets" onchange="document.getElementById('cam-url').value = this.value; calculateProbability();">
                 <option value="">-- SELECT TARGET HIGHWAY CAM --</option>
                 <option value="https://images.drivebc.ca/bchighwaycam/pub/cameras/34.jpg">HWY 3B - SMELTER HILL</option>
                 <option value="https://images.drivebc.ca/bchighwaycam/pub/cameras/104.jpg">HWY 3 - PAULSON SUMMIT</option>
@@ -223,7 +223,7 @@
                 <option value="https://images.drivebc.ca/bchighwaycam/pub/cameras/35.jpg">HWY 3 - NANCY GREENE LAKE</option>
             </select>
 
-            <input type="text" id="cam-url" placeholder="TRAFFIC CAMERA URL CLOUD LINK">
+            <input type="text" id="cam-url" placeholder="TRAFFIC CAMERA URL CLOUD LINK" oninput="calculateProbability()">
             <button style="background: #005495; color: #fff;" onclick="loadCamera()">INJECT LIVE FEED</button>
             
             <div id="media-theater">[ CAMERA INJECTION STANDBY ]</div>
@@ -231,8 +231,8 @@
 
         <div class="panel">
             <h2>V. CAMERA INJECTION STORAGE</h2>
-            <input type="number" id="cash" placeholder="TOTAL RECOVERY TARGET ($)">
-            <select id="assess">
+            <input type="number" id="cash" placeholder="TOTAL RECOVERY TARGET ($)" oninput="calculateProbability()">
+            <select id="assess" onchange="calculateProbability()">
                 <option value="none">-- SELECT ASSESSMENT --</option>
                 <option value="adverse">ADVERSE (FRAUD DETECTED)</option>
                 <option value="verified">VERIFIED CREDIBLE (REALITY LOCK)</option>
@@ -264,12 +264,57 @@
         l.scrollTop = l.scrollHeight;
     }
 
+    // TRZ-7789 PROBABILITY ENGINE
+    function calculateProbability() {
+        let score = 0;
+        
+        // 1. Check Panel II Data (30% total)
+        if(document.getElementById('case-id').value.trim() !== '') score += 15;
+        if(document.getElementById('statute').value.trim() !== '') score += 15;
+        
+        // 2. Check Panel III Live Scene Injection (30% total)
+        const theater = document.getElementById('media-theater').innerHTML;
+        if(theater.includes('<img') || document.getElementById('cam-url').value.trim() !== '') {
+            score += 30;
+        }
+        
+        // 3. Check Panel V Storage Data (40% total)
+        if(document.getElementById('cash').value.trim() !== '') score += 10;
+        
+        const assessVal = document.getElementById('assess').value;
+        if(assessVal === 'verified') {
+            score += 30;
+        } else if (assessVal === 'adverse') {
+            score = 0; // Fraud completely invalidates settlement probability
+        }
+
+        // Cap score safely at 100
+        if(score > 100) score = 100;
+
+        // Visual Updates
+        const bar = document.getElementById('bar');
+        const pText = document.getElementById('p-text');
+        
+        bar.style.width = score + "%";
+        pText.innerText = score + "% CERTAINTY";
+        
+        if (score === 0 && assessVal === 'adverse') {
+            pText.innerText = "0% - FRAUD DETECTED";
+            pText.style.color = "#ff0000";
+        } else if(score < 50) {
+            pText.style.color = "#ff0000"; // Red
+        } else if(score < 90) {
+            pText.style.color = "#ffff00"; // Yellow
+        } else {
+            pText.style.color = "#00ff41"; // Matrix Green
+        }
+    }
+
     function runAudit() {
         if(!document.getElementById('case-id').value) return alert("CLAIM ID REQUIRED");
         addLog(`AUDITING CASE AGAINST BC STATUTES...`);
         setTimeout(() => {
-            document.getElementById('bar').style.width = "72%";
-            document.getElementById('p-text').innerText = "72% CERTAINTY";
+            calculateProbability(); // Force calculate to ensure UI is synced
             addLog("LIABILITY ANCHORED. CROSS-REFERENCING SCENE INJECTION.");
         }, 1200);
     }
@@ -279,25 +324,30 @@
         const url = document.getElementById('cam-url').value;
         const theater = document.getElementById('media-theater');
         if(url) {
-            // Bypass browser cache to pull absolute real-time image
             const cacheBypass = url.includes('?') ? '&t=' : '?t=';
             theater.innerHTML = `<img src="${url}${cacheBypass}${new Date().getTime()}" alt="LIVE HIGHWAY FEED">`;
             addLog(`INJECTING TRAFFIC CAM STREAM: ${url}`);
+            calculateProbability(); // Re-calculate upon image load
         } else {
             theater.innerHTML = "<span style='color:red;'>[ INVALID OR MISSING STREAM URL ]</span>";
         }
     }
 
     function commitVault() {
+        calculateProbability();
         const val = document.getElementById('cash').value;
         const status = document.getElementById('assess').value;
-        if(status === 'verified' && val) {
-            document.getElementById('bar').style.width = "100%";
-            document.getElementById('p-text').innerText = "100% - FLAWLESS VICTORY";
-            document.getElementById('p-text').style.color = "#00ff41";
+        const pText = document.getElementById('p-text');
+        
+        if(status === 'verified' && val && pText.innerText.includes("100%")) {
+            pText.innerText = "100% - FLAWLESS VICTORY";
             document.getElementById('media-theater').innerText = "EVIDENCE REALITY SECURED";
             document.getElementById('media-theater').style.color = "#00ff41";
             addLog(`RECOVERY OF $${val} FINALIZED IN VAULT.`);
+        } else if (status === 'adverse') {
+            addLog(`CLAIM DENIED. ADVERSE FRAUD LOCK ENGAGED.`);
+        } else {
+            addLog(`WARNING: INCOMPLETE DATA FOR ADJUDICATION.`);
         }
     }
 
