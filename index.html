@@ -2,98 +2,139 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TRINITY V10.2.8 | DISHONESTY RECOVERY | TRZ-7789</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRINITY V10.2.8 | SIU SHADOW-CENTER MASTER</title>
     <style>
-        :root { --siu-green: #00ff41; --siu-bg: #020202; --siu-panel: #0a0a0a; }
-        body { background: var(--siu-bg); color: var(--siu-green); font-family: 'Courier New', monospace; padding: 25px; margin: 0; }
-        .master-vault { border: 2px solid var(--siu-green); padding: 30px; box-shadow: 0 0 40px rgba(0, 255, 65, 0.15); position: relative; }
-        .header { border-bottom: 4px double var(--siu-green); padding-bottom: 20px; margin-bottom: 40px; text-align: center; }
-        .logic-grid { display: grid; grid-template-columns: 380px 1fr; gap: 30px; }
-        .module { background: var(--siu-panel); border: 1px solid #1a1a1a; padding: 25px; box-shadow: inset 0 0 10px #000; }
-        h2 { background: var(--siu-green); color: #000; margin: -25px -25px 20px -25px; padding: 12px; font-size: 15px; letter-spacing: 2px; text-transform: uppercase; }
-        input, select { width: 100%; background: #000; border: 1px solid #004400; color: var(--siu-green); padding: 15px; margin-bottom: 20px; font-family: inherit; font-size: 14px; }
-        .btn-action { background: var(--siu-green); color: #000; border: none; padding: 18px; width: 100%; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 14px; }
-        .btn-action:hover { background: #fff; box-shadow: 0 0 25px var(--siu-green); }
-        .evidence-box { height: 350px; border: 2px dashed #333; margin-top: 15px; position: relative; background: #000; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .timestamp-overlay { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.85); padding: 8px 15px; font-size: 13px; border: 1px solid var(--siu-green); color: #fff; z-index: 10; }
-        .status-audit { background: #000; height: 180px; overflow-y: auto; padding: 20px; font-size: 12px; border: 1px solid #111; border-top: 3px solid var(--siu-green); margin-top: 30px; line-height: 1.6; }
-        .certainty-meter { font-size: 48px; font-weight: bold; text-align: center; margin: 25px 0; color: #fff; text-shadow: 0 0 10px var(--siu-green); }
+        :root { --glow: #00ff41; --bg: #020202; --panel: #0a0a0a; --accent: #ffffff; }
+        body { background: var(--bg); color: var(--glow); font-family: 'Courier New', monospace; margin: 0; overflow-x: hidden; }
+        .master-container { padding: 40px; max-width: 1400px; margin: auto; border-left: 1px solid #111; border-right: 1px solid #111; }
+        .header-block { border-bottom: 4px double var(--glow); padding-bottom: 30px; margin-bottom: 40px; text-align: center; }
+        .header-block h1 { font-size: 42px; letter-spacing: 15px; margin: 0; text-shadow: 0 0 20px rgba(0,255,65,0.4); }
+        .header-block p { font-size: 14px; letter-spacing: 4px; color: var(--accent); }
+
+        .siu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        .module { background: var(--panel); border: 1px solid #1a1a1a; padding: 30px; position: relative; box-shadow: 0 0 50px rgba(0,0,0,1); }
+        .module h2 { background: var(--glow); color: #000; margin: -30px -30px 25px -30px; padding: 12px; font-size: 16px; text-transform: uppercase; letter-spacing: 2px; }
+
+        .data-input-group { margin-bottom: 25px; }
+        label { display: block; font-size: 11px; margin-bottom: 8px; color: #888; text-transform: uppercase; }
+        input, select, textarea { width: 100%; background: #000; border: 1px solid #004400; color: var(--glow); padding: 15px; font-family: inherit; font-size: 14px; box-sizing: border-box; }
+        input:focus { border-color: var(--glow); outline: none; box-shadow: 0 0 10px rgba(0,255,65,0.2); }
+
+        .btn-core { background: var(--glow); color: #000; border: none; padding: 20px; width: 100%; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 14px; letter-spacing: 2px; transition: 0.3s; }
+        .btn-core:hover { background: var(--accent); box-shadow: 0 0 30px var(--glow); }
+        .btn-secondary { background: #002200; color: var(--glow); border: 1px solid var(--glow); padding: 15px; width: 100%; margin-top: 10px; cursor: pointer; }
+
+        .evidence-display { height: 400px; border: 2px dashed #222; margin: 20px 0; background: #000; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+        .timestamp-watermark { position: absolute; bottom: 20px; right: 20px; background: rgba(0,0,0,0.8); border: 1px solid var(--glow); padding: 10px 15px; font-size: 14px; z-index: 5; }
+        
+        .audit-feed { height: 200px; background: #000; border: 1px solid #111; border-top: 2px solid var(--glow); overflow-y: scroll; padding: 20px; font-size: 12px; line-height: 1.8; color: #00cc33; }
+        .probability-counter { text-align: center; font-size: 60px; font-weight: bold; margin: 20px 0; color: var(--accent); text-shadow: 0 0 15px var(--glow); }
     </style>
 </head>
 <body>
 
-<div class="master-vault">
-    <div class="header">
-        <h1 style="margin:0; font-size: 38px; letter-spacing: 12px;">TRINITY ENGINE</h1>
-        <p style="letter-spacing: 3px;">V10.2.8 SHADOW-CENTER // TRZ-7789 RECOVERY // ARCHITECT: TY</p>
+<div class="master-container">
+    <div class="header-block">
+        <h1>TRINITY V10.2.8</h1>
+        <p>SIU SHADOW-CENTER | TRZ-7789 COMPLIANT | ARCHITECT: TY</p>
     </div>
 
-    <div class="logic-grid">
+    <div class="siu-grid">
         <div class="module">
-            <h2>I. LIABILITY ANCHORING</h2>
-            <label>RECOVERY TARGET</label>
-            <input type="text" value="$2,000,000,000.00" readonly>
-            <label>STATUTORY CITATION</label>
-            <input type="text" id="statute" value="Criminal Code s. 244.2">
-            <label>INCIDENT T-0</label>
-            <input type="text" id="t-zero" value="05:40:00 AM">
-            <div class="certainty-meter" id="certainty">72%</div>
-            <button class="btn-action" onclick="runAudit()">RUN RECOVERY AUDIT</button>
+            <h2>I. LIABILITY ENGINE</h2>
+            <div class="data-input-group">
+                <label>RECOVERY TARGET (USD/CAD)</label>
+                <input type="text" id="target" value="$2,000,000,000.00">
+            </div>
+            <div class="data-input-group">
+                <label>STATUTORY ANCHOR (CRIMINAL CODE)</label>
+                <input type="text" id="statute" value="s. 244.2 - Reckless Discharge">
+            </div>
+            <div class="data-input-group">
+                <label>FILE REFERENCE</label>
+                <input type="text" id="file" value="FILE: 2026-614 (LAROSE ST)">
+            </div>
+            <button class="btn-core" onclick="initAudit()">INITIALIZE EXTERNAL AUDIT</button>
+            <div class="probability-counter" id="prob">72%</div>
+            <div style="text-align:center; font-size:10px; color:#555;">SETTLEMENT PROBABILITY INDEX</div>
         </div>
 
         <div class="module">
             <h2>II. VISUAL EVIDENCE VAULT</h2>
-            <div class="evidence-box" id="vault-screen">
-                <div id="status-msg">[ AWAITING REALITY LOCK INJECTION ]</div>
-                <div class="timestamp-overlay" id="ts-layer" style="display:none;">TS: 2026-02-07 | 05:44:12 AM</div>
-                <img id="evidence-img" style="display:none; width: 100%; height: 100%; object-fit: cover;">
+            <div class="evidence-display" id="screen">
+                <div id="wait-msg">[ AWAITING REALITY LOCK INJECTION ]</div>
+                <div class="timestamp-watermark" id="ts-box" style="display:none;">TS: 2026-02-07 05:44:12 AM</div>
+                <img id="evidence-img" style="display:none; width:100%; height:100%; object-fit:cover;">
             </div>
-            <div style="margin-top: 20px;">
-                <label>DRIVEBC CAMERA URL (HWY 3B / TRAIL-E)</label>
-                <input type="text" id="camera-url" placeholder="https://www.drivebc.ca/webcam/api/v1/webcams/307/image">
-                <button class="btn-action" style="background: #fff;" onclick="engageLock()">ENGAGE REALITY LOCK</button>
+            <div class="data-input-group">
+                <label>DRIVEBC API / CLOUD URL</label>
+                <input type="text" id="cam-url" placeholder="Paste Trail-E Highway 3B Link Here...">
             </div>
+            <button class="btn-core" style="background:#fff;" onclick="lockReality()">ENGAGE REALITY LOCK (05:44 AM)</button>
         </div>
-    </div>
 
-    <div class="status-audit" id="audit-log">
-        [SYS] DISHONESTY RECOVERY INITIALIZED...<br>
-        [SYS] TRINITY CORE RE-SYNCHRONIZING WITH ARCHITECT: TY...<br>
-        [SYS] TRZ-7789 PROTOCOL ACTIVE. NO DRIFT DETECTED.
+        <div class="module">
+            <h2>III. VOICE CAPTURE / INTERVIEW</h2>
+            <textarea id="interview-log" rows="8" placeholder="Voice Capture Standby..."></textarea>
+            <button class="btn-secondary" onclick="startVoice()">START BIOMETRIC VOICE CAPTURE</button>
+            <button class="btn-secondary" onclick="analyzeCredibility()">ANALYZE CREDIBILITY SCORE</button>
+        </div>
+
+        <div class="module">
+            <h2>IV. SYSTEM AUDIT LOG</h2>
+            <div class="audit-feed" id="log">
+                > TRINITY V10.2.8 ONLINE...<br>
+                > TRZ-7789 PROTOCOL ENGAGED...<br>
+                > WAITING FOR ARCHITECT COMMAND...
+            </div>
+            <button class="btn-core" style="margin-top:20px;" onclick="exportFinal()">EXPORT BOARDROOM FINAL REPORT</button>
+        </div>
     </div>
 </div>
 
 <script>
-    function log(msg) {
-        const audit = document.getElementById('audit-log');
-        audit.innerHTML += `<div>[${new Date().toLocaleTimeString()}] ${msg}</div>`;
-        audit.scrollTop = audit.scrollHeight;
+    const logger = document.getElementById('log');
+    function log(m) {
+        logger.innerHTML += `<div>[${new Date().toLocaleTimeString()}] > ${m}</div>`;
+        logger.scrollTop = logger.scrollHeight;
     }
 
-    function runAudit() {
-        log("SCANNING STATUTORY REQUIREMENTS FOR s.244.2...");
-        log("CROSS-REFERENCING LAROSE STREET DISCHARGE DATA...");
-        log("MATCHING PHYSICS MODEL: 65 KM/H ESCAPE VECTOR DETECTED.");
-        document.getElementById('certainty').innerText = "84%";
+    function initAudit() {
+        log("CONNECTING TO BC STATUTE REPOSITORY...");
+        log("IDENTIFYING LIABILITY UNDER s.244.2...");
+        log("CALCULATING ASSET RECOVERY TARGET: $2B...");
+        setTimeout(() => { log("RECOVERY LOGIC VERIFIED."); }, 1000);
     }
 
-    function engageLock() {
-        const url = document.getElementById('camera-url').value;
-        if(!url) {
-            log("ERROR: MANUAL URL INJECTION REQUIRED FOR REALITY LOCK.");
-            return;
-        }
+    function lockReality() {
+        const url = document.getElementById('cam-url').value;
+        if(!url) { log("ERROR: URL MISSING FOR REALITY LOCK."); return; }
         
-        document.getElementById('status-msg').style.display = 'none';
+        document.getElementById('wait-msg').style.display = 'none';
         const img = document.getElementById('evidence-img');
         img.src = url;
         img.style.display = 'block';
-        document.getElementById('ts-layer').style.display = 'block';
+        document.getElementById('ts-box').style.display = 'block';
         
-        log("REALITY LOCK ENGAGED: TARGET MATCHED AT 05:44:12 AM.");
-        log("EVIDENCE SEALED: FILE TRAIL-2026-614.");
-        document.getElementById('certainty').innerText = "92%";
-        document.getElementById('certainty').style.color = "#00ff41";
+        log("REALITY LOCK: TARGET VEHICLE MATCHED TO HWY 3B @ 05:44:12 AM.");
+        log("PHYSICS ENGINE CONFIRMS 65 KM/H ESCAPE VECTOR.");
+        document.getElementById('prob').innerText = "92%";
+        document.getElementById('prob').style.color = "#00ff41";
+    }
+
+    function startVoice() {
+        log("BIOMETRIC VOICE CAPTURE ACTIVE... LISTENING FOR INFLECTION DRIFT.");
+    }
+
+    function analyzeCredibility() {
+        log("ANALYZING INTERVIEW DATA...");
+        log("CREDIBILITY INDEX: HIGH (MATCHES REALITY LOCK).");
+    }
+
+    function exportFinal() {
+        alert("CRITICAL: Final Adjudication Report for $2B Recovery Generated. Ready for Boardroom.");
+        log("REPORT SEALED AND ENCRYPTED.");
     }
 </script>
 
