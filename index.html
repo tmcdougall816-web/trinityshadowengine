@@ -3,299 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TRINITY CORE | DIGITAL RAIN V10.2.8</title>
+    <title>TRINITY CORE | TRZ-7789 FINAL SYNC</title>
     <style>
-        :root { 
-            --matrix-green: #00ff41; 
-            --shadow-bg: #000000; 
-            --panel-bg: rgba(0, 15, 0, 0.85); /* Transparent for the rain */
-            --win-gold: #ffcc00; 
-            --glow: 0 0 10px rgba(0, 255, 65, 0.4);
-        }
-        body { 
-            background-color: var(--shadow-bg); 
-            color: var(--matrix-green); 
-            font-family: 'Courier New', monospace; 
-            margin: 0; 
-            display: flex; 
-            flex-direction: column; 
-            height: 100vh; 
-            overflow: hidden; 
-        }
-        
-        /* The Rain Layer */
-        canvas#matrix { 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            z-index: -1; 
-            opacity: 0.25; /* Adjusted for visibility */
-        }
-
-        #header { 
-            padding: 12px 20px; 
-            border-bottom: 2px solid var(--matrix-green); 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            background: rgba(0, 10, 0, 0.95);
-            box-shadow: var(--glow);
-        }
-
-        .main-container { 
-            display: grid; 
-            grid-template-columns: 320px 1fr 320px; 
-            grid-template-rows: 1fr 160px; 
-            gap: 12px; 
-            padding: 12px; 
-            flex-grow: 1; 
-        }
-
-        .panel { 
-            background: var(--panel-bg); 
-            border: 1px solid var(--matrix-green); 
-            box-shadow: var(--glow); 
-            padding: 15px; 
-            overflow-y: auto; 
-            display: flex; 
-            flex-direction: column; 
-            backdrop-filter: blur(2px); /* Makes the rain look "behind" the panels */
-            border-radius: 4px;
-        }
-
-        .panel-header { 
-            border-bottom: 1px solid var(--matrix-green); 
-            margin-bottom: 10px; 
-            padding-bottom: 5px; 
-            font-weight: bold; 
-            font-size: 0.85rem; 
-            text-transform: uppercase; 
-            color: #fff; 
-            letter-spacing: 1px;
-        }
-        
-        #win-percentage { 
-            font-size: 3rem; 
-            color: var(--win-gold); 
-            text-align: center; 
-            font-weight: bold; 
-            text-shadow: 0 0 15px var(--win-gold); 
-            margin: 10px 0;
-        }
-
-        #visualizer { 
-            width: 100%; 
-            height: 160px; 
-            background: rgba(0,0,0,0.7); 
-            border: 1px solid #004400; 
-        }
-
-        #streams { 
-            color: #fff; 
-            font-size: 1.1rem; 
-            padding: 10px; 
-            border: 1px dashed #004400; 
-            margin-top: 10px; 
-            min-height: 60px; 
-            background: rgba(0,30,0,0.3); 
-        }
-        
+        :root { --matrix-green: #00ff41; --shadow-bg: #000; --panel-bg: rgba(0, 15, 0, 0.9); --win-gold: #ffcc00; }
+        body { background-color: var(--shadow-bg); color: var(--matrix-green); font-family: 'Courier New', monospace; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        canvas#matrix { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.35; }
+        #header { padding: 12px 20px; border-bottom: 2px solid var(--matrix-green); display: flex; justify-content: space-between; align-items: center; background: rgba(0, 10, 0, 0.95); box-shadow: 0 0 15px rgba(0,255,65,0.4); }
+        .main-container { display: grid; grid-template-columns: 320px 1fr 320px; grid-template-rows: 1fr 140px; gap: 12px; padding: 12px; flex-grow: 1; }
+        .panel { background: var(--panel-bg); border: 1px solid var(--matrix-green); box-shadow: 0 0 10px rgba(0, 255, 65, 0.3); padding: 15px; overflow-y: auto; display: flex; flex-direction: column; backdrop-filter: blur(4px); border-radius: 4px; }
+        .panel-header { border-bottom: 1px solid var(--matrix-green); margin-bottom: 10px; padding-bottom: 5px; font-weight: bold; font-size: 0.85rem; text-transform: uppercase; color: #fff; letter-spacing: 1px; }
+        #win-percentage { font-size: 3.5rem; color: var(--win-gold); text-align: center; font-weight: bold; text-shadow: 0 0 20px var(--win-gold); margin: 10px 0; }
+        #visualizer { width: 100%; height: 160px; background: rgba(0,0,0,0.85); border: 1px solid #004400; }
+        #streams { color: #fff; font-size: 1.1rem; padding: 10px; border: 1px dashed #004400; margin-top: 10px; min-height: 50px; background: rgba(0,30,0,0.3); text-shadow: 0 0 5px var(--matrix-green); }
         .truth-meter { height: 20px; width: 100%; background: #200; border: 1px solid #400; margin-top: 10px; position: relative; }
-        #truth-bar { height: 100%; width: 50%; background: var(--matrix-green); transition: 0.8s ease; box-shadow: 0 0 10px var(--matrix-green); }
-        
-        button { 
-            background: transparent; 
-            color: var(--matrix-green); 
-            border: 1px solid var(--matrix-green); 
-            padding: 8px 12px; 
-            cursor: pointer; 
-            font-size: 0.7rem; 
-            text-transform: uppercase; 
-            transition: 0.3s;
-        }
+        #truth-bar { height: 100%; width: 30%; background: var(--matrix-green); transition: 0.8s ease-in-out; box-shadow: 0 0 15px var(--matrix-green); }
+        button { background: transparent; color: var(--matrix-green); border: 1px solid var(--matrix-green); padding: 10px 15px; cursor: pointer; font-size: 0.75rem; text-transform: uppercase; transition: 0.3s; }
         button:hover { background: var(--matrix-green); color: black; box-shadow: 0 0 10px var(--matrix-green); }
-        
-        .stat-box { font-size: 0.8rem; padding: 8px; border: 1px solid #004400; margin-bottom: 6px; background: rgba(0,0,0,0.5); }
-        #terminal { grid-column: 1 / span 3; background: rgba(0,0,0,0.9); border-top: 2px solid var(--matrix-green); }
+        .stat-box { font-size: 0.8rem; padding: 8px; border: 1px solid #004400; margin-bottom: 6px; background: rgba(0,0,0,0.6); }
+        #terminal { grid-column: 1 / span 3; background: rgba(0,0,0,0.95); border-top: 2px solid var(--matrix-green); }
     </style>
 </head>
 <body>
     <canvas id="matrix"></canvas>
-
     <div id="header">
         <div>TRINITY CORE <span style="color:#fff">V10.2.8</span></div>
-        <div style="font-size: 0.75rem;">SHADOW-CENTER: <span style="color:var(--matrix-green)">SYNCHRONIZED</span></div>
+        <div style="font-size: 0.75rem;">CRAWFORD MATRIX: <span style="color:var(--matrix-green)">SYNCHRONIZED</span></div>
         <div id="sys-clock">00:00:00</div>
     </div>
-
     <div class="main-container">
         <div class="panel">
-            <div class="panel-header">Win Probability</div>
-            <div id="win-percentage">74%</div>
-            <div style="text-align:center; font-size:0.6rem; color:#aaa;">CRAWFORD CROSS-REF ACTIVE</div>
-            
+            <div class="panel-header">Probability of Win (PoW)</div>
+            <div id="win-percentage">88%</div>
+            <div style="text-align:center; font-size:0.6rem; color:#aaa; letter-spacing:1px;">CRAWFORD CROSS-REF RATIO</div>
             <div class="panel-header" style="margin-top:20px;">Truth Analytics</div>
             <div class="stat-box">LIES DETECTED: <span id="lies-count">0</span></div>
             <div class="stat-box">DISCREPANCIES: <span id="disc-count">0</span></div>
-            <div class="stat-box">TRUTH WEIGHT: <span id="truth-weight">0.74</span></div>
-            
-            <button onclick="runCrossReference()" style="margin-top:10px;">Re-Analyze Matrix</button>
+            <div class="stat-box">TRUTH WEIGHT: <span id="truth-weight">0.88</span></div>
+            <button onclick="log('RERUNNING MATRIX ANALYSIS...')">Analyze Matrix</button>
         </div>
-
         <div class="panel">
             <div class="panel-header">Acoustic Logic Stream</div>
             <canvas id="visualizer"></canvas>
-            <div id="streams">[ WAITING FOR VOICE INJECTION ]</div>
-            
-            <div class="panel-header" style="margin-top:15px;">Truth-to-Deception Ratio</div>
+            <div id="streams">[ CORE STANDBY ]</div>
             <div class="truth-meter"><div id="truth-bar"></div></div>
-            <div style="display:flex; justify-content:space-between; font-size:0.6rem; margin-top:5px;">
-                <span>VERIFIED TRUTH</span>
-                <span>DECEPTION DETECTED</span>
-            </div>
-            
+            <div style="display:flex; justify-content:space-between; font-size:0.6rem; margin-top:5px;"><span>VERIFIED TRUTH</span><span>DECEPTION DETECTED</span></div>
             <div style="display:flex; gap:15px; justify-content:center; margin-top:20px;">
                 <button onclick="startEngine()">Engage Core</button>
                 <button onclick="stopEngine()">Kill Feed</button>
             </div>
         </div>
-
         <div class="panel">
             <div class="panel-header">Active Dossier</div>
             <div class="stat-box" style="color:#fff;">
                 SUBJECT: <span style="color:var(--matrix-green);">TY MCDOUGALL</span><br>
-                IDENT: TRZ-7789-ALPHA<br>
-                LOC: TRAIL, BC
+                FILE: #4492-TRZ<br>
+                STATUS: AUTHORIZED
             </div>
-            
-            <div class="panel-header" style="margin-top:15px;">Witness Input</div>
-            <textarea id="witness-input" style="background:rgba(0,0,0,0.7); color:#0f0; border:1px solid #004400; height:100px; font-family:inherit; font-size:0.75rem; padding:5px;" placeholder="ENTER TESTIMONY..."></textarea>
-            <button onclick="logWitness()" style="margin-top:10px;">Lock Statement</button>
+            <div class="panel-header" style="margin-top:10px;">Witness Input</div>
+            <textarea id="witness-input" style="background:rgba(0,0,0,0.7); color:#0f0; border:1px solid #004400; height:80px; width:100%; font-family:inherit; padding:5px;" placeholder="INPUT TESTIMONY..."></textarea>
+            <button onclick="log('WITNESS DATA COMMITTED.')">Commit Info</button>
         </div>
-
         <div class="panel" id="terminal">
-            <div id="log-output" style="font-size:0.85rem;">> TRINITY CORE INITIALIZED. DIGITAL RAIN PROTOCOL ENGAGED.</div>
+            <div id="log-output" style="font-size:0.9rem;">> TRINITY CORE INITIALIZED. TRZ-7789 PROTOCOL ACTIVE. SYSTEM READY FOR BREAK.</div>
         </div>
     </div>
-
     <script>
-        // Matrix Rain Logic
-        const canvas = document.getElementById('matrix');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        const alphabet = "アカサタナハマヤラワガザダバパイキシチニヒミリギジヂビピウクスツヌフムユルグズヅブプエケセテネヘメレゲゼデベペオコソトノホモヨログゾドボポ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        const fontSize = 16;
-        const columns = canvas.width / fontSize;
-        const rainDrops = Array.from({ length: columns }).fill(canvas.height);
-
+        const canvas = document.getElementById('matrix'); const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        const alphabet = "アカサタナハマヤラワガザダバパイキシチ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const rainDrops = Array.from({ length: Math.floor(canvas.width/16) }).fill(0);
         function drawRain() {
-            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "#0F0";
-            ctx.font = fontSize + "px monospace";
-            for (let i = 0; i < rainDrops.length; i++) {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#0F0"; ctx.font = "16px monospace";
+            rainDrops.forEach((y, i) => {
                 const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
-                ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
-                if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    rainDrops[i] = 0;
-                }
+                ctx.fillText(text, i * 16, y * 16);
+                if (y * 16 > canvas.height && Math.random() > 0.975) rainDrops[i] = 0;
                 rainDrops[i]++;
-            }
+            });
         }
-        setInterval(drawRain, 30);
-
-        // System Logic
+        setInterval(drawRain, 35);
         setInterval(() => { document.getElementById('sys-clock').innerText = new Date().toLocaleTimeString(); }, 1000);
-        
-        let audioCtx, analyzer, stream, animationId, recognition;
-
+        let audioCtx, analyzer, stream, recognition;
         function log(m) {
             const out = document.getElementById('log-output');
             out.innerHTML += `<br>> ${m}`;
             document.getElementById('terminal').scrollTop = document.getElementById('terminal').scrollHeight;
         }
-
         async function startEngine() {
-            log("ENGAGING TRZ-7789 VOICE CORE...");
+            log("ENGAGING TRZ-7789 CORE...");
             try {
                 stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 analyzer = audioCtx.createAnalyser();
                 const source = audioCtx.createMediaStreamSource(stream);
                 source.connect(analyzer);
-                startSpeech();
                 drawVisualizer();
-            } catch(e) { log("LINK FAILED."); }
+            } catch(e) { log("MIC ACCESS ERROR."); }
         }
-
-        function runCrossReference() {
-            log("CRAWFORD MATRIX CROSS-REFERENCE INITIATED...");
-            const win = Math.floor(Math.random() * 30) + 70;
-            document.getElementById('win-percentage').innerText = win + "%";
-            document.getElementById('truth-weight').innerText = (win/100).toFixed(2);
-        }
-
-        function startSpeech() {
-            const SpeechSDK = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if(!SpeechSDK) return;
-            recognition = new SpeechSDK();
-            recognition.continuous = true;
-            recognition.interimResults = true;
-            recognition.onresult = (e) => {
-                let text = "";
-                for(let i = e.resultIndex; i < e.results.length; i++) {
-                    text += e.results[i][0].transcript;
-                }
-                document.getElementById('streams').innerText = text;
-                
-                // Stress/Truth Logic
-                if(text.length % 5 === 0) {
-                    document.getElementById('truth-bar').style.width = "75%";
-                    document.getElementById('truth-bar').style.background = "red";
-                } else {
-                    document.getElementById('truth-bar').style.width = "25%";
-                    document.getElementById('truth-bar').style.background = "var(--matrix-green)";
-                }
-            };
-            recognition.start();
-        }
-
         function drawVisualizer() {
-            const vCanvas = document.getElementById('visualizer');
-            const vCtx = vCanvas.getContext('2d');
+            const vCanvas = document.getElementById('visualizer'); const vCtx = vCanvas.getContext('2d');
             const data = new Uint8Array(analyzer.frequencyBinCount);
             function animate() {
-                animationId = requestAnimationFrame(animate);
-                analyzer.getByteFrequencyData(data);
+                requestAnimationFrame(animate); analyzer.getByteFrequencyData(data);
                 vCtx.fillStyle = 'rgba(0,0,0,0.8)'; vCtx.fillRect(0,0,vCanvas.width,vCanvas.height);
                 let x = 0;
                 for(let i=0; i<data.length; i++) {
-                    const h = data[i]/1.8;
-                    vCtx.fillStyle = `rgb(0, ${h+150}, 50)`;
-                    vCtx.fillRect(x, vCanvas.height-h, 2, h);
-                    x += 3;
+                    const h = data[i]/1.8; vCtx.fillStyle = `rgb(0, ${h+150}, 50)`;
+                    vCtx.fillRect(x, vCanvas.height-h, 2, h); x += 3;
                 }
             }
             animate();
         }
-
-        function stopEngine() {
-            if(stream) {
-                stream.getTracks().forEach(t => t.stop());
-                log("FEEDS DISENGAGED.");
-            }
-        }
-
-        function logWitness() {
-            const val = document.getElementById('witness-input').value;
-            if(val) {
-                log("NEW WITNESS STATEMENT COMMITTED TO DATABASE.");
-                document.getElementById('witness-input').value = '';
-                runCrossReference();
-            }
-        }
+        function stopEngine() { if(stream) stream.getTracks().forEach(t => t.stop()); log("FEEDS DISENGAGED."); }
     </script>
 </body>
 </html>
