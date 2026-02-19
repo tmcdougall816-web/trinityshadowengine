@@ -3,144 +3,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TRINITY V10.2.8 | SIU SHADOW-CENTER</title>
+    <title>TRINITY SIU | CONTROL CENTER V10.2.8</title>
     <style>
         :root {
             --matrix-green: #00ff41;
-            --shadow-bg: #050505;
-            --siu-accent: #003300;
+            --shadow-bg: #030303;
+            --panel-bg: rgba(0, 20, 0, 0.9);
+            --border-glow: 0 0 10px rgba(0, 255, 65, 0.5);
         }
         body {
             background-color: var(--shadow-bg);
             color: var(--matrix-green);
             font-family: 'Courier New', Courier, monospace;
             margin: 0;
-            overflow: hidden;
             display: flex;
             flex-direction: column;
-            align-items: center;
             height: 100vh;
+            overflow: hidden;
         }
-        canvas {
+        canvas#matrix {
             position: fixed;
-            top: 0;
-            left: 0;
-            z-index: -1;
-            opacity: 0.3;
+            top: 0; left: 0; z-index: -1; opacity: 0.2;
         }
         #header {
-            width: 100%;
-            padding: 20px;
-            background: rgba(0, 20, 0, 0.9);
+            padding: 10px 20px;
             border-bottom: 2px solid var(--matrix-green);
-            text-align: center;
-            box-shadow: 0 0 15px var(--siu-accent);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--panel-bg);
+        }
+        .main-container {
+            display: grid;
+            grid-template-columns: 300px 1fr 300px;
+            grid-template-rows: 1fr 200px;
+            gap: 10px;
+            padding: 10px;
+            flex-grow: 1;
+        }
+        .panel {
+            background: rgba(0, 5, 0, 0.8);
+            border: 1px solid var(--matrix-green);
+            box-shadow: var(--border-glow);
+            padding: 10px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .panel-header {
+            border-bottom: 1px solid var(--matrix-green);
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+        #visualizer {
+            width: 100%;
+            height: 150px;
+            background: #000;
+            border: 1px solid #004400;
+        }
+        .data-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+            font-size: 0.75rem;
+        }
+        .data-box {
+            border: 1px solid #004400;
+            padding: 5px;
+            background: rgba(0, 20, 0, 0.3);
         }
         #terminal {
-            width: 90%;
-            max-width: 800px;
-            height: 60vh;
-            margin-top: 20px;
-            background: rgba(0, 0, 0, 0.85);
-            border: 1px solid var(--matrix-green);
-            padding: 15px;
-            overflow-y: auto;
-            font-size: 0.9rem;
-            box-shadow: inset 0 0 10px #000;
-        }
-        .controls {
-            margin-top: 30px;
-            display: flex;
-            gap: 20px;
+            grid-column: 1 / span 3;
+            height: 100%;
+            background: black;
+            font-size: 0.85rem;
+            padding: 10px;
         }
         button {
             background: transparent;
             color: var(--matrix-green);
             border: 1px solid var(--matrix-green);
-            padding: 10px 25px;
+            padding: 5px 15px;
             cursor: pointer;
-            font-weight: bold;
-            text-transform: uppercase;
-            transition: 0.3s;
+            font-size: 0.7rem;
+            margin-top: 5px;
         }
-        button:hover {
-            background: var(--matrix-green);
-            color: black;
-            box-shadow: 0 0 10px var(--matrix-green);
-        }
-        .system-status { color: #ff0000; font-weight: bold; }
-        .success { color: #00ff00; }
+        button:hover { background: var(--matrix-green); color: black; }
+        .active { color: #fff; text-shadow: 0 0 5px var(--matrix-green); }
     </style>
 </head>
 <body>
     <canvas id="matrix"></canvas>
 
     <div id="header">
-        <h1>TRINITY SIU SHADOW-CENTER</h1>
-        <p>BASE VERSION: 10.2.8 | CORE: TRZ-7789 PROTOCOL</p>
+        <div>TRINITY ENGINE <span class="active">V10.2.8</span></div>
+        <div style="font-size: 0.7rem;">CORE PROTOCOL: <span class="active">TRZ-7789</span></div>
+        <div id="sys-clock">00:00:00</div>
     </div>
 
-    <div id="terminal" id="audit-log">
-        <div class="success">> SYSTEM INITIALIZED...</div>
-        <div>> ATTACHING SIU CORE LIBRARIES...</div>
-        <div>> TRZ-7789 PROTOCOL ENGAGED.</div>
-        <div>> WAITING FOR INPUT...</div>
-    </div>
+    <div class="main-container">
+        <div class="panel">
+            <div class="panel-header">System Intelligence</div>
+            <div class="data-grid">
+                <div class="data-box">CPU: <span id="cpu-load">2.4%</span></div>
+                <div class="data-box">MEM: <span id="mem-use">128MB</span></div>
+                <div class="data-box">FREQ: <span id="cur-freq">0Hz</span></div>
+                <div class="data-box">BIAS: <span id="bias-val">0.00</span></div>
+            </div>
+            <div class="panel-header" style="margin-top:20px;">TRZ-7789 Status</div>
+            <div id="status-box" style="font-size: 0.7rem;">READY...</div>
+        </div>
 
-    <div class="controls">
-        <button onclick="startEngine()">Start Voice Engine</button>
-        <button onclick="clearLogs()">Clear Terminal</button>
+        <div class="panel">
+            <div class="panel-header">Frequency Spectrum Analysis</div>
+            <canvas id="visualizer"></canvas>
+            <div class="controls" style="display:flex; gap:10px; justify-content:center; margin-top:10px;">
+                <button onclick="startCapture()">Engage Mic</button>
+                <button onclick="stopCapture()">Kill Feed</button>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">Module Access</div>
+            <button>Shadow Center</button>
+            <button>SIU Translator</button>
+            <button>Quantum Logic</button>
+            <button>Pattern Matcher</button>
+            <div class="panel-header" style="margin-top:20px;">Active Streams</div>
+            <div id="streams" style="font-size:0.7rem;">- NO ACTIVE STREAMS -</div>
+        </div>
+
+        <div class="panel" id="terminal">
+            <div id="log-output">> TRINITY INITIALIZED. STANDING BY FOR TRZ-7789 INJECTION...</div>
+        </div>
     </div>
 
     <script>
-        // Matrix Background Effect
-        const canvas = document.getElementById('matrix');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()*&^%";
-        const fontSize = 16;
-        const columns = canvas.width / fontSize;
-        const drops = Array(Math.floor(columns)).fill(1);
+        // Clock
+        setInterval(() => {
+            document.getElementById('sys-clock').innerText = new Date().toLocaleTimeString();
+        }, 1000);
 
-        function drawMatrix() {
-            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "#0F0";
-            ctx.font = fontSize + "px arial";
-            for (let i = 0; i < drops.length; i++) {
-                const text = letters.charAt(Math.floor(Math.random() * letters.length));
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        // Matrix Effect
+        const mCanvas = document.getElementById('matrix');
+        const mCtx = mCanvas.getContext('2d');
+        mCanvas.width = window.innerWidth; mCanvas.height = window.innerHeight;
+        const drops = Array(Math.floor(mCanvas.width/16)).fill(1);
+        function drawM() {
+            mCtx.fillStyle = "rgba(0,0,0,0.05)"; mCtx.fillRect(0,0,mCanvas.width,mCanvas.height);
+            mCtx.fillStyle = "#0F0"; mCtx.font = "16px monospace";
+            drops.forEach((y, i) => {
+                const text = String.fromCharCode(Math.random() * 128);
+                mCtx.fillText(text, i*16, y*16);
+                if(y*16 > mCanvas.height && Math.random() > 0.975) drops[i] = 0;
                 drops[i]++;
-            }
+            });
         }
-        setInterval(drawMatrix, 33);
+        setInterval(drawM, 33);
 
-        // Core Engine Functions
-        function log(msg, type = '') {
-            const term = document.getElementById('terminal');
-            const div = document.createElement('div');
-            div.className = type;
-            div.innerHTML = `> ${msg}`;
-            term.appendChild(div);
-            term.scrollTop = term.scrollHeight;
+        // Audio System
+        let audioCtx, analyzer, source;
+        function log(m) {
+            const out = document.getElementById('log-output');
+            out.innerHTML += `<br>> ${m}`;
+            document.getElementById('terminal').scrollTop = out.scrollHeight;
         }
 
-        async function startEngine() {
-            log("INITIATING VOICE CAPTURE...", "success");
+        async function startCapture() {
+            log("ATTEMPTING HARDWARE LINK...");
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                log("MICROPHONE LINK ESTABLISHED.", "success");
-                log("TRINITY ENGINE V10.2.8 ACTIVE.");
-                // Placeholder for TRZ-7789 Frequency Analysis
-            } catch (err) {
-                log("CRITICAL ERROR: MIC ACCESS DENIED", "system-status");
-            }
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                analyzer = audioCtx.createAnalyser();
+                source = audioCtx.createMediaStreamSource(stream);
+                source.connect(analyzer);
+                log("LINK ESTABLISHED. ANALYZER ONLINE.");
+                drawSpectrum();
+            } catch(e) { log("LINK FAILED: " + e.message); }
         }
 
-        function clearLogs() {
-            document.getElementById('terminal').innerHTML = '<div class="success">> SYSTEM RESET.</div>';
+        function drawSpectrum() {
+            if(!analyzer) return;
+            const vCanvas = document.getElementById('visualizer');
+            const vCtx = vCanvas.getContext('2d');
+            const bufferLength = analyzer.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            
+            function animate() {
+                requestAnimationFrame(animate);
+                analyzer.getByteFrequencyData(dataArray);
+                vCtx.fillStyle = '#000';
+                vCtx.fillRect(0,0,vCanvas.width,vCanvas.height);
+                const barWidth = (vCanvas.width / bufferLength) * 2.5;
+                let x = 0;
+                for(let i=0; i<bufferLength; i++) {
+                    const barHeight = dataArray[i]/2;
+                    vCtx.fillStyle = `rgb(0, ${barHeight+100}, 0)`;
+                    vCtx.fillRect(x, vCanvas.height-barHeight, barWidth, barHeight);
+                    x += barWidth + 1;
+                }
+            }
+            animate();
         }
     </script>
 </body>
