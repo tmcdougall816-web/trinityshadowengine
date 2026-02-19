@@ -2,35 +2,70 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TRINITY ENGINE | V10.2.8.7 | STARTER_STRETCH_ICBC</title>
+    <title>TRINITY ENGINE | V10.2.9 | VISUAL_UPGRADE</title>
     <style>
-        body, html { margin: 0; padding: 0; background: #000; color: #0f0; font-family: 'Courier New', monospace; scroll-behavior: smooth; }
+        /* --- CORE TERMINAL STYLES --- */
+        body, html { margin: 0; padding: 0; background: #000; color: #0f0; font-family: 'Courier New', monospace; scroll-behavior: smooth; overflow-x: hidden; }
         
-        /* PERSISTENT MATRIX RAIN */
-        canvas#matrix-bg { position: fixed; top: 0; left: 0; z-index: -2; width: 100vw; height: 100vh; opacity: 0.6; }
+        /* PERSISTENT MATRIX RAIN BG */
+        canvas#matrix-bg { position: fixed; top: 0; left: 0; z-index: -10; width: 100vw; height: 100vh; opacity: 0.7; pointer-events: none;}
 
         /* THE "DEEP DECK" SECTIONS */
-        .deck-section { min-height: 100vh; padding: 60px 20px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; border-bottom: 1px solid rgba(0, 255, 0, 0.2); }
+        .deck-section { min-height: 90vh; padding: 80px 10px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
         
-        /* THE GLASS PANELS (Visual Consistency) */
-        .panel { width: 95%; max-width: 1000px; background: rgba(0, 15, 0, 0.85); border: 1px solid #0f0; padding: 25px; margin: 20px 0; backdrop-filter: blur(5px); box-shadow: 0 0 15px rgba(0, 255, 0, 0.2); }
+        /* --- THE NEW "OPEN CORNER" GLOW PANELS --- */
+        .panel {
+            position: relative;
+            width: 95%; max-width: 900px;
+            background: rgba(0, 10, 0, 0.85); /* High transparency for rain visibility */
+            padding: 40px 30px;
+            margin: 20px 0;
+            backdrop-filter: blur(3px);
+            border: none; /* Remove standard border */
+        }
 
-        #top-hud { position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between; padding: 10px 25px; background: rgba(0, 0, 0, 0.9); border-bottom: 2px solid #0f0; z-index: 100; box-sizing: border-box; }
+        /* The Vertical Tech Brackets (Sides) */
+        .panel::before {
+            content: ''; position: absolute;
+            top: 15%; bottom: 15%; /* Leave top/bottom corners open */
+            left: -2px; right: -2px;
+            border-left: 3px solid #0f0;
+            border-right: 3px solid #0f0;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.6); /* Intense Green Glow */
+            z-index: -1;
+        }
+
+        /* The Horizontal Tech Brackets (Top/Bottom) */
+        .panel::after {
+            content: ''; position: absolute;
+            left: 10%; right: 10%; /* Leave side corners open */
+            top: -2px; bottom: -2px;
+            border-top: 3px solid #0f0;
+            border-bottom: 3px solid #0f0;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.6); /* Intense Green Glow */
+            z-index: -1;
+        }
+
+        h2 { margin-top: 0; text-transform: uppercase; letter-spacing: 3px; border-bottom: 1px dashed #0f0; padding-bottom: 10px; text-shadow: 0 0 10px #0f0; }
+
+        /* --- HUD & CONTROLS --- */
+        #top-hud { position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between; padding: 15px 25px; background: rgba(0, 0, 0, 0.95); border-bottom: 2px solid #0f0; z-index: 100; box-sizing: border-box; box-shadow: 0 5px 20px rgba(0,255,0,0.3); }
 
         /* VISION CORE MODULE */
-        #media-theater { position: relative; width: 100%; max-width: 800px; border: 2px solid #0f0; background: #000; overflow: hidden; }
-        video#eyeballs-feed { width: 100%; display: block; filter: contrast(1.1) brightness(1.1); }
-        #crosshair { position: absolute; top: 50%; left: 50%; width: 120px; height: 120px; border: 1px solid rgba(0, 255, 0, 0.5); border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; }
-        #crosshair::before { content: ''; position: absolute; top: 50%; left: -10px; width: 140px; height: 1px; background: #0f0; }
-        #crosshair::after { content: ''; position: absolute; left: 50%; top: -10px; width: 1px; height: 140px; background: #0f0; }
+        #media-theater { position: relative; width: 100%; max-width: 800px; border: 3px solid #0f0; background: #000; overflow: hidden; box-shadow: 0 0 25px rgba(0,255,0,0.5); margin-bottom: 20px;}
+        video#eyeballs-feed { width: 100%; display: block; filter: contrast(1.2) brightness(1.1) saturate(1.2); }
+        #crosshair { position: absolute; top: 50%; left: 50%; width: 150px; height: 150px; border: 2px solid rgba(0, 255, 0, 0.7); border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; box-shadow: 0 0 15px rgba(0,255,0,0.5), inset 0 0 15px rgba(0,255,0,0.5); }
+        
+        /* FORM ELEMENTS */
+        input, textarea, button, select { width: 100%; background: rgba(0,20,0,0.9); border: 1px solid #0f0; color: #0f0; font-family: 'Courier New'; padding: 15px; margin: 10px 0; box-sizing: border-box; outline: none; font-size: 1.1em; box-shadow: inset 0 0 5px rgba(0,255,0,0.3); }
+        button { font-weight: bold; text-transform: uppercase; letter-spacing: 3px; transition: 0.3s; cursor: pointer; border-width: 2px; }
+        button:hover { background: #0f0; color: #000; box-shadow: 0 0 25px #0f0; }
+        select { -webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg fill="%230f0" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>'); background-repeat: no-repeat; background-position: right 10px center; }
 
-        input, textarea, button, select { width: 100%; background: #000; border: 1px solid #0f0; color: #0f0; font-family: 'Courier New'; padding: 12px; margin: 10px 0; box-sizing: border-box; outline: none; }
-        button { font-weight: bold; text-transform: uppercase; letter-spacing: 2px; transition: 0.3s; }
-        button:hover { background: #0f0; color: #000; cursor: pointer; box-shadow: 0 0 15px #0f0; }
-
-        #nav-dots { position: fixed; right: 25px; top: 50%; transform: translateY(-50%); z-index: 101; display: flex; flex-direction: column; gap: 15px; }
-        .dot { width: 14px; height: 14px; border: 2px solid #0f0; border-radius: 50%; background: transparent; cursor: pointer; transition: 0.3s; }
-        .dot:hover { background: #0f0; }
+        /* NAVIGATION */
+        #nav-dots { position: fixed; right: 30px; top: 50%; transform: translateY(-50%); z-index: 101; display: flex; flex-direction: column; gap: 20px; }
+        .dot { width: 16px; height: 16px; border: 3px solid #0f0; transform: rotate(45deg); background: transparent; cursor: pointer; transition: 0.3s; box-shadow: 0 0 10px #0f0; }
+        .dot:hover { background: #0f0; box-shadow: 0 0 20px #0f0; }
     </style>
 </head>
 <body>
@@ -38,16 +73,16 @@
 <canvas id="matrix-bg"></canvas>
 
 <div id="top-hud">
-    <div>[V10.2.8.7] | STARTER_RESOURCES_ENGAGED | <span id="sec-status">ACTIVE</span></div>
+    <div>[V10.2.9] | VISUAL_CORE_UPGRADE | <span id="sec-status" style="color:cyan; text-shadow: 0 0 5px cyan;">ACTIVE</span></div>
     <div id="clock">00:00:00</div>
 </div>
 
 <div id="nav-dots">
-    <div class="dot" onclick="window.scrollTo(0,0)" title="Vision"></div>
+    <div class="dot" onclick="window.scrollTo(0,0)" title="Vision Core"></div>
     <div class="dot" onclick="document.getElementById('icbc-sec').scrollIntoView()" title="ICBC Audit"></div>
     <div class="dot" onclick="document.getElementById('matrix-sec').scrollIntoView()" title="Matrix Audit"></div>
-    <div class="dot" onclick="document.getElementById('traffic-sec').scrollIntoView()" title="Traffic"></div>
-    <div class="dot" onclick="document.getElementById('witness-sec').scrollIntoView()" title="Witness"></div>
+    <div class="dot" onclick="document.getElementById('traffic-sec').scrollIntoView()" title="Traffic Hub"></div>
+    <div class="dot" onclick="document.getElementById('witness-sec').scrollIntoView()" title="Witness Vault"></div>
 </div>
 
 <section class="deck-section" id="vision-sec">
@@ -56,77 +91,6 @@
         <div id="crosshair"></div>
     </div>
     <div class="panel">
-        <h2 style="margin-top:0;">Biomechanical Integrity</h2>
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; font-size:0.8em;">
-            <div style="border: 1px dashed #0f0; padding:10px;">KINETIC_G: 0.00</div>
-            <div style="border: 1px dashed #0f0; padding:10px;">THRESHOLD_FAIL: FALSE</div>
-        </div>
-    </div>
-</section>
-
-<section class="deck-section" id="icbc-sec">
-    <div class="panel">
-        <h2>ICBC GLP 2026 Zero-Tolerance Audit</h2>
-        <p style="font-size: 0.8em; color: #888;">// AUTOMATED CLASS 5 CLEARANCE ALGORITHM</p>
-        <div style="display:grid; grid-template-columns: 1fr; gap:5px;">
-            <label style="color:#0f0; font-size: 0.8em;">N-LICENSE ISSUE DATE (GLP START):</label>
-            <input type="date" id="glp-start" style="color:#0f0;">
-            
-            <label style="color:#0f0; font-size: 0.8em;">INFRACTION CHECK (ZERO-TOLERANCE TRIPWIRE):</label>
-            <select id="infraction-type">
-                <option value="NONE">NO INFRACTIONS (CLEAN RECORD)</option>
-                <option value="SPEEDING">SPEEDING / EXCESSIVE</option>
-                <option value="DISTRACTED">DISTRACTED DRIVING</option>
-                <option value="IMPAIRED">IMPAIRED / 90-DAY IRP</option>
-            </select>
-            
-            <label style="color:#0f0; font-size: 0.8em;">INFRACTION DATE (IF APPLICABLE):</label>
-            <input type="date" id="infraction-date" style="color:#0f0;">
-            
-            <button onclick="runICBCAudit()">EXECUTE CLASS 5 CLEARANCE AUDIT</button>
-        </div>
-        <div id="icbc-log" style="margin-top:15px; font-size:0.9em; color:#0ff; background: #000; padding: 15px; border: 1px dashed #0f0; min-height: 60px;">
-            > WAITING FOR DRIVER DATA...
-        </div>
-    </div>
-</section>
-
-<section class="deck-section" id="matrix-sec">
-    <div class="panel">
-        <h2>Strategic Matrix (Verbal Audit)</h2>
-        <textarea id="v-claim" rows="5" placeholder="INSERT VERBAL STATEMENT..."></textarea>
-        <textarea id="e-reality" rows="5" placeholder="INSERT EVIDENCE DATA-FACT..."></textarea>
-        <button onclick="runAudit()">DETERMINE PIVOT</button>
-        <div id="audit-log" style="margin-top:15px; font-size:0.8em; color:#0ff;">> Awaiting Audit...</div>
-    </div>
-</section>
-
-<section class="deck-section" id="traffic-sec">
-    <div class="panel">
-        <h2>Traffic Hub & $2B Liability Audit</h2>
-        <input type="text" placeholder="PASTE BC_HIGHWAY_CAM_URL HERE...">
-        <div id="traffic-monitor" style="height:200px; border:1px solid #0f0; margin:10px 0; display:flex; align-items:center; justify-content:center; color:#555;">[CAM_STREAM_READY]</div>
-        <button>ANALYZE FOR $2B LEAKAGE</button>
-    </div>
-</section>
-
-<section class="deck-section" id="witness-sec">
-    <div class="panel">
-        <h2>Witness Vault (Evidence Hashing)</h2>
-        <div id="vault-status" style="height:200px; overflow-y:auto; font-size:0.7em; background:#000; padding:10px; border:1px solid #0f0;">
-            > Initializing Witness Logs...<br>> Encryption: TRZ-7789 Enabled.<br>> Ready for Data Hashing.
-        </div>
-        <button onclick="alert('Upload Core Triggered.')">UPLOAD EVIDENCE FILE</button>
-        <input type="text" id="lockdown-trigger" placeholder="SECURE COMMAND INPUT..." style="margin-top:20px; border-color:#f00;">
-    </div>
-</section>
-
-<script>
-    // --- TRZ-7789 INJECTION: PERSISTENCE MODULE (INDEXEDDB) ---
-    const dbRequest = indexedDB.open("TrinityEngineDB", 1);
-    let trinityDB;
-
-    dbRequest.onupgradeneeded = (e) => {
-        let db = e.target.result;
-        db.
+        <h2>Biomechanical Integrity Check</h2>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; font-
 
