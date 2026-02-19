@@ -3,54 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trinity Engine V10.6.0 - DEBUGGER MODE</title>
+    <title>TRINITY V10.2.8 | SIU SHADOW-CENTER</title>
     <style>
-        :root { --matrix-green: #00ff41; --icbc-blue: #005495; --danger-red: #ff0000; --void-black: #0d0208; }
-        body, html { background-color: var(--void-black); color: var(--matrix-green); font-family: 'Courier New', monospace; margin: 0; padding: 0; height: 100vh; overflow: hidden; display: flex; justify-content: center; align-items: center; }
-        canvas#matrix { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.25; }
-        #main-interface { display: block; width: 95%; max-width: 1300px; height: 92vh; border: 2px solid var(--matrix-green); padding: 30px; background: rgba(13, 2, 8, 0.98); box-shadow: 0 0 30px var(--matrix-green); box-sizing: border-box; }
-        .grid-layout { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto 1fr auto; gap: 25px; height: 100%; }
-        header { grid-column: span 2; text-align: center; border-bottom: 2px solid var(--matrix-green); padding-bottom: 15px; }
-        .panel { border: 1px solid var(--matrix-green); padding: 20px; background: rgba(20, 20, 20, 0.5); display: flex; flex-direction: column; gap: 15px; }
-        button { background: var(--matrix-green); color: #000; border: none; padding: 15px; font-weight: bold; cursor: pointer; }
-        #audit-log { height: 150px; background: #000; border: 1px solid var(--matrix-green); padding: 10px; font-size: 0.8rem; overflow-y: auto; color: var(--matrix-green); white-space: pre-wrap; }
-        .mic-active { background-color: var(--danger-red) !important; color: #fff !important; }
+        :root {
+            --matrix-green: #00ff41;
+            --shadow-bg: #050505;
+            --siu-accent: #003300;
+        }
+        body {
+            background-color: var(--shadow-bg);
+            color: var(--matrix-green);
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+        }
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            opacity: 0.3;
+        }
+        #header {
+            width: 100%;
+            padding: 20px;
+            background: rgba(0, 20, 0, 0.9);
+            border-bottom: 2px solid var(--matrix-green);
+            text-align: center;
+            box-shadow: 0 0 15px var(--siu-accent);
+        }
+        #terminal {
+            width: 90%;
+            max-width: 800px;
+            height: 60vh;
+            margin-top: 20px;
+            background: rgba(0, 0, 0, 0.85);
+            border: 1px solid var(--matrix-green);
+            padding: 15px;
+            overflow-y: auto;
+            font-size: 0.9rem;
+            box-shadow: inset 0 0 10px #000;
+        }
+        .controls {
+            margin-top: 30px;
+            display: flex;
+            gap: 20px;
+        }
+        button {
+            background: transparent;
+            color: var(--matrix-green);
+            border: 1px solid var(--matrix-green);
+            padding: 10px 25px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: var(--matrix-green);
+            color: black;
+            box-shadow: 0 0 10px var(--matrix-green);
+        }
+        .system-status { color: #ff0000; font-weight: bold; }
+        .success { color: #00ff00; }
     </style>
 </head>
 <body>
-<canvas id="matrix"></canvas>
-<div id="main-interface">
-    <header><h1>TRINITY ENGINE V10.6.0</h1><div style="font-size: 0.8rem; color: #fff;">DEBUGGER MODE // ARCHITECT: TY</div></header>
-    <div class="grid-layout">
-        <div class="panel">
-            <h2>I. INITIALIZE INTERVIEW</h2>
-            <button id="mic-btn" onclick="toggleVoice()">START VOICE CAPTURE</button>
-            <div id="status-msg">MIC STATUS: STANDBY</div>
-        </div>
-        <div class="panel">
-            <h2>V. AUDIT LOG</h2>
-            <div id="audit-log">> SYSTEM READY. V10.6.0 LOADED.</div>
-        </div>
+    <canvas id="matrix"></canvas>
+
+    <div id="header">
+        <h1>TRINITY SIU SHADOW-CENTER</h1>
+        <p>BASE VERSION: 10.2.8 | CORE: TRZ-7789 PROTOCOL</p>
     </div>
-</div>
-<script>
-    function addLog(m) { const l = document.getElementById('audit-log'); l.innerHTML += `<br>[${new Date().toLocaleTimeString()}] > ${m}`; l.scrollTop = l.scrollHeight; }
-    let recognition; let isListening = false;
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        recognition = new SpeechRecognition();
-        recognition.continuous = true;
-        recognition.onstart = () => { isListening = true; document.getElementById('mic-btn').classList.add('mic-active'); addLog("VOICE ENGINE STARTED."); };
-        recognition.onerror = (e) => { addLog("CRITICAL ERROR: " + e.error.toUpperCase()); };
-        recognition.onend = () => { isListening = false; document.getElementById('mic-btn').classList.remove('mic-active'); addLog("VOICE ENGINE STOPPED."); };
-    }
-    function toggleVoice() { if (!recognition) return addLog("ERROR: BROWSER NOT SUPPORTED"); isListening ? recognition.stop() : recognition.start(); }
-    const canvas = document.getElementById('matrix'); const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-    const drops = Array(Math.floor(canvas.width/18)).fill(1);
-    function draw() { ctx.fillStyle = "rgba(0,0,0,0.05)"; ctx.fillRect(0,0,canvas.width,canvas.height); ctx.fillStyle = "#0F0"; drops.forEach((y, i) => { ctx.fillText("10", i*18, y*18); if(y*18 > canvas.height && Math.random() > 0.975) drops[i] = 0; drops[i]++; }); }
-    setInterval(draw, 50);
-</script>
+
+    <div id="terminal" id="audit-log">
+        <div class="success">> SYSTEM INITIALIZED...</div>
+        <div>> ATTACHING SIU CORE LIBRARIES...</div>
+        <div>> TRZ-7789 PROTOCOL ENGAGED.</div>
+        <div>> WAITING FOR INPUT...</div>
+    </div>
+
+    <div class="controls">
+        <button onclick="startEngine()">Start Voice Engine</button>
+        <button onclick="clearLogs()">Clear Terminal</button>
+    </div>
+
+    <script>
+        // Matrix Background Effect
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()*&^%";
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#0F0";
+            ctx.font = fontSize + "px arial";
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters.charAt(Math.floor(Math.random() * letters.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 33);
+
+        // Core Engine Functions
+        function log(msg, type = '') {
+            const term = document.getElementById('terminal');
+            const div = document.createElement('div');
+            div.className = type;
+            div.innerHTML = `> ${msg}`;
+            term.appendChild(div);
+            term.scrollTop = term.scrollHeight;
+        }
+
+        async function startEngine() {
+            log("INITIATING VOICE CAPTURE...", "success");
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                log("MICROPHONE LINK ESTABLISHED.", "success");
+                log("TRINITY ENGINE V10.2.8 ACTIVE.");
+                // Placeholder for TRZ-7789 Frequency Analysis
+            } catch (err) {
+                log("CRITICAL ERROR: MIC ACCESS DENIED", "system-status");
+            }
+        }
+
+        function clearLogs() {
+            document.getElementById('terminal').innerHTML = '<div class="success">> SYSTEM RESET.</div>';
+        }
+    </script>
 </body>
 </html>
 
