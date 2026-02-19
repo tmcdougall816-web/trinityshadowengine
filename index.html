@@ -3,124 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trinity Engine V10.2.8.5 - FULL MASTER BUILD</title>
+    <title>Trinity Engine V10.2.8 - SIU Shadow-Center</title>
     <style>
         :root {
             --matrix-green: #00ff41;
             --icbc-blue: #005495;
             --danger-red: #ff0000;
             --void-black: #0d0208;
-            --terminal-gray: #1a1a1a;
-            --kinetic-cyan: #0ff;
-            --kraken-purple: #5841d8;
-            --panel-bg: rgba(15, 15, 15, 0.9);
         }
-
-        *, *::before, *::after { box-sizing: border-box; }
 
         body, html {
             background-color: var(--void-black);
             color: var(--matrix-green);
             font-family: 'Courier New', Courier, monospace;
-            margin: 0; padding: 0; height: 100vh; overflow: hidden;
-            display: flex; justify-content: center; align-items: center;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         canvas#matrix {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; opacity: 0.3; pointer-events: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.25;
         }
 
-        /* --- ACCESS GATE --- */
         #security-lock {
-            width: 500px; padding: 60px; border: 4px solid var(--matrix-green);
-            background: rgba(0, 0, 0, 0.98); box-shadow: 0 0 60px rgba(0, 255, 65, 0.5);
-            text-align: center; z-index: 1000; transition: transform 0.5s ease-in;
+            width: 450px;
+            padding: 50px;
+            border: 3px solid var(--matrix-green);
+            background: rgba(0, 0, 0, 0.98);
+            box-shadow: 0 0 50px rgba(0, 255, 65, 0.4);
+            text-align: center;
+            z-index: 1000;
         }
 
-        .lock-header { font-size: 2rem; letter-spacing: 10px; margin-bottom: 40px; text-shadow: 0 0 15px var(--matrix-green); }
-
-        /* --- MAIN INTERFACE --- */
         #main-interface {
-            display: none; width: 96%; max-width: 1500px; height: 95vh;
-            border: 2px solid var(--matrix-green); padding: 40px;
-            background: rgba(10, 10, 10, 0.97); box-shadow: 0 0 40px var(--matrix-green);
-            overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth;
+            display: none;
+            width: 95%;
+            max-width: 1300px;
+            height: 92vh;
+            border: 2px solid var(--matrix-green);
+            padding: 30px;
+            background: rgba(13, 2, 8, 0.98);
+            box-shadow: 0 0 30px var(--matrix-green);
+            overflow: hidden;
         }
 
-        header { 
-            text-align: center; border-bottom: 3px double var(--matrix-green); 
-            padding-bottom: 30px; margin-bottom: 50px; 
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto 1fr auto;
+            gap: 25px;
+            height: 100%;
         }
 
-        /* --- TIER STRUCTURE --- */
-        .tier { margin-bottom: 80px; padding-bottom: 50px; border-bottom: 1px solid rgba(0, 255, 65, 0.2); }
-        .tier-header { 
-            font-size: 1.6rem; color: #fff; letter-spacing: 8px; margin-bottom: 35px; 
-            text-shadow: 0 0 12px var(--matrix-green); text-align: center; text-transform: uppercase;
+        header {
+            grid-column: span 2;
+            text-align: center;
+            border-bottom: 2px solid var(--matrix-green);
+            padding-bottom: 15px;
         }
 
-        .tier-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-
-        .panel { 
-            border: 1px solid var(--matrix-green); padding: 30px; 
-            background: var(--panel-bg); display: flex; flex-direction: column; gap: 20px;
-            box-shadow: inset 0 0 15px rgba(0, 255, 65, 0.1);
+        .panel {
+            border: 1px solid var(--matrix-green);
+            padding: 20px;
+            background: rgba(20, 20, 20, 0.5);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
 
-        h2 { 
-            font-size: 1.1rem; margin: 0; color: #fff; text-transform: uppercase; 
-            border-left: 5px solid var(--matrix-green); padding-left: 15px; letter-spacing: 2px;
+        input, select {
+            background: #000;
+            border: 1px solid #333;
+            color: var(--matrix-green);
+            padding: 12px;
+            width: 100%;
+            box-sizing: border-box;
         }
 
-        /* --- INPUTS & BUTTONS --- */
-        input, select { 
-            background: #000; border: 1px solid #444; color: var(--matrix-green); 
-            padding: 18px; font-family: inherit; font-size: 1.1rem; width: 100%;
-            transition: border 0.3s;
-        }
-        input:focus { border-color: var(--kinetic-cyan); outline: none; }
-
-        button { 
-            background: var(--matrix-green); color: #000; border: none; padding: 18px; 
-            font-weight: bold; text-transform: uppercase; cursor: pointer; 
-            letter-spacing: 3px; font-size: 1rem; transition: 0.3s;
-        }
-        button:hover { background: #fff; box-shadow: 0 0 25px #fff; transform: translateY(-2px); }
-
-        /* --- THEATER & PROBABILITY --- */
-        #media-theater { 
-            flex-grow: 1; min-height: 400px; background: #000; border: 2px dashed #333; 
-            display: flex; align-items: center; justify-content: center; overflow: hidden;
-            position: relative;
-        }
-        #media-theater img { width: 100%; height: 100%; object-fit: contain; }
-
-        .prob-container { height: 70px; background: #050505; border: 2px solid #222; position: relative; overflow: hidden; }
-        .prob-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #f00, #ff0, #0f0); transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-
-        .telemetry-readout { 
-            display: flex; justify-content: space-between; font-size: 1rem; 
-            color: var(--kinetic-cyan); background: #000; padding: 20px; 
-            border: 1px solid var(--kinetic-cyan); box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+        button {
+            background: var(--matrix-green);
+            color: #000;
+            border: none;
+            padding: 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            letter-spacing: 2px;
         }
 
-        /* --- THE UNIFIED VAULT --- */
-        #unified-vault.vault-active { border: 2px solid var(--kraken-purple); box-shadow: 0 0 30px var(--kraken-purple); }
-        .kraken-input { border-color: var(--kraken-purple) !important; color: #fff !important; }
+        button:hover { background: #fff; }
 
-        #audit-log { 
-            height: 250px; background: #000; border: 1px solid var(--matrix-green); 
-            padding: 20px; font-size: 0.95rem; overflow-y: auto; margin-top: 20px;
-            color: #aaa; border-radius: 4px;
+        .prob-bar {
+            height: 50px;
+            width: 0%;
+            background: linear-gradient(90deg, #ff0000, #ffff00, #00ff41);
+            transition: width 2s ease;
         }
 
-        /* --- UTILS --- */
-        .glitch { animation: glitch 2s infinite; }
-        @keyframes glitch { 0% { opacity: 1; transform: skew(0); } 20% { opacity: 0.8; transform: skew(1deg); } 40% { opacity: 1; } 100% { opacity: 1; } }
-        ::-webkit-scrollbar { width: 12px; }
-        ::-webkit-scrollbar-track { background: #000; }
-        ::-webkit-scrollbar-thumb { background: var(--matrix-green); border: 3px solid #000; }
+        #audit-log {
+            height: 150px;
+            background: #000;
+            border: 1px solid var(--matrix-green);
+            padding: 10px;
+            font-size: 0.8rem;
+            overflow-y: auto;
+        }
     </style>
 </head>
 <body>
@@ -128,224 +125,98 @@
 <canvas id="matrix"></canvas>
 
 <div id="security-lock">
-    <div class="lock-header glitch">ACCESS RESTRICTED</div>
-    <p style="color: #fff; font-size: 0.8rem; margin-bottom: 30px;">TRZ-7789 FORENSIC ENCRYPTION ACTIVE</p>
-    <input type="text" id="access-id" placeholder="ARCHITECT ID" style="margin-bottom: 15px; text-align: center;">
-    <input type="password" id="protocol-key" placeholder="SECURITY KEY" style="margin-bottom: 30px; text-align: center;">
-    <button onclick="unlock()" style="width: 100%;">INITIALIZE SHADOW-CENTER</button>
+    <div class="lock-header" style="font-size:1.8rem; letter-spacing:8px; margin-bottom:30px;">ACCESS RESTRICTED</div>
+    <input type="text" id="access-id" placeholder="ARCHITECT ACCESS ID" style="margin-bottom:15px; text-align:center;">
+    <input type="password" id="protocol-key" placeholder="PROTOCOL SECURITY KEY" style="margin-bottom:25px; text-align:center;">
+    <button onclick="unlock()">INITIALIZE SHADOW-CENTER</button>
 </div>
 
 <div id="main-interface">
     <header>
-        <h1 style="margin: 0; letter-spacing: 12px; font-size: 2.2rem;">TRINITY ENGINE V10.2.8.5</h1>
-        <div style="font-size: 1rem; color: #fff; margin-top: 10px; letter-spacing: 3px;">
-            SIU ADJUDICATION // KRAKEN CDM INTERFACE // MASTER ARCHITECTURE
-        </div>
+        <h1 style="margin: 0; letter-spacing: 10px;">TRINITY ENGINE V10.2.8</h1>
+        <div style="font-size: 0.8rem; color: #fff; margin-top: 5px;">SIU AUDIT SUITE // $2B RECOVERY LOGIC // ARCHITECT: TY</div>
     </header>
 
-    <div class="tier">
-        <h2 class="tier-header">TIER I : CASE INITIATION & TELEMETRY</h2>
-        <div class="tier-grid">
-            <div class="panel">
-                <h2>IDENTIFICATION</h2>
-                <input type="text" id="case-id" placeholder="CLAIM ID / REFERENCE" oninput="calculateProbability()">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <button id="voice-btn" onclick="toggleVoice()">VOICE CAPTURE</button>
-                    <button onclick="addLog('INITIATING EXTERNAL AUDIT...')">AUDIT DB</button>
-                </div>
-            </div>
-            <div class="panel">
-                <h2>PHYSICS ENGINE</h2>
-                <div style="display: flex; gap: 15px;">
-                    <input type="number" id="velocity" placeholder="VELOCITY (KM/H)" oninput="updatePhysics()">
-                    <input type="number" id="impact" placeholder="IMPACT (G-FORCE)" oninput="updatePhysics()">
-                </div>
-                <div class="telemetry-readout">
-                    <span>[ VELOCITY: <span id="vel-out">000</span> ]</span>
-                    <span>[ G-FORCE: <span id="imp-out">00.0</span> ]</span>
-                </div>
-            </div>
+    <div class="grid-layout">
+        <div class="panel">
+            <h2>I. INITIALIZE CLAIM INTERVIEW</h2>
+            <button onclick="addLog('INITIALIZING SPEECH-TO-REALITY SYNC...')">START VOICE CAPTURE</button>
+            <button onclick="addLog('EXTERNAL DATA STREAMING...')">INITIALIZE EXTERNAL AUDIT</button>
         </div>
-    </div>
 
-    <div class="tier">
-        <h2 class="tier-header">TIER II : VISUAL RECON & PROBABILITY</h2>
-        <div class="tier-grid">
-            <div class="panel">
-                <h2>SCENE INJECTION THEATER</h2>
-                <select id="cam-presets" onchange="document.getElementById('cam-url').value = this.value; loadCamera();">
-                    <option value="">-- SELECT TARGET HIGHWAY CAM --</option>
-                    <option value="https://images.drivebc.ca/bchighwaycam/pub/cameras/104.jpg">HWY 3 - PAULSON SUMMIT</option>
-                    <option value="https://images.drivebc.ca/bchighwaycam/pub/cameras/34.jpg">HWY 3B - SMELTER HILL</option>
-                    <option value="https://images.drivebc.ca/bchighwaycam/pub/cameras/116.jpg">HWY 22 - CASTLEGAR</option>
-                </select>
-                <input type="text" id="cam-url" placeholder="CUSTOM URL CLOUD LINK" oninput="loadCamera()">
-                <div id="media-theater">[ CAMERA INJECTION STANDBY ]</div>
-            </div>
-            <div class="panel">
-                <h2>SETTLEMENT PROBABILITY ENGINE</h2>
-                <div class="prob-container"><div id="bar" class="prob-bar"></div></div>
-                <div id="p-text" style="text-align: center; font-weight: bold; font-size: 2rem; color: #f00; margin-top: 20px;">0% CERTAINTY</div>
-                <p id="logic-readout" style="font-size: 0.8rem; text-align: center; color: #666;">Awaiting full forensic telemetry...</p>
-            </div>
+        <div class="panel">
+            <h2>IV. SETTLEMENT PROBABILITY</h2>
+            <div style="background:#111; border:2px solid #333;"><div id="bar" class="prob-bar"></div></div>
+            <div id="p-text" style="text-align: center; font-weight: bold;">0% CERTAINTY</div>
         </div>
-    </div>
 
-    <div class="tier" style="border-bottom: none;">
-        <h2 class="tier-header">TIER III : ADJUDICATION VAULT & MARKET EXECUTION</h2>
-        <div class="tier-grid" style="grid-template-columns: 1fr;">
-            <div class="panel" id="unified-vault">
-                <h2>MASTER VAULT SETTLEMENT</h2>
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
-                    <input type="number" id="cash" placeholder="TOTAL RECOVERY TARGET ($)" oninput="calculateProbability()">
-                    <select id="assess" onchange="calculateProbability()">
-                        <option value="none">-- ADJUDICATION ASSESSMENT --</option>
-                        <option value="verified">VERIFIED / CREDIBLE</option>
-                        <option value="adverse">ADVERSE / FRAUD RISK</option>
-                    </select>
-                    <button onclick="commitVault()" id="seal-btn">SEAL JUDGMENT</button>
-                </div>
+        <div class="panel">
+            <h2>II. GEO-SPATIAL ACCIDENT RECON</h2>
+            <input type="text" id="case-id" placeholder="CLAIM ID">
+            <input type="text" id="statute" placeholder="STATUTORY ANCHOR">
+            <button onclick="runAudit()">VALIDATE LIABILITY DATA</button>
+        </div>
 
-                <div id="kraken-gate" style="display: none; border-top: 3px double var(--kraken-purple); padding-top: 30px; margin-top: 20px;">
-                    <h2 style="color: var(--kraken-purple); border-left-color: var(--kraken-purple);">KRAKEN CDM EXECUTION ENABLED</h2>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
-                        <input type="text" id="kraken-key" class="kraken-input" placeholder="API KEY">
-                        <input type="password" id="kraken-secret" class="kraken-input" placeholder="PRIVATE SECRET">
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-top: 20px;">
-                        <select id="asset-pair" class="kraken-input">
-                            <option value="XBTUSD">BTC / USD</option>
-                            <option value="ETHUSD">ETH / USD</option>
-                        </select>
-                        <input type="number" id="trade-size" class="kraken-input" placeholder="ORDER SIZE (UNITS)">
-                        <button style="background: var(--kraken-purple); color: #fff;" onclick="executeMarket()">EXECUTE CDM TRADE</button>
-                    </div>
-                </div>
-
-                <div id="audit-log">> TRZ-7789 SHADOW-CENTER INITIALIZED.</div>
-            </div>
+        <div class="panel">
+            <h2>V. CAMERA INJECTION STORAGE</h2>
+            <input type="number" id="cash" placeholder="TOTAL RECOVERY TARGET ($)">
+            <select id="assess">
+                <option value="none">-- SELECT ASSESSMENT --</option>
+                <option value="verified">VERIFIED CREDIBLE (REALITY LOCK)</option>
+            </select>
+            <button onclick="commitVault()">COMMIT TO ADJUDICATION</button>
+            <div id="audit-log">> SYSTEM READY. RESTORED TO ORIGINAL JURISDICTION.</div>
         </div>
     </div>
 </div>
 
 <script>
-    // --- PROTOCOL RECOVERY & LOGIN ---
     function unlock() {
-        const id = document.getElementById('access-id').value.trim().toUpperCase();
-        const key = document.getElementById('protocol-key').value.trim();
+        const id = document.getElementById('access-id').value.toUpperCase();
+        const key = document.getElementById('protocol-key').value;
         if(id === "TY-ARCHITECT-01" && key === "TRZ-7789-APEX") {
-            document.getElementById('security-lock').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('security-lock').style.display = 'none';
-                document.getElementById('main-interface').style.display = 'block';
-                addLog("ACCESS GRANTED. WELCOME ARCHITECT TY.");
-            }, 500);
-        } else {
-            addLog("ACCESS DENIED: INVALID PROTOCOL CREDENTIALS.");
+            document.getElementById('security-lock').style.display = 'none';
+            document.getElementById('main-interface').style.display = 'block';
         }
     }
 
-    // --- SYSTEM LOGS ---
     function addLog(m) {
         const l = document.getElementById('audit-log');
-        const timestamp = new Date().toLocaleTimeString();
-        l.innerHTML += `<br><span style="color:#666">[${timestamp}]</span> > ${m}`;
+        l.innerHTML += `<br>> ${m}`;
         l.scrollTop = l.scrollHeight;
     }
 
-    // --- FORENSIC LOGIC ---
-    function updatePhysics() {
-        const v = document.getElementById('velocity').value;
-        const g = document.getElementById('impact').value;
-        document.getElementById('vel-out').innerText = v ? v.padStart(3, '0') : '000';
-        document.getElementById('imp-out').innerText = g ? parseFloat(g).toFixed(1).padStart(4, '0') : '00.0';
-        calculateProbability();
+    function runAudit() {
+        addLog("AUDITING CASE AGAINST BC STATUTES...");
+        document.getElementById('bar').style.width = "72%";
+        document.getElementById('p-text').innerText = "72% CERTAINTY";
     }
 
-    function calculateProbability() {
-        let score = 0;
-        const caseID = document.getElementById('case-id').value;
-        const vel = document.getElementById('velocity').value;
-        const imp = document.getElementById('impact').value;
-        const cash = document.getElementById('cash').value;
-        const assess = document.getElementById('assess').value;
-
-        if(caseID) score += 10;
-        if(vel && imp) score += 20;
-        if(cash) score += 10;
-        if(assess === 'verified') score += 60;
-        if(assess === 'adverse') score -= 50;
-
-        score = Math.max(0, Math.min(100, score));
-
-        document.getElementById('bar').style.width = score + "%";
-        const pText = document.getElementById('p-text');
-        pText.innerText = score + "% CERTAINTY";
-        
-        if(score >= 80) { pText.style.color = "var(--matrix-green)"; document.getElementById('logic-readout').innerText = "Signal Strong: Vault Seal Authorized."; }
-        else if(score >= 40) { pText.style.color = "yellow"; document.getElementById('logic-readout').innerText = "Signal Unstable: More data required."; }
-        else { pText.style.color = "var(--danger-red)"; document.getElementById('logic-readout').innerText = "Signal Weak: Adjudication blocked."; }
-        
-        return score;
-    }
-
-    function loadCamera() {
-        const url = document.getElementById('cam-url').value;
-        if(url) {
-            document.getElementById('media-theater').innerHTML = `<img src="${url}?t=${new Date().getTime()}" alt="FEED">`;
-            addLog(`INJECTING VISUAL RECON: ${url}`);
-        }
-    }
-
-    // --- MARKET GATE ---
     function commitVault() {
-        const score = calculateProbability();
-        if(score < 80) {
-            addLog("SEAL FAILED: INSUFFICIENT PROBABILITY SCORE.");
-            return;
+        const status = document.getElementById('assess').value;
+        if(status === 'verified') {
+            document.getElementById('bar').style.width = "100%";
+            document.getElementById('p-text').innerText = "100% - FLAWLESS VICTORY";
+            addLog("RECOVERY FINALIZED IN VAULT.");
         }
-        document.getElementById('seal-btn').innerText = "JUDGMENT SEALED";
-        document.getElementById('seal-btn').disabled = true;
-        document.getElementById('unified-vault').classList.add('vault-active');
-        document.getElementById('kraken-gate').style.display = "block";
-        addLog("VAULT LOCKED. CDM TRADING PROTOCOL INITIATED.");
     }
 
-    function executeMarket() {
-        const key = document.getElementById('kraken-key').value;
-        const pair = document.getElementById('asset-pair').value;
-        const vol = document.getElementById('trade-size').value;
-        if(!key || !vol) { addLog("EXECUTION ERROR: MISSING API CREDENTIALS."); return; }
-        
-        addLog(`CDM MARKET ACTION: SENDING ORDER [${pair}] VOLUME: [${vol}]...`);
-        setTimeout(() => {
-            addLog(`KRAKEN GATEWAY: ORDER RECEIVED. BROADCASTING TO EXCHANGE...`);
-            addLog(`<span style="color:var(--kraken-purple)">TRANSACTION COMPLETE. SETTLEMENT LOGGED.</span>`);
-        }, 1500);
-    }
-
-    // --- MATRIX BACKGROUND ---
     const canvas = document.getElementById('matrix');
     const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth; canvas.height = window.innerHeight;
     const chars = "1010101TRINITY7789APEX";
-    const fontSize = 16;
-    const columns = canvas.width/fontSize;
-    const drops = Array(Math.floor(columns)).fill(1);
-
+    const drops = Array(Math.floor(canvas.width/18)).fill(1);
     function draw() {
-        ctx.fillStyle = "rgba(0,0,0,0.05)";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "#0F0";
-        ctx.font = fontSize + "px monospace";
-        for(let i = 0; i < drops.length; i++) {
-            const text = chars[Math.floor(Math.random()*chars.length)];
-            ctx.fillText(text, i*fontSize, drops[i]*fontSize);
-            if(drops[i]*fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        ctx.fillStyle = "rgba(0,0,0,0.05)"; ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctx.fillStyle = "#0F0"; ctx.font = "15px monospace";
+        drops.forEach((y, i) => {
+            const txt = chars[Math.floor(Math.random()*chars.length)];
+            ctx.fillText(txt, i*18, y*18);
+            if(y*18 > canvas.height && Math.random() > 0.975) drops[i] = 0;
             drops[i]++;
-        }
+        });
     }
-    setInterval(draw, 33);
+    setInterval(draw, 50);
 </script>
 </body>
 </html>
