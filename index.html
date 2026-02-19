@@ -106,7 +106,7 @@
             box-sizing: border-box;
         }
 
-        input:focus { border-color: var(--matrix-green); outline: none; box-shadow: 0 0 10px var(--matrix-green); }
+        input:focus, select:focus { border-color: var(--matrix-green); outline: none; box-shadow: 0 0 10px var(--matrix-green); }
 
         button {
             background: var(--matrix-green);
@@ -124,6 +124,7 @@
 
         #media-theater {
             flex-grow: 1;
+            min-height: 250px; /* UPGRADED: Expanded theater height */
             background: #000;
             border: 1px dashed #444;
             display: flex;
@@ -132,6 +133,13 @@
             color: #333;
             font-size: 0.8rem;
             text-transform: uppercase;
+            overflow: hidden;
+        }
+        
+        #media-theater img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .prob-container {
@@ -203,8 +211,20 @@
             <input type="text" id="case-id" placeholder="CLAIM ID (e.g. TC-2023-PILEUP-3.5M)">
             <input type="text" id="statute" placeholder="STATUTORY ANCHOR (RSBC 1996 c.318 s.144)">
             <button onclick="runAudit()">VALIDATE LIABILITY DATA</button>
-            <label style="font-size: 0.7rem; color: #666;">III. LIVE SCENE INJECTION</label>
-            <input type="text" placeholder="TRAFFIC CAMERA URL CLOUD LINK">
+            
+            <label style="font-size: 0.7rem; color: #666; margin-top: 10px; margin-bottom: -5px;">III. LIVE SCENE INJECTION</label>
+            
+            <select id="cam-presets" onchange="document.getElementById('cam-url').value = this.value;">
+                <option value="">-- SELECT TARGET HIGHWAY CAM --</option>
+                <option value="https://images.drivebc.ca/bchighwaycam/pub/cameras/34.jpg">HWY 3B - SMELTER HILL</option>
+                <option value="https://images.drivebc.ca/bchighwaycam/pub/cameras/104.jpg">HWY 3 - PAULSON SUMMIT</option>
+                <option value="https://images.drivebc.ca/bchighwaycam/pub/cameras/116.jpg">HWY 22 - CASTLEGAR</option>
+                <option value="https://images.drivebc.ca/bchighwaycam/pub/cameras/35.jpg">HWY 3 - NANCY GREENE LAKE</option>
+            </select>
+
+            <input type="text" id="cam-url" placeholder="TRAFFIC CAMERA URL CLOUD LINK">
+            <button style="background: #005495; color: #fff;" onclick="loadCamera()">INJECT LIVE FEED</button>
+            
             <div id="media-theater">[ CAMERA INJECTION STANDBY ]</div>
         </div>
 
@@ -253,6 +273,20 @@
         }, 1200);
     }
 
+    // TRZ-7789 INJECTION: LIVE CAM LOGIC
+    function loadCamera() {
+        const url = document.getElementById('cam-url').value;
+        const theater = document.getElementById('media-theater');
+        if(url) {
+            // Bypass browser cache to pull absolute real-time image
+            const cacheBypass = url.includes('?') ? '&t=' : '?t=';
+            theater.innerHTML = `<img src="${url}${cacheBypass}${new Date().getTime()}" alt="LIVE HIGHWAY FEED">`;
+            addLog(`INJECTING TRAFFIC CAM STREAM: ${url}`);
+        } else {
+            theater.innerHTML = "<span style='color:red;'>[ INVALID OR MISSING STREAM URL ]</span>";
+        }
+    }
+
     function commitVault() {
         const val = document.getElementById('cash').value;
         const status = document.getElementById('assess').value;
@@ -287,5 +321,4 @@
 </script>
 </body>
 </html>
-
 
