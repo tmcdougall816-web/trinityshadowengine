@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TRINITY ENGINE | V10.2.8.7 | STARTER_STRETCH</title>
+    <title>TRINITY ENGINE | V10.2.8.7 | STARTER_STRETCH_ICBC</title>
     <style>
         body, html { margin: 0; padding: 0; background: #000; color: #0f0; font-family: 'Courier New', monospace; scroll-behavior: smooth; }
         
@@ -24,7 +24,7 @@
         #crosshair::before { content: ''; position: absolute; top: 50%; left: -10px; width: 140px; height: 1px; background: #0f0; }
         #crosshair::after { content: ''; position: absolute; left: 50%; top: -10px; width: 1px; height: 140px; background: #0f0; }
 
-        input, textarea, button { width: 100%; background: #000; border: 1px solid #0f0; color: #0f0; font-family: 'Courier New'; padding: 12px; margin: 10px 0; box-sizing: border-box; outline: none; }
+        input, textarea, button, select { width: 100%; background: #000; border: 1px solid #0f0; color: #0f0; font-family: 'Courier New'; padding: 12px; margin: 10px 0; box-sizing: border-box; outline: none; }
         button { font-weight: bold; text-transform: uppercase; letter-spacing: 2px; transition: 0.3s; }
         button:hover { background: #0f0; color: #000; cursor: pointer; box-shadow: 0 0 15px #0f0; }
 
@@ -44,7 +44,8 @@
 
 <div id="nav-dots">
     <div class="dot" onclick="window.scrollTo(0,0)" title="Vision"></div>
-    <div class="dot" onclick="document.getElementById('matrix-sec').scrollIntoView()" title="Audit"></div>
+    <div class="dot" onclick="document.getElementById('icbc-sec').scrollIntoView()" title="ICBC Audit"></div>
+    <div class="dot" onclick="document.getElementById('matrix-sec').scrollIntoView()" title="Matrix Audit"></div>
     <div class="dot" onclick="document.getElementById('traffic-sec').scrollIntoView()" title="Traffic"></div>
     <div class="dot" onclick="document.getElementById('witness-sec').scrollIntoView()" title="Witness"></div>
 </div>
@@ -59,6 +60,33 @@
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; font-size:0.8em;">
             <div style="border: 1px dashed #0f0; padding:10px;">KINETIC_G: 0.00</div>
             <div style="border: 1px dashed #0f0; padding:10px;">THRESHOLD_FAIL: FALSE</div>
+        </div>
+    </div>
+</section>
+
+<section class="deck-section" id="icbc-sec">
+    <div class="panel">
+        <h2>ICBC GLP 2026 Zero-Tolerance Audit</h2>
+        <p style="font-size: 0.8em; color: #888;">// AUTOMATED CLASS 5 CLEARANCE ALGORITHM</p>
+        <div style="display:grid; grid-template-columns: 1fr; gap:5px;">
+            <label style="color:#0f0; font-size: 0.8em;">N-LICENSE ISSUE DATE (GLP START):</label>
+            <input type="date" id="glp-start" style="color:#0f0;">
+            
+            <label style="color:#0f0; font-size: 0.8em;">INFRACTION CHECK (ZERO-TOLERANCE TRIPWIRE):</label>
+            <select id="infraction-type">
+                <option value="NONE">NO INFRACTIONS (CLEAN RECORD)</option>
+                <option value="SPEEDING">SPEEDING / EXCESSIVE</option>
+                <option value="DISTRACTED">DISTRACTED DRIVING</option>
+                <option value="IMPAIRED">IMPAIRED / 90-DAY IRP</option>
+            </select>
+            
+            <label style="color:#0f0; font-size: 0.8em;">INFRACTION DATE (IF APPLICABLE):</label>
+            <input type="date" id="infraction-date" style="color:#0f0;">
+            
+            <button onclick="runICBCAudit()">EXECUTE CLASS 5 CLEARANCE AUDIT</button>
+        </div>
+        <div id="icbc-log" style="margin-top:15px; font-size:0.9em; color:#0ff; background: #000; padding: 15px; border: 1px dashed #0f0; min-height: 60px;">
+            > WAITING FOR DRIVER DATA...
         </div>
     </div>
 </section>
@@ -94,47 +122,11 @@
 </section>
 
 <script>
-    // --- MATRIX RAIN ENGINE ---
-    const canvas = document.getElementById('matrix-bg');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-    const chars = "0123456789ABCDEFTRINITY7789";
-    const fontSize = 16;
-    const columns = canvas.width / fontSize;
-    const drops = Array(Math.floor(columns)).fill(1);
+    // --- TRZ-7789 INJECTION: PERSISTENCE MODULE (INDEXEDDB) ---
+    const dbRequest = indexedDB.open("TrinityEngineDB", 1);
+    let trinityDB;
 
-    function drawMatrix() {
-        ctx.fillStyle = "rgba(0, 0, 0, 0.1)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "#0f0"; ctx.font = fontSize + "px monospace";
-        for (let i = 0; i < drops.length; i++) {
-            const text = chars[Math.floor(Math.random() * chars.length)];
-            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-            drops[i]++;
-        }
-    }
-    setInterval(drawMatrix, 35);
-    setInterval(() => document.getElementById('clock').innerText = new Date().toLocaleTimeString(), 1000);
-
-    // --- VISION CORE ---
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }).then(s => {
-        document.getElementById('eyeballs-feed').srcObject = s;
-    }).catch(e => console.log("Cam Blocked"));
-
-    // --- SECURITY VOID-LOCK ---
-    document.getElementById('lockdown-trigger').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            const val = e.target.value.toLowerCase();
-            if (val.includes("grass is not greener")) {
-                document.body.innerHTML = "<h1 style='color:white; font-family:sans-serif; padding:50px;'>404 NOT FOUND</h1>";
-            }
-        }
-    });
-
-    function runAudit() {
-        document.getElementById('audit-log').innerHTML = "> ANALYZING...<br><span style='color:red;'>DISCREPANCY DETECTED: STATUTORY VIOLATION CONFIRMED.</span>";
-    }
-</script>
-</body>
-</html>
+    dbRequest.onupgradeneeded = (e) => {
+        let db = e.target.result;
+        db.
 
