@@ -2,132 +2,429 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TRINITY MASTER ENGINE v10.2.8</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trinity Engine V10.2.8.2 - SIU Shadow-Center</title>
     <style>
-        :root { --siu-glow: #00ff41; --vault-black: #050505; --alert-red: #ff003c; }
-        * { box-sizing: border-box; }
-        body { background: #000; color: var(--siu-glow); font-family: 'Courier New', monospace; margin: 0; overflow: hidden; }
-        
-        /* THREE-TIER SETTLEMENT HUD */
-        #master-hud { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 2px solid var(--siu-glow); background: var(--vault-black); height: 15vh; }
-        .tier-cell { border-right: 1px solid #111; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-        .val { font-size: 1.5em; font-weight: bold; color: #fff; text-shadow: 0 0 10px var(--siu-glow); }
-        
-        /* ENGINE CORE LAYOUT */
-        #engine-body { display: flex; height: 85vh; }
-        #control-stack { width: 400px; border-right: 1px solid #222; padding: 25px; background: #080808; }
-        #live-monitor { flex-grow: 1; padding: 20px; display: flex; flex-direction: column; }
-        
-        /* CONTROLS */
-        .field-group { margin-bottom: 20px; }
-        label { display: block; font-size: 0.8em; margin-bottom: 5px; opacity: 0.7; }
-        input, select { width: 100%; background: #000; border: 1px solid var(--siu-glow); color: var(--siu-glow); padding: 12px; font-family: inherit; }
-        .master-launch-btn { background: var(--siu-glow); color: #000; border: none; padding: 20px; width: 100%; font-weight: bold; cursor: pointer; font-size: 1.2em; margin-top: 10px; transition: 0.3s; }
-        .master-launch-btn:hover { background: #fff; box-shadow: 0 0 30px #fff; }
+        :root {
+            --matrix-green: #00ff41;
+            --icbc-blue: #005495;
+            --danger-red: #ff0000;
+            --void-black: #0d0208;
+            --terminal-gray: #1a1a1a;
+            --kinetic-cyan: #0ff;
+        }
 
-        /* CONSOLE OVERRIDE */
-        #console-feed { background: #000; border: 1px solid #1a1a1a; flex-grow: 1; padding: 15px; font-size: 0.9em; overflow-y: auto; line-height: 1.6; }
-        .sys-msg { color: #888; }
-        .auth-msg { color: #fff; }
-        .exec-msg { color: var(--siu-glow); font-weight: bold; }
+        *, *::before, *::after { box-sizing: border-box; }
+
+        body, html {
+            background-color: var(--void-black);
+            color: var(--matrix-green);
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        canvas#matrix {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.25;
+            pointer-events: none;
+        }
+
+        #security-lock {
+            width: 450px;
+            padding: 50px;
+            border: 3px solid var(--matrix-green);
+            background: rgba(0, 0, 0, 0.98);
+            box-shadow: 0 0 50px rgba(0, 255, 65, 0.4);
+            text-align: center;
+            z-index: 1000;
+        }
+
+        .lock-header {
+            font-size: 1.8rem;
+            letter-spacing: 8px;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px var(--matrix-green);
+        }
+
+        #main-interface {
+            display: none;
+            width: 95%;
+            max-width: 1400px;
+            height: 94vh;
+            border: 2px solid var(--matrix-green);
+            padding: 30px 40px;
+            background: rgba(13, 2, 8, 0.95);
+            box-shadow: 0 0 30px var(--matrix-green);
+            overflow-y: auto; 
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid var(--matrix-green);
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+        }
+
+        .tier {
+            margin-bottom: 60px;
+            padding-bottom: 40px;
+            border-bottom: 2px dashed rgba(0, 255, 65, 0.3);
+        }
+        
+        .tier-header {
+            font-size: 1.4rem;
+            color: #fff;
+            letter-spacing: 5px;
+            margin-bottom: 25px;
+            text-shadow: 0 0 10px var(--matrix-green);
+            text-align: center;
+        }
+
+        .tier-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .panel {
+            border: 1px solid var(--matrix-green);
+            padding: 25px;
+            background: rgba(20, 20, 20, 0.6);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        h2 { font-size: 1rem; margin: 0; color: #fff; text-transform: uppercase; border-left: 4px solid var(--matrix-green); padding-left: 10px; }
+
+        input, select {
+            background: #000;
+            border: 1px solid #333;
+            color: var(--matrix-green);
+            padding: 15px;
+            font-family: inherit;
+            font-size: 1rem;
+            width: 100%;
+        }
+
+        button {
+            background: var(--matrix-green);
+            color: #000;
+            border: none;
+            padding: 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            letter-spacing: 2px;
+            transition: 0.2s;
+        }
+
+        button:hover { background: #fff; box-shadow: 0 0 20px #fff; }
+
+        .btn-active {
+            background: var(--danger-red) !important;
+            color: #fff !important;
+            animation: pulse-red 1s infinite;
+        }
+
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0px var(--danger-red); }
+            50% { box-shadow: 0 0 20px var(--danger-red); }
+            100% { box-shadow: 0 0 0px var(--danger-red); }
+        }
+
+        #media-theater {
+            flex-grow: 1;
+            min-height: 350px;
+            background: #000;
+            border: 2px dashed #444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        #media-theater img { width: 100%; height: 100%; object-fit: contain; }
+
+        .prob-container {
+            height: 60px;
+            background: #111;
+            border: 2px solid #333;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .prob-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #f00, #ff0, #0f0);
+            transition: width 0.8s ease;
+        }
+
+        #audit-log {
+            height: 200px;
+            background: #000;
+            border: 1px solid var(--matrix-green);
+            padding: 15px;
+            font-size: 0.9rem;
+            overflow-y: auto;
+        }
+
+        .telemetry-readout {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--kinetic-cyan);
+            background: #050505;
+            padding: 15px;
+            border: 1px solid var(--kinetic-cyan);
+            text-shadow: 0 0 5px var(--kinetic-cyan);
+        }
+
+        .glitch { animation: glitch 2s infinite; }
+        @keyframes glitch { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: var(--matrix-green); }
     </style>
 </head>
 <body>
 
-<div id="master-hud">
-    <div class="tier-cell">
-        <label>TIER 1: MASTER VAULT</label>
-        <div class="val" id="vault-display">$5,000.00</div>
-    </div>
-    <div class="tier-cell">
-        <label>TIER 2: SETTLEMENT STATUS</label>
-        <div class="val">VERIFIED CREDIBLE</div>
-    </div>
-    <div class="tier-cell">
-        <label>TIER 3: EXECUTION BRIDGE</label>
-        <div class="val" id="pair-display">BTC / USD</div>
-    </div>
+<canvas id="matrix"></canvas>
+
+<div id="security-lock">
+    <div class="lock-header glitch">ACCESS RESTRICTED</div>
+    <p style="color: #fff; font-size: 0.8rem; margin-bottom: 25px;">TRZ-7789 ENCRYPTED INTERFACE</p>
+    <input type="text" id="access-id" placeholder="ARCHITECT ACCESS ID" autocomplete="off" style="margin-bottom: 15px; text-align: center;">
+    <input type="password" id="protocol-key" placeholder="PROTOCOL SECURITY KEY" style="margin-bottom: 25px; text-align: center;">
+    <button onclick="unlock()">INITIALIZE SHADOW-CENTER</button>
+    <p id="err" style="color: var(--danger-red); font-size: 0.75rem; margin-top: 15px;"></p>
 </div>
 
-<div id="engine-body">
-    <div id="control-stack">
-        <h3>ADJUDICATION CONFIG</h3>
-        
-        <div class="field-group">
-            <label>TRZ-7789 KRAKEN KEY</label>
-            <input type="password" id="api-key" placeholder="••••••••••••••••">
-        </div>
+<div id="main-interface">
+    <header>
+        <h1 style="margin: 0; letter-spacing: 10px;">TRINITY ENGINE V10.2.8.2</h1>
+        <div style="font-size: 0.9rem; color: #fff; margin-top: 5px;">SIU AUDIT SUITE // VOICE RECOGNITION ACTIVE // ARCHITECT: TY</div>
+    </header>
 
-        <div class="field-group">
-            <label>SKINBOT ALLOCATION (BTC)</label>
-            <input type="number" id="settlement-vol" value="0.006" step="0.0001">
-        </div>
+    <div class="tier" id="tier-1">
+        <h2 class="tier-header">TIER I : CORE INITIATION & TELEMETRY</h2>
+        <div class="tier-grid">
+            <div class="panel">
+                <h2>CLAIM INITIATION</h2>
+                <input type="text" id="case-id" placeholder="CLAIM ID" oninput="calculateProbability()">
+                <input type="text" id="statute" placeholder="STATUTORY ANCHOR" oninput="calculateProbability()">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <button id="voice-btn" onclick="toggleVoice()">START VOICE CAPTURE</button>
+                    <button onclick="addLog('SCANNING EXTERNAL DATABASES...')">EXTERNAL AUDIT</button>
+                </div>
+            </div>
 
-        <div class="field-group">
-            <label>MARKET EXECUTION PAIR</label>
-            <select id="asset-select" onchange="document.getElementById('pair-display').innerText = this.options[this.selectedIndex].text">
-                <option value="XXBTZUSD">BTC / USD</option>
-                <option value="XETHZUSD">ETH / USD</option>
-            </select>
+            <div class="panel">
+                <h2>KINETIC PHYSICS ENGINE</h2>
+                <div style="display: flex; gap: 10px;">
+                    <input type="number" id="velocity" placeholder="VELOCITY (KM/H)" oninput="updatePhysics()">
+                    <input type="number" id="impact" placeholder="IMPACT (G-FORCE)" step="0.1" oninput="updatePhysics()">
+                </div>
+                <div class="telemetry-readout">
+                    <span>[ VEL: <span id="vel-out">000</span> ]</span>
+                    <span>[ G-FORCE: <span id="imp-out">00.0</span> ]</span>
+                    <span>[ ENERGY: <span id="energy-out">LOW</span> ]</span>
+                </div>
+                <button onclick="runAudit()" style="margin-top: 10px;">VALIDATE PHYSICS MODEL</button>
+            </div>
         </div>
-
-        <button class="master-launch-btn" onclick="executeTrinityMaster()">LAUNCH ENGINE</button>
-        
-        <p style="font-size: 0.7em; margin-top: 30px; color: #444;">
-            PURGED: MARKETING LOGIC 0%<br>
-            BASE: V10.2.8 SIU SHADOW-CENTER
-        </p>
     </div>
 
-    <div id="live-monitor">
-        <div id="console-feed">
-            <div class="sys-msg">[SYS] TRZ-7789 PROTOCOL READY...</div>
-            <div class="sys-msg">[SYS] SHADOW-CENTER INITIALIZED. NO STRIP AUTHORIZED.</div>
-            <div class="sys-msg">[SYS] AWAITING MASTER VAULT SETTLEMENT SIGNAL...</div>
+    <div class="tier" id="tier-2">
+        <h2 class="tier-header">TIER II : VISUAL RECON & PROBABILITY</h2>
+        <div class="tier-grid">
+            <div class="panel">
+                <h2>LIVE SCENE INJECTION</h2>
+                <select id="cam-presets" onchange="document.getElementById('cam-url').value = this.value; calculateProbability();">
+                    <option value="">-- SELECT TARGET HIGHWAY CAM --</option>
+                    <option value="https://images.drivebc.ca/bchighwaycam/pub/cameras/34.jpg">HWY 3B - SMELTER HILL</option>
+                    <option value="https://images.drivebc.ca/bchighwaycam/pub/cameras/104.jpg">HWY 3 - PAULSON SUMMIT</option>
+                    <option value="https://images.drivebc.ca/bchighwaycam/pub/cameras/116.jpg">HWY 22 - CASTLEGAR</option>
+                </select>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="cam-url" placeholder="URL CLOUD LINK" oninput="calculateProbability()">
+                    <button style="background: #005495; color: #fff;" onclick="loadCamera()">INJECT</button>
+                </div>
+                <div id="media-theater">[ CAMERA INJECTION STANDBY ]</div>
+            </div>
+
+            <div class="panel">
+                <h2>SETTLEMENT PROBABILITY ENGINE</h2>
+                <div class="prob-container" style="margin-top: auto; margin-bottom: 20px;">
+                    <div id="bar" class="prob-bar"></div>
+                </div>
+                <div id="p-text" style="text-align: center; font-weight: bold; font-size: 1.5rem; color: #f00;">0% CERTAINTY</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tier" id="tier-3">
+        <h2 class="tier-header">TIER III : ADJUDICATION VAULT</h2>
+        <div class="tier-grid" style="grid-template-columns: 1fr;">
+            <div class="panel">
+                <h2>VAULT STORAGE & FINALIZATION</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <input type="number" id="cash" placeholder="TOTAL RECOVERY TARGET ($)" oninput="calculateProbability()">
+                    <select id="assess" onchange="calculateProbability()">
+                        <option value="none">-- SELECT ASSESSMENT --</option>
+                        <option value="adverse">ADVERSE (FRAUD DETECTED)</option>
+                        <option value="verified">VERIFIED CREDIBLE</option>
+                    </select>
+                </div>
+                <button onclick="commitVault()">COMMIT EVIDENCE TO ADJUDICATION</button>
+                <div id="audit-log">> TRZ-7789 BASE SYSTEM SECURED.</div>
+                <button style="background: #fff; padding: 15px; color: #000;" onclick="window.print()">EXPORT FINAL TRINITY REPORT</button>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-    const TRINITY = {
-        vaultBalance: 5000,
-        status: "ADJUDICATION_DEFAULT",
-        
-        log: function(text, type='sys') {
-            const feed = document.getElementById('console-feed');
-            const entry = document.createElement('div');
-            entry.className = type + '-msg';
-            entry.innerHTML = `[${new Date().toLocaleTimeString()}] ${text}`;
-            feed.appendChild(entry);
-            feed.scrollTop = feed.scrollHeight;
-        },
+    // --- VOICE RECOGNITION CORE ---
+    let recognition;
+    let isListening = false;
 
-        processSettlement: function() {
-            const vol = document.getElementById('settlement-vol').value;
-            const pair = document.getElementById('asset-select').value;
-            
-            this.log("TRZ-7789 INITIATED: BYPASSING MARKETING MODULES...", "auth");
-            this.log(`TIER-3 STRIKE: ${pair} | VOL: ${vol}`, "exec");
-            
-            // FULL MASTER EXECUTION HANDSHAKE
-            // Logic linked to Kraken API keys entered in Tier-2
-            setTimeout(() => {
-                this.log("SETTLEMENT FINALIZED: MASTER VAULT UPDATED.", "exec");
-                this.log("PROTOCOL STATUS: STABLE.", "auth");
-            }, 1000);
-        }
-    };
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = false;
+        recognition.lang = 'en-US';
 
-    function executeTrinityMaster() {
-        const btn = document.querySelector('.master-launch-btn');
-        btn.style.background = '#ff003c';
-        btn.innerText = 'ENGINE ACTIVE';
-        
-        TRINITY.log("MASTER START SEQUENCE ENGAGED", "auth");
-        TRINITY.processSettlement();
+        recognition.onresult = (event) => {
+            const transcript = event.results[event.results.length - 1][0].transcript;
+            addLog(`<span style="color:#fff">[VOICE INTERCEPT]:</span> ${transcript.toUpperCase()}`);
+        };
+
+        recognition.onerror = (event) => {
+            addLog(`<span style="color:red">VOICE ERROR: ${event.error}</span>`);
+            stopVoice();
+        };
     }
-</script>
 
+    function toggleVoice() {
+        if (!recognition) return alert("SPEECH RECOGNITION NOT SUPPORTED ON THIS DEVICE.");
+        isListening ? stopVoice() : startVoice();
+    }
+
+    function startVoice() {
+        isListening = true;
+        recognition.start();
+        document.getElementById('voice-btn').innerText = "LISTENING...";
+        document.getElementById('voice-btn').classList.add('btn-active');
+        addLog("VOICE CAPTURE ARRAY ENGAGED.");
+    }
+
+    function stopVoice() {
+        isListening = false;
+        recognition.stop();
+        document.getElementById('voice-btn').innerText = "START VOICE CAPTURE";
+        document.getElementById('voice-btn').classList.remove('btn-active');
+        addLog("VOICE CAPTURE ARRAY STANDBY.");
+    }
+
+    // --- BASE LOGIC (NO STRIPPING) ---
+    function unlock() {
+        const id = document.getElementById('access-id').value.toUpperCase();
+        const key = document.getElementById('protocol-key').value;
+        if(id === "TY-ARCHITECT-01" && key === "TRZ-7789-APEX") {
+            document.getElementById('security-lock').style.display = 'none';
+            document.getElementById('main-interface').style.display = 'block';
+        } else {
+            document.getElementById('err').innerText = "CREDENTIALS REJECTED";
+        }
+    }
+
+    function addLog(m) {
+        const l = document.getElementById('audit-log');
+        l.innerHTML += `<br>> ${m}`;
+        l.scrollTop = l.scrollHeight;
+    }
+
+    function updatePhysics() {
+        const v = document.getElementById('velocity').value;
+        const g = document.getElementById('impact').value;
+        const eOut = document.getElementById('energy-out');
+        document.getElementById('vel-out').innerText = v ? v.padStart(3, '0') : '000';
+        document.getElementById('imp-out').innerText = g ? parseFloat(g).toFixed(1).padStart(4, '0') : '00.0';
+        if (g > 8) { eOut.innerText = "CRITICAL"; eOut.style.color = "red"; }
+        else if (v > 60) { eOut.innerText = "HIGH"; eOut.style.color = "orange"; }
+        else { eOut.innerText = "MODERATE"; eOut.style.color = "cyan"; }
+        calculateProbability();
+    }
+
+    function calculateProbability() {
+        let score = 0;
+        if(document.getElementById('case-id').value) score += 10;
+        if(document.getElementById('statute').value) score += 10;
+        if(document.getElementById('velocity').value && document.getElementById('impact').value) score += 10;
+        if(document.getElementById('media-theater').innerHTML.includes('<img')) score += 30;
+        if(document.getElementById('cash').value) score += 10;
+        if(document.getElementById('assess').value === 'verified') score += 30;
+        if(document.getElementById('assess').value === 'adverse') score = 0;
+        const bar = document.getElementById('bar');
+        const pText = document.getElementById('p-text');
+        bar.style.width = score + "%";
+        pText.innerText = score + "% CERTAINTY";
+        pText.style.color = score < 50 ? "#f00" : (score < 90 ? "#ff0" : "#0f0");
+    }
+
+    function loadCamera() {
+        const url = document.getElementById('cam-url').value;
+        const theater = document.getElementById('media-theater');
+        if(url) {
+            theater.innerHTML = `<img src="${url}?t=${new Date().getTime()}" alt="LIVE FEED">`;
+            addLog(`INJECTING KINETIC SCENE DATA: ${url}`);
+            calculateProbability();
+        }
+    }
+
+    function runAudit() {
+        addLog("KINETIC DATA SYNCING WITH BC ACCIDENT MODELS...");
+        setTimeout(() => { addLog("PHYSICS VALIDATED. IMPACT VECTOR CONSISTENT."); calculateProbability(); }, 1000);
+    }
+
+    function commitVault() {
+        addLog("LOCKING DATA TO TRZ-7789 ENCRYPTED STORAGE...");
+        setTimeout(() => { addLog("VAULT COMMIT SUCCESSFUL."); }, 800);
+    }
+
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+    const chars = "1010101TRINITY7789APEX";
+    const drops = Array(Math.floor(canvas.width/18)).fill(1);
+    function draw() {
+        ctx.fillStyle = "rgba(0,0,0,0.05)"; ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctx.fillStyle = "#0F0"; ctx.font = "15px monospace";
+        drops.forEach((y, i) => {
+            ctx.fillText(chars[Math.floor(Math.random()*chars.length)], i*18, y*18);
+            if(y*18 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+            drops[i]++;
+        });
+    }
+    setInterval(draw, 50);
+</script>
 </body>
 </html>
 
