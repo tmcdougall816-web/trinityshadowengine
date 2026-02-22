@@ -2,100 +2,127 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SIU MASTER CORE V10.2.8 | TRZ-7789</title>
+    <title>TRINITY V10.2.8 | MASTER SHADOW-CENTER | ARCHITECT: TY</title>
     <style>
-        :root { --siu-red: #ff3c3c; --bg: #0a0a0a; --panel: #161616; --text: #00d4ff; }
-        body { background: var(--bg); color: var(--text); font-family: 'Consolas', monospace; margin: 0; padding: 20px; }
-        .container { max-width: 1000px; margin: 0 auto; border: 1px solid #333; padding: 20px; box-shadow: 0 0 30px rgba(255, 60, 60, 0.1); }
-        .header { border-bottom: 2px solid var(--siu-red); padding-bottom: 10px; margin-bottom: 20px; text-align: center; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .tier { background: var(--panel); border: 1px solid #333; padding: 15px; border-radius: 4px; }
-        h2 { color: #fff; font-size: 14px; margin-top: 0; text-transform: uppercase; letter-spacing: 2px; }
-        label { display: block; font-size: 10px; color: #888; margin-top: 10px; }
-        input, select { width: 100%; background: #000; border: 1px solid #444; color: #fff; padding: 10px; margin-top: 5px; }
-        .btn-exe { background: var(--siu-red); color: #fff; border: none; padding: 15px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 20px; }
-        .btn-exe:hover { background: #fff; color: #000; }
-        #audit-log { background: #000; height: 180px; overflow-y: auto; padding: 10px; font-size: 11px; border: 1px solid #222; margin-top: 20px; color: #aaa; }
-        .match { color: #ffcc00; font-weight: bold; }
+        :root { --neon: #00ff41; --bg: #000; --white: #fff; }
+        body, html { margin: 0; padding: 0; background: var(--bg); color: var(--neon); font-family: 'Courier New', monospace; overflow: hidden; height: 100vh; }
+        
+        /* THE MATRIX BLOODSTREAM - REALTIME RECOVERY */
+        #matrix-canvas { position: fixed; top: 0; left: 0; z-index: 1; opacity: 0.45; }
+
+        .siu-interface { position: relative; z-index: 10; display: grid; grid-template-columns: 500px 1fr; gap: 30px; padding: 40px; height: 100vh; box-sizing: border-box; }
+        
+        .header-seal { grid-column: 1 / span 2; border: 4px double var(--neon); padding: 25px; background: rgba(0,10,0,0.95); text-align: center; box-shadow: 0 0 60px var(--neon); }
+        .header-seal h1 { margin: 0; font-size: 45px; letter-spacing: 25px; font-weight: 900; }
+        .header-seal p { font-size: 14px; color: var(--white); margin-top: 10px; font-weight: bold; }
+
+        .shadow-module { background: rgba(0, 5, 0, 1); border: 2px solid var(--neon); padding: 35px; display: flex; flex-direction: column; box-shadow: inset 0 0 70px #002200; position: relative; }
+        h2 { font-size: 14px; background: var(--neon); color: #000; margin: -35px -35px 30px -35px; padding: 15px; text-transform: uppercase; letter-spacing: 8px; text-align: center; font-weight: 900; }
+
+        /* THE 72-92 LOGIC GATE - DYNAMIC ELEMENT */
+        .logic-gate { border: 2px solid #222; padding: 25px; background: #000; margin-bottom: 30px; border-left: 12px solid var(--neon); }
+        .logic-gate span { font-size: 10px; color: var(--white); opacity: 0.6; display: block; margin-bottom: 10px; }
+        .prob-value { font-size: 120px; text-align: center; color: var(--white); text-shadow: 0 0 50px var(--neon); font-weight: 900; line-height: 1; }
+
+        .btn-trinity { width: 100%; padding: 30px; background: transparent; border: 2px solid var(--neon); color: var(--neon); font-weight: 900; cursor: pointer; text-transform: uppercase; letter-spacing: 4px; font-size: 20px; transition: 0.4s; }
+        .btn-trinity:hover { background: var(--neon); color: #000; box-shadow: 0 0 80px var(--neon); }
+
+        .reality-vault { flex-grow: 1; border: 3px solid #111; background: #000; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .scanner-beam { position: absolute; width: 100%; height: 10px; background: var(--neon); top: 0; animation: scanline 3.5s linear infinite; z-index: 100; box-shadow: 0 0 40px var(--neon); }
+        @keyframes scanline { 0% { top: -10%; } 100% { top: 110%; } }
+
+        .audit-terminal { height: 300px; background: #000; border-top: 5px solid var(--neon); padding: 30px; font-size: 14px; overflow-y: scroll; color: var(--neon); line-height: 2.2; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        <h1 style="margin:0;">SIU SHADOW-CENTER MASTER</h1>
-        <small>CORE TECHNOLOGY: TRZ-7789 | STATUS: READY</small>
+<canvas id="matrix-canvas"></canvas>
+
+<div class="siu-interface">
+    <div class="header-seal">
+        <h1>TRINITY V10.2.8</h1>
+        <p>"HE WHO DIES WITH THE MOST TOYS STILL DIES" // HARD-SEALED BY ARCHITECT TY</p>
     </div>
 
-    <div class="grid">
-        <div class="tier">
-            <h2>Tier 1: Case Identification</h2>
-            <label>Case File ID</label>
-            <input type="text" id="case-id" value="TRAIL-2026-614">
-            <label>Statutory Anchor</label>
-            <input type="text" id="stat-anchor" value="Crim Code s.244.2">
-            <label>Incident Time (T-0)</label>
-            <input type="time" id="incident-time" value="05:40">
+    <div class="shadow-module">
+        <h2>I. ADJUDICATION CORE</h2>
+        <div class="logic-gate">
+            <span>BIOMETRIC SYNC ACTIVE // GATE STATUS: LOCKED</span>
+            <div class="prob-value" id="perc">72%</div>
+            <div style="text-align:center; font-size: 12px; color: var(--white); margin-top:10px;">ASSET RECOVERY: $2,000,000,000.00</div>
         </div>
+        
+        <button class="btn-trinity" onclick="runAudit()">INITIALIZE MASTER AUDIT</button>
+        
+        <div class="audit-terminal" id="log">
+            > TRZ-7789 PROTOCOL ENFORCED...<br>
+            > "THE GRASS ISN'T GREENER..." VALIDATED.<br>
+            > SHADOW-CENTER ONLINE. NO DRIFT PERMITTED.
+        </div>
+    </div>
 
-        <div class="tier">
-            <h2>Tier 2: Velocity & Recon</h2>
-            <label>Est. Escape Velocity (km/h)</label>
-            <input type="number" id="velocity" value="65">
-            <label>Camera Injection URL</label>
-            <input type="text" id="cam-url" value="https://www.drivebc.ca/cameras/307">
-            <label>Search Window (Start - End)</label>
-            <div style="display:flex; gap:5px;">
-                <input type="time" id="win-start" value="05:15">
-                <input type="time" id="win-end" value="06:00">
+    <div class="shadow-module">
+        <h2>II. REALITY LOCK VAULT</h2>
+        <div class="reality-vault">
+            <div class="scanner-beam"></div>
+            <div id="wait">AWAITING ARCHITECTURAL DATA INJECTION...</div>
+            <img id="render" style="display:none; width:100%; height:100%; object-fit:cover; filter: contrast(1.5) grayscale(100%) sepia(100%) hue-rotate(90deg) brightness(1.2);">
+        </div>
+        
+        <div style="margin-top: 35px;">
+            <input type="text" id="url" style="width:100%; background:#000; border:2px solid #005500; color:var(--neon); padding:20px; margin-bottom:25px; font-family:inherit; font-size:18px;" placeholder="PASTE DATA STREAM LINK...">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:25px;">
+                <button class="btn-trinity" style="border-color: var(--white); color: var(--white);" onclick="lock()">ENGAGE LOCK</button>
+                <button class="btn-trinity" onclick="finalize()">EXPORT ADJUDICATION</button>
             </div>
         </div>
-    </div>
-
-    <div class="tier" style="margin-top:20px;">
-        <h2>Tier 3: Adjudication Engine</h2>
-        <div style="display:flex; justify-content: space-around; align-items: center; padding: 10px;">
-            <div id="prob-val" style="font-size: 48px; font-weight: bold;">0%</div>
-            <div style="width: 60%;">
-                <button class="btn-exe" onclick="executeTrinity()">RUN TRZ-7789 RECON SCAN</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="audit-log">
-        [SYS] SYSTEM READY. AWAITING DATA INJECTION...
     </div>
 </div>
 
 <script>
-    function log(msg) {
-        const logger = document.getElementById('audit-log');
-        logger.innerHTML += `<div>[${new Date().toLocaleTimeString()}] ${msg}</div>`;
-        logger.scrollTop = logger.scrollHeight;
+    const c = document.getElementById('matrix-canvas');
+    const ctx = c.getContext('2d');
+    c.width = window.innerWidth;
+    c.height = window.innerHeight;
+    const glyphs = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ$#@&%*";
+    const fontSize = 18;
+    const drops = Array(Math.floor(c.width/fontSize)).fill(1);
+
+    function drawMatrix() {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.12)";
+        ctx.fillRect(0, 0, c.width, c.height);
+        ctx.fillStyle = "#00ff41";
+        ctx.font = fontSize + "px monospace";
+        drops.forEach((y, i) => {
+            const text = glyphs[Math.floor(Math.random()*glyphs.length)];
+            ctx.fillText(text, i*fontSize, y*fontSize);
+            if(y*fontSize > c.height && Math.random() > 0.975) drops[i] = 0;
+            drops[i]++;
+        });
+    }
+    setInterval(drawMatrix, 40);
+
+    function runAudit() {
+        const l = document.getElementById('log');
+        l.innerHTML += `<div>[${new Date().toLocaleTimeString()}] > ANALYZING s.244.2 ANCHORS...</div>`;
+        l.scrollTop = l.scrollHeight;
     }
 
-    function executeTrinity() {
-        const vel = document.getElementById('velocity').value;
-        const prob = document.getElementById('prob-val');
-        
-        log("INITIATING TRINITY ENGINE...");
-        log(`CALIBRATING PHYSICS: Escape Velocity @ ${vel}km/h...`);
-        
-        let p = 0;
-        const timer = setInterval(() => {
-            p += Math.floor(Math.random() * 20);
-            if(p >= 92) {
-                p = 92;
-                clearInterval(timer);
-                log("<span class='match'>[ALERT] MATCH DETECTED: HIGHWAY 3B / DEVITO DR</span>");
-                log("<span class='match'>[EST. TIME OF PASSAGE] 05:44:12 AM</span>");
-                log("[REPORT] VEHICLE CLASSIFIED AS 'SUSPECT ESCAPE' - PROBABILITY 92%");
-            }
-            prob.innerText = p + "%";
-        }, 600);
+    function lock() {
+        const u = document.getElementById('url').value;
+        if(!u) return;
+        document.getElementById('wait').style.display = 'none';
+        const img = document.getElementById('render');
+        img.src = u;
+        img.style.display = 'block';
+        document.getElementById('perc').innerText = "92%";
+        document.getElementById('perc').style.color = "#fff";
+    }
+
+    function finalize() {
+        alert("Boardroom Final Report Sealed.");
     }
 </script>
-
 </body>
 </html>
 
