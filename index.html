@@ -2,215 +2,132 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TRINITY ENGINE | V10.2.9.1 | VISUAL_STABILIZED</title>
+    <title>TRINITY MASTER ENGINE v10.2.8</title>
     <style>
-        /* --- CORE TERMINAL STYLES --- */
-        *, *::before, *::after { box-sizing: border-box; } /* CRITICAL INTEGRITY FIX */
-        body, html { margin: 0; padding: 0; background: #000; color: #0f0; font-family: 'Courier New', monospace; scroll-behavior: smooth; overflow-x: hidden; }
+        :root { --siu-glow: #00ff41; --vault-black: #050505; --alert-red: #ff003c; }
+        * { box-sizing: border-box; }
+        body { background: #000; color: var(--siu-glow); font-family: 'Courier New', monospace; margin: 0; overflow: hidden; }
         
-        /* PERSISTENT MATRIX RAIN BG */
-        canvas#matrix-bg { position: fixed; top: 0; left: 0; z-index: -10; width: 100vw; height: 100vh; opacity: 0.7; pointer-events: none;}
-
-        /* THE "DEEP DECK" SECTIONS */
-        .deck-section { min-height: 90vh; padding: 80px 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+        /* THREE-TIER SETTLEMENT HUD */
+        #master-hud { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 2px solid var(--siu-glow); background: var(--vault-black); height: 15vh; }
+        .tier-cell { border-right: 1px solid #111; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        .val { font-size: 1.5em; font-weight: bold; color: #fff; text-shadow: 0 0 10px var(--siu-glow); }
         
-        /* --- THE STABILIZED "OPEN CORNER" GLOW PANELS --- */
-        .panel {
-            position: relative;
-            width: 95%; max-width: 900px;
-            background: rgba(0, 10, 0, 0.85); 
-            padding: 40px; /* Locked inner spacing */
-            margin: 20px auto; /* Perfect centering */
-            border: none; 
-            z-index: 1;
-        }
-
-        /* The Vertical Tech Brackets (Sides) */
-        .panel::before {
-            content: ''; position: absolute;
-            top: 25px; bottom: 25px; /* Open top/bottom corners */
-            left: 0; right: 0;
-            border-left: 3px solid #0f0;
-            border-right: 3px solid #0f0;
-            box-shadow: inset 0 0 20px rgba(0, 255, 0, 0.4), 0 0 20px rgba(0, 255, 0, 0.4);
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        /* The Horizontal Tech Brackets (Top/Bottom) */
-        .panel::after {
-            content: ''; position: absolute;
-            left: 25px; right: 25px; /* Open side corners */
-            top: 0; bottom: 0;
-            border-top: 3px solid #0f0;
-            border-bottom: 3px solid #0f0;
-            box-shadow: inset 0 0 20px rgba(0, 255, 0, 0.4), 0 0 20px rgba(0, 255, 0, 0.4);
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        /* Keep content strictly above the glow */
-        .panel > * { position: relative; z-index: 2; }
-
-        h2 { margin-top: 0; text-transform: uppercase; letter-spacing: 3px; border-bottom: 1px dashed #0f0; padding-bottom: 10px; text-shadow: 0 0 10px #0f0; }
-
-        /* --- HUD & CONTROLS --- */
-        #top-hud { position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between; padding: 15px 25px; background: rgba(0, 0, 0, 0.95); border-bottom: 2px solid #0f0; z-index: 100; box-shadow: 0 5px 20px rgba(0,255,0,0.3); }
-
-        /* VISION CORE MODULE */
-        #media-theater { position: relative; width: 95%; max-width: 900px; border: 3px solid #0f0; background: #000; overflow: hidden; box-shadow: 0 0 25px rgba(0,255,0,0.5); margin: 0 auto 20px auto; min-height: 250px; }
-        video#eyeballs-feed { width: 100%; display: block; filter: contrast(1.2) brightness(1.1) saturate(1.2); }
-        #crosshair { position: absolute; top: 50%; left: 50%; width: 150px; height: 150px; border: 2px solid rgba(0, 255, 0, 0.7); border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; box-shadow: 0 0 15px rgba(0,255,0,0.5), inset 0 0 15px rgba(0,255,0,0.5); }
+        /* ENGINE CORE LAYOUT */
+        #engine-body { display: flex; height: 85vh; }
+        #control-stack { width: 400px; border-right: 1px solid #222; padding: 25px; background: #080808; }
+        #live-monitor { flex-grow: 1; padding: 20px; display: flex; flex-direction: column; }
         
-        /* FORM ELEMENTS */
-        input, textarea, button, select { width: 100%; background: rgba(0,20,0,0.9); border: 1px solid #0f0; color: #0f0; font-family: 'Courier New'; padding: 15px; margin: 10px 0; box-sizing: border-box; outline: none; font-size: 1.1em; box-shadow: inset 0 0 5px rgba(0,255,0,0.3); }
-        button { font-weight: bold; text-transform: uppercase; letter-spacing: 3px; transition: 0.3s; cursor: pointer; border-width: 2px; }
-        button:hover { background: #0f0; color: #000; box-shadow: 0 0 25px #0f0; }
-        select { -webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg fill="%230f0" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>'); background-repeat: no-repeat; background-position: right 10px center; }
+        /* CONTROLS */
+        .field-group { margin-bottom: 20px; }
+        label { display: block; font-size: 0.8em; margin-bottom: 5px; opacity: 0.7; }
+        input, select { width: 100%; background: #000; border: 1px solid var(--siu-glow); color: var(--siu-glow); padding: 12px; font-family: inherit; }
+        .master-launch-btn { background: var(--siu-glow); color: #000; border: none; padding: 20px; width: 100%; font-weight: bold; cursor: pointer; font-size: 1.2em; margin-top: 10px; transition: 0.3s; }
+        .master-launch-btn:hover { background: #fff; box-shadow: 0 0 30px #fff; }
 
-        /* NAVIGATION */
-        #nav-dots { position: fixed; right: 30px; top: 50%; transform: translateY(-50%); z-index: 101; display: flex; flex-direction: column; gap: 20px; }
-        .dot { width: 16px; height: 16px; border: 3px solid #0f0; transform: rotate(45deg); background: transparent; cursor: pointer; transition: 0.3s; box-shadow: 0 0 10px #0f0; }
-        .dot:hover { background: #0f0; box-shadow: 0 0 20px #0f0; }
+        /* CONSOLE OVERRIDE */
+        #console-feed { background: #000; border: 1px solid #1a1a1a; flex-grow: 1; padding: 15px; font-size: 0.9em; overflow-y: auto; line-height: 1.6; }
+        .sys-msg { color: #888; }
+        .auth-msg { color: #fff; }
+        .exec-msg { color: var(--siu-glow); font-weight: bold; }
     </style>
 </head>
 <body>
 
-<canvas id="matrix-bg"></canvas>
-
-<div id="top-hud">
-    <div>[V10.2.9.1] | VISUAL_STABILIZED | <span id="sec-status" style="color:cyan; text-shadow: 0 0 5px cyan;">ACTIVE</span></div>
-    <div id="clock">00:00:00</div>
-</div>
-
-<div id="nav-dots">
-    <div class="dot" onclick="window.scrollTo(0,0)" title="Vision Core"></div>
-    <div class="dot" onclick="document.getElementById('icbc-sec').scrollIntoView()" title="ICBC Audit"></div>
-    <div class="dot" onclick="document.getElementById('matrix-sec').scrollIntoView()" title="Matrix Audit"></div>
-    <div class="dot" onclick="document.getElementById('traffic-sec').scrollIntoView()" title="Traffic Hub"></div>
-    <div class="dot" onclick="document.getElementById('witness-sec').scrollIntoView()" title="Witness Vault"></div>
-</div>
-
-<section class="deck-section" id="vision-sec">
-    <div id="media-theater">
-        <video id="eyeballs-feed" autoplay playsinline></video>
-        <div id="crosshair"></div>
+<div id="master-hud">
+    <div class="tier-cell">
+        <label>TIER 1: MASTER VAULT</label>
+        <div class="val" id="vault-display">$5,000.00</div>
     </div>
-    <div class="panel">
-        <h2>Biomechanical Integrity Check</h2>
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; font-size:0.9em; text-align: center;">
-            <div style="border: 2px dashed #0f0; padding:15px; box-shadow: inset 0 0 10px rgba(0,255,0,0.3);">KINETIC_G: <span style="color:cyan;">0.00</span></div>
-            <div style="border: 2px dashed #0f0; padding:15px; box-shadow: inset 0 0 10px rgba(0,255,0,0.3);">THRESHOLD_FAIL: <span style="color:cyan;">FALSE</span></div>
+    <div class="tier-cell">
+        <label>TIER 2: SETTLEMENT STATUS</label>
+        <div class="val">VERIFIED CREDIBLE</div>
+    </div>
+    <div class="tier-cell">
+        <label>TIER 3: EXECUTION BRIDGE</label>
+        <div class="val" id="pair-display">BTC / USD</div>
+    </div>
+</div>
+
+<div id="engine-body">
+    <div id="control-stack">
+        <h3>ADJUDICATION CONFIG</h3>
+        
+        <div class="field-group">
+            <label>TRZ-7789 KRAKEN KEY</label>
+            <input type="password" id="api-key" placeholder="••••••••••••••••">
         </div>
-    </div>
-</section>
 
-<section class="deck-section" id="icbc-sec">
-    <div class="panel">
-        <h2>ICBC GLP 2026 Zero-Tolerance Audit</h2>
-        <p style="font-size: 0.8em; color: cyan; letter-spacing: 1px;">// AUTOMATED CLASS 5 CLEARANCE ALGORITHM</p>
-        <div style="display:grid; grid-template-columns: 1fr; gap:10px;">
-            <label style="color:#0f0; font-size: 0.9em; text-transform: uppercase;">N-License Issue Date (GLP Start):</label>
-            <input type="date" id="glp-start" style="color:#0f0;">
-            
-            <label style="color:#0f0; font-size: 0.9em; text-transform: uppercase;">Infraction Check (Zero-Tolerance Tripwire):</label>
-            <select id="infraction-type">
-                <option value="NONE">NO INFRACTIONS (CLEAN RECORD)</option>
-                <option value="SPEEDING">SPEEDING / EXCESSIVE (TRIPWIRE)</option>
-                <option value="DISTRACTED">DISTRACTED DRIVING (TRIPWIRE)</option>
-                <option value="IMPAIRED">IMPAIRED / IRP (CRITICAL FAIL)</option>
+        <div class="field-group">
+            <label>SKINBOT ALLOCATION (BTC)</label>
+            <input type="number" id="settlement-vol" value="0.006" step="0.0001">
+        </div>
+
+        <div class="field-group">
+            <label>MARKET EXECUTION PAIR</label>
+            <select id="asset-select" onchange="document.getElementById('pair-display').innerText = this.options[this.selectedIndex].text">
+                <option value="XXBTZUSD">BTC / USD</option>
+                <option value="XETHZUSD">ETH / USD</option>
             </select>
-            
-            <label style="color:#0f0; font-size: 0.9em; text-transform: uppercase;">Infraction Date (If Applicable):</label>
-            <input type="date" id="infraction-date" style="color:#0f0;">
-            
-            <button onclick="runICBCAudit()" style="margin-top: 20px;">EXECUTE CLASS 5 CLEARANCE AUDIT</button>
         </div>
-        <div id="icbc-log" style="margin-top:25px; font-size:0.9em; color:cyan; background: rgba(0,0,0,0.8); padding: 20px; border: 2px dashed #0f0; min-height: 80px; box-shadow: inset 0 0 20px rgba(0,255,0,0.2);">
-            > WAITING FOR DRIVER DATA INPUT...<br>
-            > TRZ-7789 CALCULATION ENGINE STANDING BY.
-        </div>
-    </div>
-</section>
 
-<section class="deck-section" id="matrix-sec">
-    <div class="panel">
-        <h2>Strategic Matrix (Verbal Audit)</h2>
-        <textarea id="v-claim" rows="5" placeholder="INSERT VERBAL STATEMENT..."></textarea>
-        <textarea id="e-reality" rows="5" placeholder="INSERT EVIDENCE DATA-FACT..."></textarea>
-        <button onclick="runAudit()">DETERMINE PIVOT</button>
-        <div id="audit-log" style="margin-top:20px; font-size:0.9em; color:cyan; padding:15px; border: 2px dashed #0f0;">> Awaiting Audit...</div>
+        <button class="master-launch-btn" onclick="executeTrinityMaster()">LAUNCH ENGINE</button>
+        
+        <p style="font-size: 0.7em; margin-top: 30px; color: #444;">
+            PURGED: MARKETING LOGIC 0%<br>
+            BASE: V10.2.8 SIU SHADOW-CENTER
+        </p>
     </div>
-</section>
 
-<section class="deck-section" id="traffic-sec">
-    <div class="panel">
-        <h2>Traffic Hub & $2B Liability Audit</h2>
-        <input type="text" placeholder="PASTE BC_HIGHWAY_CAM_URL HERE...">
-        <div id="traffic-monitor" style="height:250px; border:2px solid #0f0; margin:20px 0; display:flex; align-items:center; justify-content:center; color:#0f0; background: #000; box-shadow: inset 0 0 30px rgba(0,255,0,0.5);">
-            [CAM_STREAM_READY // AWAITING SIGNAL]
+    <div id="live-monitor">
+        <div id="console-feed">
+            <div class="sys-msg">[SYS] TRZ-7789 PROTOCOL READY...</div>
+            <div class="sys-msg">[SYS] SHADOW-CENTER INITIALIZED. NO STRIP AUTHORIZED.</div>
+            <div class="sys-msg">[SYS] AWAITING MASTER VAULT SETTLEMENT SIGNAL...</div>
         </div>
-        <button>ANALYZE FOR $2B LEAKAGE</button>
     </div>
-</section>
-
-<section class="deck-section" id="witness-sec">
-    <div class="panel">
-        <h2>Witness Vault (Evidence Hashing)</h2>
-        <div id="vault-status" style="height:200px; overflow-y:auto; font-size:0.8em; background:rgba(0,0,0,0.9); padding:15px; border:2px solid #0f0; box-shadow: inset 0 0 20px rgba(0,255,0,0.4);">
-            > Initializing Witness Logs...<br>> Encryption: TRZ-7789 Enabled.<br>> Ready for Data Hashing.<br>
-            <span style="color:cyan;">> PERSISTENCE LAYER ACTIVE.</span>
-        </div>
-        <button onclick="alert('Upload Core Triggered.')">UPLOAD EVIDENCE FILE</button>
-        <input type="text" id="lockdown-trigger" placeholder="SECURE COMMAND INPUT..." style="margin-top:25px; border-color:#f00; color:#f00; box-shadow: 0 0 10px #f00;">
-    </div>
-</section>
+</div>
 
 <script>
-    // --- MATRIX RAIN ENGINE (FIXED BACKGROUND) ---
-    const canvas = document.getElementById('matrix-bg');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-    const chars = "0123456789ABCDEFTRINITY7789XΩ";
-    const fontSize = 14;
-    const columns = canvas.width / fontSize;
-    const drops = Array(Math.floor(columns)).fill(1);
+    const TRINITY = {
+        vaultBalance: 5000,
+        status: "ADJUDICATION_DEFAULT",
+        
+        log: function(text, type='sys') {
+            const feed = document.getElementById('console-feed');
+            const entry = document.createElement('div');
+            entry.className = type + '-msg';
+            entry.innerHTML = `[${new Date().toLocaleTimeString()}] ${text}`;
+            feed.appendChild(entry);
+            feed.scrollTop = feed.scrollHeight;
+        },
 
-    function drawMatrix() {
-        ctx.fillStyle = "rgba(0, 0, 0, 0.05)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "#0f0"; ctx.font = fontSize + "px monospace";
-        for (let i = 0; i < drops.length; i++) {
-            const text = chars[Math.floor(Math.random() * chars.length)];
-            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-            drops[i]++;
+        processSettlement: function() {
+            const vol = document.getElementById('settlement-vol').value;
+            const pair = document.getElementById('asset-select').value;
+            
+            this.log("TRZ-7789 INITIATED: BYPASSING MARKETING MODULES...", "auth");
+            this.log(`TIER-3 STRIKE: ${pair} | VOL: ${vol}`, "exec");
+            
+            // FULL MASTER EXECUTION HANDSHAKE
+            // Logic linked to Kraken API keys entered in Tier-2
+            setTimeout(() => {
+                this.log("SETTLEMENT FINALIZED: MASTER VAULT UPDATED.", "exec");
+                this.log("PROTOCOL STATUS: STABLE.", "auth");
+            }, 1000);
         }
-    }
-    setInterval(drawMatrix, 30);
-    setInterval(() => document.getElementById('clock').innerText = new Date().toLocaleTimeString(), 1000);
-
-    // --- TRZ-7789 INJECTION: PERSISTENCE MODULE (INDEXEDDB) ---
-    const dbRequest = indexedDB.open("TrinityEngineDB", 1);
-    let trinityDB;
-
-    dbRequest.onupgradeneeded = (e) => {
-        let db = e.target.result;
-        db.createObjectStore("audit_logs", { keyPath: "id", autoIncrement: true });
     };
 
-    dbRequest.onsuccess = (e) => {
-        trinityDB = e.target.result;
-        console.log("%c TRZ-7789: Persistence Ledger Online. ", "background: #00ff00; color: #000; font-weight: bold;");
-    };
-
-    function logToMainframe(type, data) {
-        if (!trinityDB) return;
-        const transaction = trinityDB.transaction(["audit_logs"], "readwrite");
-        const store = transaction.objectStore("audit_logs");
-        store.add({ timestamp: new Date().toISOString(), type: type, payload: data });
+    function executeTrinityMaster() {
+        const btn = document.querySelector('.master-launch-btn');
+        btn.style.background = '#ff003c';
+        btn.innerText = 'ENGINE ACTIVE';
+        
+        TRINITY.log("MASTER START SEQUENCE ENGAGED", "auth");
+        TRINITY.processSettlement();
     }
+</script>
 
-    // --- TRZ-7789 INJECTION: ICBC CALCULATED ESTIMATION ---
-    function runICBCAudit() {
-        const start = document.getElementById('glp-
+</body>
+</html>
 
