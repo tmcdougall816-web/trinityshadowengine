@@ -2,110 +2,141 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TRINITY V10.2.8 | UNLOCKED FLOW | ARCHITECT: TY</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRINITY ENGINE | V10.2.8.4</title>
     <style>
-        :root { --matrix: #00ff41; --bg: #000; --white: #fff; }
-        /* REMOVING THE OVERFLOW HIDDEN - RESTORING SCROLL */
-        body, html { margin: 0; padding: 0; background: var(--bg); color: var(--matrix); font-family: 'Courier New', monospace; overflow-y: auto; height: auto; min-height: 100vh; }
+        body, html { margin: 0; padding: 0; background: #000; overflow: hidden; color: #0f0; font-family: 'Courier New', Courier, monospace; }
         
-        #canvas { position: fixed; top: 0; left: 0; z-index: 1; opacity: 0.35; pointer-events: none; }
+        /* THE MATRIX BACKGROUND */
+        canvas#matrix-bg { position: fixed; top: 0; left: 0; z-index: -1; }
 
-        .shadow-center-main { position: relative; z-index: 10; display: flex; flex-direction: column; gap: 30px; padding: 40px; box-sizing: border-box; }
+        #trinity-interface { position: relative; height: 100vh; display: flex; flex-direction: column; padding: 20px; box-sizing: border-box; background: rgba(0, 0, 0, 0.85); }
+
+        /* HUD TOP BAR */
+        #hud-top { display: flex; justify-content: space-between; border-bottom: 2px solid #0f0; padding-bottom: 10px; margin-bottom: 20px; text-shadow: 0 0 5px #0f0; }
+
+        /* THE EYEBALLS / MEDIA THEATER */
+        #media-theater { position: relative; width: 100%; max-width: 800px; margin: 0 auto; border: 2px solid #0f0; box-shadow: 0 0 20px rgba(0, 255, 0, 0.3); }
+        video#eyeballs-feed { width: 100%; display: block; }
         
-        .master-head { border: 4px double var(--matrix); padding: 25px; background: rgba(0,10,0,0.95); text-align: center; box-shadow: 0 0 50px var(--matrix); }
-        .master-head h1 { margin: 0; font-size: 45px; letter-spacing: 20px; font-weight: 900; }
-        .master-head p { font-size: 14px; color: var(--white); margin-top: 10px; font-weight: bold; }
+        /* MACRO-SCAN CROSSHAIR */
+        #crosshair { position: absolute; top: 50%; left: 50%; width: 100px; height: 100px; border: 1px solid rgba(0, 255, 0, 0.5); border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; }
+        #crosshair::before, #crosshair::after { content: ''; position: absolute; background: #0f0; }
+        #crosshair::before { top: 50%; left: -10px; width: 120px; height: 1px; }
+        #crosshair::after { left: 50%; top: -10px; width: 1px; height: 120px; }
 
-        .tier-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        /* DATA PANELS (THE WITNESS & TRAFFIC) */
+        #data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+        .panel { border: 1px solid #0f0; padding: 10px; background: rgba(0, 20, 0, 0.6); font-size: 0.8em; height: 150px; overflow-y: hidden; }
+        .panel h3 { margin-top: 0; font-size: 1em; text-decoration: underline; }
 
-        .module-tier { background: rgba(0, 5, 0, 1); border: 2px solid var(--matrix); padding: 35px; display: flex; flex-direction: column; box-shadow: inset 0 0 60px #002200; position: relative; min-height: 600px; }
-        h2 { font-size: 14px; background: var(--matrix); color: #000; margin: -35px -35px 30px -35px; padding: 15px; text-transform: uppercase; letter-spacing: 6px; text-align: center; font-weight: 900; }
-
-        .gate-72-92 { border: 2px solid #222; padding: 25px; background: #000; margin-bottom: 30px; border-left: 12px solid var(--matrix); }
-        .prob-value { font-size: 110px; text-align: center; color: var(--white); text-shadow: 0 0 40px var(--matrix); font-weight: 900; line-height: 1; }
-
-        .btn-exec { width: 100%; padding: 25px; background: transparent; border: 2px solid var(--matrix); color: var(--matrix); font-weight: 900; cursor: pointer; text-transform: uppercase; letter-spacing: 3px; font-size: 18px; transition: 0.3s; margin-top: auto; }
-        .btn-exec:hover { background: var(--matrix); color: #000; box-shadow: 0 0 70px var(--matrix); }
-
-        .vault-frame { border: 3px solid #111; background: #000; position: relative; overflow: hidden; height: 350px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
-        .scan-laser { position: absolute; width: 100%; height: 8px; background: var(--matrix); top: 0; animation: scanmove 4s linear infinite; z-index: 100; box-shadow: 0 0 30px var(--matrix); }
-        @keyframes scanmove { 0% { top: -5%; } 100% { top: 105%; } }
-
-        .audit-term { height: 250px; background: #000; border-top: 4px solid var(--matrix); padding: 25px; font-size: 13px; overflow-y: auto; color: var(--matrix); line-height: 2; font-weight: bold; }
+        /* COMMAND INPUT */
+        #command-center { margin-top: auto; border-top: 1px solid #0f0; padding-top: 10px; }
+        #architect-input { width: 100%; background: transparent; border: none; color: #0f0; font-family: 'Courier New'; font-size: 1.2em; outline: none; }
     </style>
 </head>
 <body>
 
-<canvas id="canvas"></canvas>
+    <canvas id="matrix-bg"></canvas>
 
-<div class="shadow-center-main">
-    <div class="master-head">
-        <h1>TRINITY V10.2.8</h1>
-        <p>"HE WHO DIES WITH THE MOST TOYS STILL DIES" // UNLOCKED FLOW</p>
-    </div>
-
-    <div class="tier-grid">
-        <div class="module-tier">
-            <h2>I. ADJUDICATION GATE</h2>
-            <div class="gate-72-92">
-                <div class="prob-value" id="p-val">72%</div>
-                <div style="text-align:center; font-size: 12px; color: var(--white); margin-top:10px;">ASSET: $2,000,000,000.00</div>
+    <div id="trinity-interface">
+        <div id="hud-top">
+            <div>
+                <div>TRINITY ENGINE: V10.2.8.4</div>
+                <div id="security-display">STATUS: ACTIVE</div>
             </div>
-            <div class="audit-term" id="l-feed">
-                > STARTUP KEY VALIDATED...<br>
-                > "THE GRASS ISN'T GREENER..."<br>
-                > MONITORING BIOMETRIC INFLECTION...
+            <div style="text-align: right;">
+                <div>ARCHITECT: TYLER MCDOUGALL</div>
+                <div id="clock">00:00:00</div>
             </div>
-            <button class="btn-exec" onclick="sync()">INITIALIZE MASTER AUDIT</button>
         </div>
 
-        <div class="module-tier">
-            <h2>II. REALITY LOCK VAULT</h2>
-            <div class="vault-frame">
-                <div class="scan-laser"></div>
-                <div id="status">AWAITING ARCHITECT DATA...</div>
-                <img id="render" style="display:none; width:100%; height:100%; object-fit:cover; filter: contrast(1.5) sepia(1) hue-rotate(90deg);">
-            </div>
-            <input type="text" id="url" style="width:100%; background:#000; border:1px solid #004400; color:var(--matrix); padding:15px; margin-bottom:15px;" placeholder="PASTE DATA LINK...">
-            <button class="btn-exec" style="border-color:#fff; color:#fff;" onclick="inject()">ENGAGE LOCK</button>
+        <div id="media-theater">
+            <video id="eyeballs-feed" autoplay playsinline></video>
+            <div id="crosshair"></div>
+            <div style="position: absolute; bottom: 5px; right: 10px; font-size: 0.7em;">LIVE_TRUTH_FEED</div>
         </div>
-    </div>
 
-    <div class="module-tier" style="min-height: 400px; margin-top: 30px;">
-        <h2>III. BOARDROOM FINAL ADJUDICATION</h2>
-        <div class="audit-term" style="height: 150px;">
-            > WAITING FOR TIER II REALITY LOCK...<br>
-            > STANDING BY FOR FINAL EXPORT COMMAND...
+        <div id="data-grid">
+            <div class="panel">
+                <h3>WITNESS_HUB</h3>
+                <div id="witness-logs">> INITIALIZING LOGS...<br>> PREPARING STATUTORY MAPPING...<br>> WAITING FOR DATA INTAKE...</div>
+            </div>
+            <div class="panel">
+                <h3>TRAFFIC_ANALYTICS</h3>
+                <div id="traffic-data">> SCANNING BC_HIGHWAY_IDS...<br>> KINETIC RADIUS: ACTIVE<br>> NO ANOMALIES DETECTED.</div>
+            </div>
         </div>
-        <button class="btn-exec" onclick="alert('Report Sealed.')">GENERATE FINAL REPORT</button>
+
+        <div id="command-center">
+            <span style="color: #0f0;">>></span>
+            <input type="text" id="architect-input" placeholder="ENTER PROTOCOL COMMAND..." autofocus>
+        </div>
     </div>
-</div>
 
 <script>
-    const c = document.getElementById('canvas');
-    const ctx = c.getContext('2d');
-    function resize() { c.width = window.innerWidth; c.height = window.innerHeight; }
-    window.onresize = resize; resize();
-    const glyphs = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ$#@&";
-    const fontSize = 18;
-    const drops = Array(Math.floor(c.width/fontSize)).fill(1);
-    function draw() {
-        ctx.fillStyle = "rgba(0, 0, 0, 0.1)"; ctx.fillRect(0, 0, c.width, c.height);
-        ctx.fillStyle = "#00ff41"; ctx.font = fontSize + "px monospace";
-        drops.forEach((y, i) => {
-            ctx.fillText(glyphs[Math.floor(Math.random()*glyphs.length)], i*fontSize, y*fontSize);
-            if(y*fontSize > c.height && Math.random() > 0.975) drops[i] = 0; drops[i]++;
-        });
-    }
-    setInterval(draw, 45);
+    // --- MATRIX BACKGROUND LOGIC ---
+    const canvas = document.getElementById('matrix-bg');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$+-*/=%<>@#&";
+    const fontSize = 16;
+    const columns = canvas.width / fontSize;
+    const drops = Array(Math.floor(columns)).fill(1);
 
-    function sync() { document.getElementById('l-feed').innerHTML += "<div>[SYS] > LOGIC SYNC COMPLETE.</div>"; }
-    function inject() {
-        const u = document.getElementById('url').value; if(!u) return;
-        document.getElementById('status').style.display = 'none';
-        const img = document.getElementById('render'); img.src = u; img.style.display = 'block';
-        document.getElementById('p-val').innerText = "92%"; document.getElementById('p-val').style.color = "#fff";
+    function drawMatrix() {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#0f0";
+        ctx.font = fontSize + "px arial";
+        for (let i = 0; i < drops.length; i++) {
+            const text = letters.charAt(Math.floor(Math.random() * letters.length));
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+            drops[i]++;
+        }
     }
+    setInterval(drawMatrix, 33);
+
+    // --- CLOCK ---
+    setInterval(() => {
+        document.getElementById('clock').innerText = new Date().toLocaleTimeString();
+    }, 1000);
+
+    // --- VISION CORE ---
+    async function initVision() {
+        const video = document.getElementById('eyeballs-feed');
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+            video.srcObject = stream;
+        } catch (err) {
+            console.error("Camera Error:", err);
+            document.getElementById('witness-logs').innerHTML += "<br><span style='color:red;'>> ERROR: CAMERA_BLOCKED</span>";
+        }
+    }
+    initVision();
+
+    // --- SECURITY & COMMANDS ---
+    const lockdownPhrase = "the grass is not greener on the other side it's just fertilized with b*******";
+    const releaseKey = "he who dies with the most toys still dies";
+
+    document.getElementById('architect-input').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            const cmd = this.value.toLowerCase();
+            this.value = '';
+
+            if (cmd.includes(lockdownPhrase)) {
+                document.getElementById('trinity-interface').style.display = "none";
+                document.title = "404 Not Found";
+            } else if (cmd.includes(releaseKey)) {
+                location.reload();
+            } else {
+                const logs = document.getElementById('witness-logs');
+                logs.innerHTML = "> " + cmd.toUpperCase() + "<br>" + logs.innerHTML;
+            }
+        }
+    });
 </script>
 </body>
 </html>
