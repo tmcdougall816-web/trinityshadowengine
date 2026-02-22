@@ -2,229 +2,215 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trinity Engine V10.2.8.4 - MARKET SHADOW-CENTER</title>
+    <title>TRINITY ENGINE | V10.2.9.1 | VISUAL_STABILIZED</title>
     <style>
-        :root {
-            --matrix-green: #00ff41;
-            --icbc-blue: #005495;
-            --danger-red: #ff0000;
-            --void-black: #0d0208;
-            --terminal-gray: #1a1a1a;
-            --kinetic-cyan: #0ff;
-            --kraken-purple: #5841d8;
+        /* --- CORE TERMINAL STYLES --- */
+        *, *::before, *::after { box-sizing: border-box; } /* CRITICAL INTEGRITY FIX */
+        body, html { margin: 0; padding: 0; background: #000; color: #0f0; font-family: 'Courier New', monospace; scroll-behavior: smooth; overflow-x: hidden; }
+        
+        /* PERSISTENT MATRIX RAIN BG */
+        canvas#matrix-bg { position: fixed; top: 0; left: 0; z-index: -10; width: 100vw; height: 100vh; opacity: 0.7; pointer-events: none;}
+
+        /* THE "DEEP DECK" SECTIONS */
+        .deck-section { min-height: 90vh; padding: 80px 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+        
+        /* --- THE STABILIZED "OPEN CORNER" GLOW PANELS --- */
+        .panel {
+            position: relative;
+            width: 95%; max-width: 900px;
+            background: rgba(0, 10, 0, 0.85); 
+            padding: 40px; /* Locked inner spacing */
+            margin: 20px auto; /* Perfect centering */
+            border: none; 
+            z-index: 1;
         }
 
-        *, *::before, *::after { box-sizing: border-box; }
-
-        body, html {
-            background-color: var(--void-black);
-            color: var(--matrix-green);
-            font-family: 'Courier New', Courier, monospace;
-            margin: 0; padding: 0; height: 100vh; overflow: hidden;
-            display: flex; justify-content: center; align-items: center;
+        /* The Vertical Tech Brackets (Sides) */
+        .panel::before {
+            content: ''; position: absolute;
+            top: 25px; bottom: 25px; /* Open top/bottom corners */
+            left: 0; right: 0;
+            border-left: 3px solid #0f0;
+            border-right: 3px solid #0f0;
+            box-shadow: inset 0 0 20px rgba(0, 255, 0, 0.4), 0 0 20px rgba(0, 255, 0, 0.4);
+            pointer-events: none;
+            z-index: -1;
         }
 
-        canvas#matrix { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.25; pointer-events: none; }
-
-        #security-lock {
-            width: 450px; padding: 50px; border: 3px solid var(--matrix-green);
-            background: rgba(0, 0, 0, 0.98); box-shadow: 0 0 50px rgba(0, 255, 65, 0.4);
-            text-align: center; z-index: 1000;
+        /* The Horizontal Tech Brackets (Top/Bottom) */
+        .panel::after {
+            content: ''; position: absolute;
+            left: 25px; right: 25px; /* Open side corners */
+            top: 0; bottom: 0;
+            border-top: 3px solid #0f0;
+            border-bottom: 3px solid #0f0;
+            box-shadow: inset 0 0 20px rgba(0, 255, 0, 0.4), 0 0 20px rgba(0, 255, 0, 0.4);
+            pointer-events: none;
+            z-index: -1;
         }
 
-        #main-interface {
-            display: none; width: 95%; max-width: 1400px; height: 94vh;
-            border: 2px solid var(--matrix-green); padding: 30px 40px;
-            background: rgba(13, 2, 8, 0.95); box-shadow: 0 0 30px var(--matrix-green);
-            overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth;
-        }
+        /* Keep content strictly above the glow */
+        .panel > * { position: relative; z-index: 2; }
 
-        header { text-align: center; border-bottom: 2px solid var(--matrix-green); padding-bottom: 20px; margin-bottom: 40px; }
+        h2 { margin-top: 0; text-transform: uppercase; letter-spacing: 3px; border-bottom: 1px dashed #0f0; padding-bottom: 10px; text-shadow: 0 0 10px #0f0; }
 
-        .tier { margin-bottom: 60px; padding-bottom: 40px; border-bottom: 2px dashed rgba(0, 255, 65, 0.3); }
-        .tier-header { font-size: 1.4rem; color: #fff; letter-spacing: 5px; margin-bottom: 25px; text-shadow: 0 0 10px var(--matrix-green); text-align: center; }
+        /* --- HUD & CONTROLS --- */
+        #top-hud { position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between; padding: 15px 25px; background: rgba(0, 0, 0, 0.95); border-bottom: 2px solid #0f0; z-index: 100; box-shadow: 0 5px 20px rgba(0,255,0,0.3); }
 
-        .tier-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
-        .panel { border: 1px solid var(--matrix-green); padding: 25px; background: rgba(20, 20, 20, 0.6); display: flex; flex-direction: column; gap: 15px; }
+        /* VISION CORE MODULE */
+        #media-theater { position: relative; width: 95%; max-width: 900px; border: 3px solid #0f0; background: #000; overflow: hidden; box-shadow: 0 0 25px rgba(0,255,0,0.5); margin: 0 auto 20px auto; min-height: 250px; }
+        video#eyeballs-feed { width: 100%; display: block; filter: contrast(1.2) brightness(1.1) saturate(1.2); }
+        #crosshair { position: absolute; top: 50%; left: 50%; width: 150px; height: 150px; border: 2px solid rgba(0, 255, 0, 0.7); border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; box-shadow: 0 0 15px rgba(0,255,0,0.5), inset 0 0 15px rgba(0,255,0,0.5); }
+        
+        /* FORM ELEMENTS */
+        input, textarea, button, select { width: 100%; background: rgba(0,20,0,0.9); border: 1px solid #0f0; color: #0f0; font-family: 'Courier New'; padding: 15px; margin: 10px 0; box-sizing: border-box; outline: none; font-size: 1.1em; box-shadow: inset 0 0 5px rgba(0,255,0,0.3); }
+        button { font-weight: bold; text-transform: uppercase; letter-spacing: 3px; transition: 0.3s; cursor: pointer; border-width: 2px; }
+        button:hover { background: #0f0; color: #000; box-shadow: 0 0 25px #0f0; }
+        select { -webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg fill="%230f0" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>'); background-repeat: no-repeat; background-position: right 10px center; }
 
-        input, select { background: #000; border: 1px solid #333; color: var(--matrix-green); padding: 15px; font-family: inherit; font-size: 1rem; width: 100%; }
-
-        button { background: var(--matrix-green); color: #000; border: none; padding: 15px; font-weight: bold; text-transform: uppercase; cursor: pointer; letter-spacing: 2px; }
-        button:hover { background: #fff; box-shadow: 0 0 20px #fff; }
-
-        .market-panel { border: 1px solid var(--kraken-purple); box-shadow: 0 0 15px var(--kraken-purple); }
-        .market-header { color: var(--kraken-purple); font-weight: bold; border-left: 4px solid var(--kraken-purple); padding-left: 10px; }
-
-        .telemetry-readout { display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--kinetic-cyan); background: #050505; padding: 15px; border: 1px solid var(--kinetic-cyan); }
-        #audit-log { height: 200px; background: #000; border: 1px solid var(--matrix-green); padding: 15px; font-size: 0.9rem; overflow-y: auto; margin-top: 10px; }
-
-        .glitch { animation: glitch 2s infinite; }
-        @keyframes glitch { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+        /* NAVIGATION */
+        #nav-dots { position: fixed; right: 30px; top: 50%; transform: translateY(-50%); z-index: 101; display: flex; flex-direction: column; gap: 20px; }
+        .dot { width: 16px; height: 16px; border: 3px solid #0f0; transform: rotate(45deg); background: transparent; cursor: pointer; transition: 0.3s; box-shadow: 0 0 10px #0f0; }
+        .dot:hover { background: #0f0; box-shadow: 0 0 20px #0f0; }
     </style>
 </head>
 <body>
 
-<canvas id="matrix"></canvas>
+<canvas id="matrix-bg"></canvas>
 
-<div id="security-lock">
-    <div class="glitch" style="font-size: 1.8rem; letter-spacing: 8px; margin-bottom: 30px;">ACCESS RESTRICTED</div>
-    <input type="text" id="access-id" placeholder="ARCHITECT ACCESS ID" style="margin-bottom: 15px; text-align: center;">
-    <input type="password" id="protocol-key" placeholder="PROTOCOL SECURITY KEY" style="margin-bottom: 25px; text-align: center;">
-    <button onclick="unlock()">INITIALIZE SHADOW-CENTER</button>
+<div id="top-hud">
+    <div>[V10.2.9.1] | VISUAL_STABILIZED | <span id="sec-status" style="color:cyan; text-shadow: 0 0 5px cyan;">ACTIVE</span></div>
+    <div id="clock">00:00:00</div>
 </div>
 
-<div id="main-interface">
-    <header>
-        <h1 style="margin: 0; letter-spacing: 10px;">TRINITY ENGINE V10.2.8.4</h1>
-        <div style="font-size: 0.9rem; color: #fff; margin-top: 5px;">SIU AUDIT SUITE // CDM MARKET ALGORITHM // KRAKEN API LINK</div>
-    </header>
-
-    <div class="tier" id="tier-1">
-        <h2 class="tier-header">TIER I : CORE INITIATION & TELEMETRY</h2>
-        <div class="tier-grid">
-            <div class="panel">
-                <h2>CLAIM INITIATION</h2>
-                <input type="text" id="case-id" placeholder="CLAIM ID" oninput="calculateProbability()">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <button id="voice-btn" onclick="toggleVoice()">VOICE CAPTURE</button>
-                    <button onclick="addLog('EXTERNAL AUDIT ACTIVE...')">EXTERNAL AUDIT</button>
-                </div>
-            </div>
-            <div class="panel">
-                <h2>KINETIC PHYSICS</h2>
-                <div style="display: flex; gap: 10px;">
-                    <input type="number" id="velocity" placeholder="KM/H" oninput="updatePhysics()">
-                    <input type="number" id="impact" placeholder="G-FORCE" oninput="updatePhysics()">
-                </div>
-                <div class="telemetry-readout">
-                    <span>[ VEL: <span id="vel-out">000</span> ]</span>
-                    <span>[ G-FORCE: <span id="imp-out">00.0</span> ]</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="tier" id="tier-3">
-        <h2 class="tier-header">TIER III : ADJUDICATION & MARKET VAULT</h2>
-        <div class="tier-grid">
-            <div class="panel">
-                <h2>VAULT ADJUDICATION</h2>
-                <input type="number" id="cash" placeholder="RECOVERY TARGET ($)" oninput="calculateProbability()">
-                <select id="assess" onchange="calculateProbability()">
-                    <option value="none">-- ASSESSMENT --</option>
-                    <option value="verified">VERIFIED CREDIBLE</option>
-                    <option value="adverse">ADVERSE</option>
-                </select>
-                <button onclick="commitVault()">SEAL JUDGMENT</button>
-                <div id="judgment-display" style="display:none; padding:10px; border:1px solid #0f0; margin-top:10px; font-size:0.8rem;"></div>
-            </div>
-
-            <div class="panel market-panel">
-                <h2 class="market-header">KRAKEN CDM EXECUTION</h2>
-                <div style="display: flex; gap: 5px;">
-                    <input type="text" id="kraken-key" placeholder="KRAKEN API KEY" style="font-size:0.8rem; border-color:var(--kraken-purple);">
-                    <input type="password" id="kraken-secret" placeholder="API SECRET" style="font-size:0.8rem; border-color:var(--kraken-purple);">
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <select id="asset-pair">
-                        <option value="XBTUSD">BTC / USD</option>
-                        <option value="ETHUSD">ETH / USD</option>
-                    </select>
-                    <input type="number" id="trade-size" placeholder="UNITS">
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <button style="background:var(--matrix-green);" onclick="executeMarket('buy')">MARKET BUY</button>
-                    <button style="background:var(--danger-red); color:#fff;" onclick="executeMarket('sell')">MARKET SELL</button>
-                </div>
-            </div>
-        </div>
-        <div id="audit-log">> TRZ-7789 MARKET PROTOCOL READY.</div>
-    </div>
+<div id="nav-dots">
+    <div class="dot" onclick="window.scrollTo(0,0)" title="Vision Core"></div>
+    <div class="dot" onclick="document.getElementById('icbc-sec').scrollIntoView()" title="ICBC Audit"></div>
+    <div class="dot" onclick="document.getElementById('matrix-sec').scrollIntoView()" title="Matrix Audit"></div>
+    <div class="dot" onclick="document.getElementById('traffic-sec').scrollIntoView()" title="Traffic Hub"></div>
+    <div class="dot" onclick="document.getElementById('witness-sec').scrollIntoView()" title="Witness Vault"></div>
 </div>
+
+<section class="deck-section" id="vision-sec">
+    <div id="media-theater">
+        <video id="eyeballs-feed" autoplay playsinline></video>
+        <div id="crosshair"></div>
+    </div>
+    <div class="panel">
+        <h2>Biomechanical Integrity Check</h2>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; font-size:0.9em; text-align: center;">
+            <div style="border: 2px dashed #0f0; padding:15px; box-shadow: inset 0 0 10px rgba(0,255,0,0.3);">KINETIC_G: <span style="color:cyan;">0.00</span></div>
+            <div style="border: 2px dashed #0f0; padding:15px; box-shadow: inset 0 0 10px rgba(0,255,0,0.3);">THRESHOLD_FAIL: <span style="color:cyan;">FALSE</span></div>
+        </div>
+    </div>
+</section>
+
+<section class="deck-section" id="icbc-sec">
+    <div class="panel">
+        <h2>ICBC GLP 2026 Zero-Tolerance Audit</h2>
+        <p style="font-size: 0.8em; color: cyan; letter-spacing: 1px;">// AUTOMATED CLASS 5 CLEARANCE ALGORITHM</p>
+        <div style="display:grid; grid-template-columns: 1fr; gap:10px;">
+            <label style="color:#0f0; font-size: 0.9em; text-transform: uppercase;">N-License Issue Date (GLP Start):</label>
+            <input type="date" id="glp-start" style="color:#0f0;">
+            
+            <label style="color:#0f0; font-size: 0.9em; text-transform: uppercase;">Infraction Check (Zero-Tolerance Tripwire):</label>
+            <select id="infraction-type">
+                <option value="NONE">NO INFRACTIONS (CLEAN RECORD)</option>
+                <option value="SPEEDING">SPEEDING / EXCESSIVE (TRIPWIRE)</option>
+                <option value="DISTRACTED">DISTRACTED DRIVING (TRIPWIRE)</option>
+                <option value="IMPAIRED">IMPAIRED / IRP (CRITICAL FAIL)</option>
+            </select>
+            
+            <label style="color:#0f0; font-size: 0.9em; text-transform: uppercase;">Infraction Date (If Applicable):</label>
+            <input type="date" id="infraction-date" style="color:#0f0;">
+            
+            <button onclick="runICBCAudit()" style="margin-top: 20px;">EXECUTE CLASS 5 CLEARANCE AUDIT</button>
+        </div>
+        <div id="icbc-log" style="margin-top:25px; font-size:0.9em; color:cyan; background: rgba(0,0,0,0.8); padding: 20px; border: 2px dashed #0f0; min-height: 80px; box-shadow: inset 0 0 20px rgba(0,255,0,0.2);">
+            > WAITING FOR DRIVER DATA INPUT...<br>
+            > TRZ-7789 CALCULATION ENGINE STANDING BY.
+        </div>
+    </div>
+</section>
+
+<section class="deck-section" id="matrix-sec">
+    <div class="panel">
+        <h2>Strategic Matrix (Verbal Audit)</h2>
+        <textarea id="v-claim" rows="5" placeholder="INSERT VERBAL STATEMENT..."></textarea>
+        <textarea id="e-reality" rows="5" placeholder="INSERT EVIDENCE DATA-FACT..."></textarea>
+        <button onclick="runAudit()">DETERMINE PIVOT</button>
+        <div id="audit-log" style="margin-top:20px; font-size:0.9em; color:cyan; padding:15px; border: 2px dashed #0f0;">> Awaiting Audit...</div>
+    </div>
+</section>
+
+<section class="deck-section" id="traffic-sec">
+    <div class="panel">
+        <h2>Traffic Hub & $2B Liability Audit</h2>
+        <input type="text" placeholder="PASTE BC_HIGHWAY_CAM_URL HERE...">
+        <div id="traffic-monitor" style="height:250px; border:2px solid #0f0; margin:20px 0; display:flex; align-items:center; justify-content:center; color:#0f0; background: #000; box-shadow: inset 0 0 30px rgba(0,255,0,0.5);">
+            [CAM_STREAM_READY // AWAITING SIGNAL]
+        </div>
+        <button>ANALYZE FOR $2B LEAKAGE</button>
+    </div>
+</section>
+
+<section class="deck-section" id="witness-sec">
+    <div class="panel">
+        <h2>Witness Vault (Evidence Hashing)</h2>
+        <div id="vault-status" style="height:200px; overflow-y:auto; font-size:0.8em; background:rgba(0,0,0,0.9); padding:15px; border:2px solid #0f0; box-shadow: inset 0 0 20px rgba(0,255,0,0.4);">
+            > Initializing Witness Logs...<br>> Encryption: TRZ-7789 Enabled.<br>> Ready for Data Hashing.<br>
+            <span style="color:cyan;">> PERSISTENCE LAYER ACTIVE.</span>
+        </div>
+        <button onclick="alert('Upload Core Triggered.')">UPLOAD EVIDENCE FILE</button>
+        <input type="text" id="lockdown-trigger" placeholder="SECURE COMMAND INPUT..." style="margin-top:25px; border-color:#f00; color:#f00; box-shadow: 0 0 10px #f00;">
+    </div>
+</section>
 
 <script>
-    // --- LOGIN & MATRIX ---
-    window.onload = function() { startMatrix(); };
-    function unlock() {
-        const id = document.getElementById('access-id').value.toUpperCase();
-        const key = document.getElementById('protocol-key').value;
-        if(id === "TY-ARCHITECT-01" && key === "TRZ-7789-APEX") {
-            document.getElementById('security-lock').style.display = 'none';
-            document.getElementById('main-interface').style.display = 'block';
+    // --- MATRIX RAIN ENGINE (FIXED BACKGROUND) ---
+    const canvas = document.getElementById('matrix-bg');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+    const chars = "0123456789ABCDEFTRINITY7789XΩ";
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+    const drops = Array(Math.floor(columns)).fill(1);
+
+    function drawMatrix() {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.05)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#0f0"; ctx.font = fontSize + "px monospace";
+        for (let i = 0; i < drops.length; i++) {
+            const text = chars[Math.floor(Math.random() * chars.length)];
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+            drops[i]++;
         }
     }
+    setInterval(drawMatrix, 30);
+    setInterval(() => document.getElementById('clock').innerText = new Date().toLocaleTimeString(), 1000);
 
-    // --- MARKET EXECUTION (KRAKEN CDM) ---
-    async function executeMarket(side) {
-        const key = document.getElementById('kraken-key').value;
-        const secret = document.getElementById('kraken-secret').value;
-        const pair = document.getElementById('asset-pair').value;
-        const vol = document.getElementById('trade-size').value;
+    // --- TRZ-7789 INJECTION: PERSISTENCE MODULE (INDEXEDDB) ---
+    const dbRequest = indexedDB.open("TrinityEngineDB", 1);
+    let trinityDB;
 
-        if(!key || !secret || !vol) {
-            addLog("<span style='color:orange'>MARKET ERROR: MISSING KRAKEN CREDENTIALS OR VOLUME.</span>");
-            return;
-        }
+    dbRequest.onupgradeneeded = (e) => {
+        let db = e.target.result;
+        db.createObjectStore("audit_logs", { keyPath: "id", autoIncrement: true });
+    };
 
-        addLog(`INITIALIZING CDM ${side.toUpperCase()} ORDER: ${vol} ${pair}...`);
-        
-        // Simulation of the CDM Logic before the API call
-        setTimeout(() => {
-            addLog(`SIGNAL VERIFIED. EXECUTING VIA KRAKEN SHADOW-GATE...`);
-            // Note: Direct fetch would go here. For now, we simulate success to verify layout.
-            addLog(`<span style='color:var(--kraken-purple)'>ORDER PLACED: ${side.toUpperCase()} ${vol} ${pair} AT MARKET.</span>`);
-        }, 1200);
+    dbRequest.onsuccess = (e) => {
+        trinityDB = e.target.result;
+        console.log("%c TRZ-7789: Persistence Ledger Online. ", "background: #00ff00; color: #000; font-weight: bold;");
+    };
+
+    function logToMainframe(type, data) {
+        if (!trinityDB) return;
+        const transaction = trinityDB.transaction(["audit_logs"], "readwrite");
+        const store = transaction.objectStore("audit_logs");
+        store.add({ timestamp: new Date().toISOString(), type: type, payload: data });
     }
 
-    // --- CORE LOGIC (NO STRIPPING) ---
-    function addLog(m) {
-        const l = document.getElementById('audit-log');
-        l.innerHTML += `<br>> ${m}`;
-        l.scrollTop = l.scrollHeight;
-    }
-
-    function calculateProbability() {
-        let score = 0;
-        if(document.getElementById('case-id').value) score += 20;
-        if(document.getElementById('velocity').value) score += 20;
-        if(document.getElementById('assess').value === 'verified') score += 60;
-        return score;
-    }
-
-    function updatePhysics() {
-        const v = document.getElementById('velocity').value;
-        const g = document.getElementById('impact').value;
-        document.getElementById('vel-out').innerText = v ? v.padStart(3, '0') : '000';
-        document.getElementById('imp-out').innerText = g ? parseFloat(g).toFixed(1).padStart(4, '0') : '00.0';
-    }
-
-    function commitVault() {
-        const score = calculateProbability();
-        const display = document.getElementById('judgment-display');
-        display.style.display = "block";
-        display.innerHTML = `<strong>REALITY LOCK: ${score}%</strong><br>CDM MARKET SIGNAL: ${score > 80 ? 'READY' : 'WAITING'}`;
-        addLog("VAULT SEALED. MARKET SIGNAL GENERATED.");
-    }
-
-    function startMatrix() {
-        const canvas = document.getElementById('matrix');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        const chars = "1010101TRINITY7789APEX";
-        const drops = Array(Math.floor(canvas.width/18)).fill(1);
-        function draw() {
-            ctx.fillStyle = "rgba(0,0,0,0.05)"; ctx.fillRect(0,0,canvas.width,canvas.height);
-            ctx.fillStyle = "#0F0"; ctx.font = "15px monospace";
-            drops.forEach((y, i) => {
-                ctx.fillText(chars[Math.floor(Math.random()*chars.length)], i*18, y*18);
-                if(y*18 > canvas.height && Math.random() > 0.975) drops[i] = 0;
-                drops[i]++;
-            });
-        }
-        setInterval(draw, 50);
-    }
-</script>
-</body>
-</html>
+    // --- TRZ-7789 INJECTION: ICBC CALCULATED ESTIMATION ---
+    function runICBCAudit() {
+        const start = document.getElementById('glp-
 
