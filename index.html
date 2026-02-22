@@ -2,95 +2,111 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SIU EVIDENCE MASTER V10.2.8.5 | TRZ-7789</title>
+    <title>TRINITY V10.2.8 | UNLOCKED FLOW | ARCHITECT: TY</title>
     <style>
-        :root { --siu-green: #00ff41; --siu-bg: #050505; --panel: #111; }
-        body { background: var(--siu-bg); color: var(--siu-green); font-family: 'Courier New', monospace; padding: 20px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .tier { border: 1px solid var(--siu-green); background: var(--panel); padding: 15px; box-shadow: 0 0 10px rgba(0, 255, 65, 0.2); }
-        h2 { border-bottom: 1px solid var(--siu-green); padding-bottom: 5px; font-size: 14px; text-transform: uppercase; }
-        input, select, textarea { width: 100%; background: #000; border: 1px solid #004400; color: var(--siu-green); padding: 8px; margin-top: 5px; }
-        .evidence-box { border: 2px dashed #333; height: 200px; margin-top: 10px; display: flex; align-items: center; justify-content: center; text-align: center; position: relative; overflow: hidden; }
-        .evidence-img { max-width: 100%; max-height: 100%; display: none; }
-        .btn-lock { background: var(--siu-green); color: #000; border: none; padding: 10px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .audit-trail { font-size: 10px; height: 100px; overflow-y: auto; background: #000; padding: 10px; border: 1px solid #222; margin-top: 10px; }
-        .timestamp-overlay { position: absolute; top: 5px; left: 5px; background: rgba(0,0,0,0.7); padding: 2px 5px; font-size: 10px; }
+        :root { --matrix: #00ff41; --bg: #000; --white: #fff; }
+        /* REMOVING THE OVERFLOW HIDDEN - RESTORING SCROLL */
+        body, html { margin: 0; padding: 0; background: var(--bg); color: var(--matrix); font-family: 'Courier New', monospace; overflow-y: auto; height: auto; min-height: 100vh; }
+        
+        #canvas { position: fixed; top: 0; left: 0; z-index: 1; opacity: 0.35; pointer-events: none; }
+
+        .shadow-center-main { position: relative; z-index: 10; display: flex; flex-direction: column; gap: 30px; padding: 40px; box-sizing: border-box; }
+        
+        .master-head { border: 4px double var(--matrix); padding: 25px; background: rgba(0,10,0,0.95); text-align: center; box-shadow: 0 0 50px var(--matrix); }
+        .master-head h1 { margin: 0; font-size: 45px; letter-spacing: 20px; font-weight: 900; }
+        .master-head p { font-size: 14px; color: var(--white); margin-top: 10px; font-weight: bold; }
+
+        .tier-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+
+        .module-tier { background: rgba(0, 5, 0, 1); border: 2px solid var(--matrix); padding: 35px; display: flex; flex-direction: column; box-shadow: inset 0 0 60px #002200; position: relative; min-height: 600px; }
+        h2 { font-size: 14px; background: var(--matrix); color: #000; margin: -35px -35px 30px -35px; padding: 15px; text-transform: uppercase; letter-spacing: 6px; text-align: center; font-weight: 900; }
+
+        .gate-72-92 { border: 2px solid #222; padding: 25px; background: #000; margin-bottom: 30px; border-left: 12px solid var(--matrix); }
+        .prob-value { font-size: 110px; text-align: center; color: var(--white); text-shadow: 0 0 40px var(--matrix); font-weight: 900; line-height: 1; }
+
+        .btn-exec { width: 100%; padding: 25px; background: transparent; border: 2px solid var(--matrix); color: var(--matrix); font-weight: 900; cursor: pointer; text-transform: uppercase; letter-spacing: 3px; font-size: 18px; transition: 0.3s; margin-top: auto; }
+        .btn-exec:hover { background: var(--matrix); color: #000; box-shadow: 0 0 70px var(--matrix); }
+
+        .vault-frame { border: 3px solid #111; background: #000; position: relative; overflow: hidden; height: 350px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+        .scan-laser { position: absolute; width: 100%; height: 8px; background: var(--matrix); top: 0; animation: scanmove 4s linear infinite; z-index: 100; box-shadow: 0 0 30px var(--matrix); }
+        @keyframes scanmove { 0% { top: -5%; } 100% { top: 105%; } }
+
+        .audit-term { height: 250px; background: #000; border-top: 4px solid var(--matrix); padding: 25px; font-size: 13px; overflow-y: auto; color: var(--matrix); line-height: 2; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div style="text-align:center; margin-bottom: 20px;">
-    <h1>TRINITY ENGINE: EVIDENCE VAULT</h1>
-    <small>VERIFIED ARCHITECT: TY | REALITY-LOCK PROTOCOL</small>
-</div>
+<canvas id="canvas"></canvas>
 
-<div class="grid">
-    <div class="tier">
-        <h2>Section I: Investigation Anchor</h2>
-        <label>Case File ID</label>
-        <input type="text" id="case-id" value="TRAIL-2026-614">
-        <label>Statutory Telemetry</label>
-        <input type="text" id="stat-anchor" value="Criminal Code s. 244.2">
-        <label>Verified Velocity (km/h)</label>
-        <input type="number" id="velocity" value="65">
+<div class="shadow-center-main">
+    <div class="master-head">
+        <h1>TRINITY V10.2.8</h1>
+        <p>"HE WHO DIES WITH THE MOST TOYS STILL DIES" // UNLOCKED FLOW</p>
     </div>
 
-    <div class="tier">
-        <h2>Section II: Visual Evidence Log</h2>
-        <div class="evidence-box" id="capture-zone">
-            <div id="placeholder-text"> [ AWAITING FRAME CAPTURE ]<br>PASTE IMAGE OR CLIP BELOW</div>
-            <div class="timestamp-overlay" id="ts-overlay">T-0: 05:40:00</div>
-            <img id="evidence-display" class="evidence-img">
+    <div class="tier-grid">
+        <div class="module-tier">
+            <h2>I. ADJUDICATION GATE</h2>
+            <div class="gate-72-92">
+                <div class="prob-value" id="p-val">72%</div>
+                <div style="text-align:center; font-size: 12px; color: var(--white); margin-top:10px;">ASSET: $2,000,000,000.00</div>
+            </div>
+            <div class="audit-term" id="l-feed">
+                > STARTUP KEY VALIDATED...<br>
+                > "THE GRASS ISN'T GREENER..."<br>
+                > MONITORING BIOMETRIC INFLECTION...
+            </div>
+            <button class="btn-exec" onclick="sync()">INITIALIZE MASTER AUDIT</button>
         </div>
-        <input type="text" id="img-url" placeholder="Paste DriveBC Image URL or Local File Path">
-        <button class="btn-lock" onclick="lockFrame()">LOCK REALITY FRAME</button>
-    </div>
-</div>
 
-<div class="tier" style="margin-top:20px;">
-    <h2>Section III: Final Adjudication Report</h2>
-    <div style="display:flex; justify-content: space-between;">
-        <div id="probability" style="font-size: 30px; font-weight: bold;">0% CERTAINTY</div>
-        <button class="btn-lock" style="width: 40%;" onclick="exportReport()">EXPORT COURT-READY PDF</button>
+        <div class="module-tier">
+            <h2>II. REALITY LOCK VAULT</h2>
+            <div class="vault-frame">
+                <div class="scan-laser"></div>
+                <div id="status">AWAITING ARCHITECT DATA...</div>
+                <img id="render" style="display:none; width:100%; height:100%; object-fit:cover; filter: contrast(1.5) sepia(1) hue-rotate(90deg);">
+            </div>
+            <input type="text" id="url" style="width:100%; background:#000; border:1px solid #004400; color:var(--matrix); padding:15px; margin-bottom:15px;" placeholder="PASTE DATA LINK...">
+            <button class="btn-exec" style="border-color:#fff; color:#fff;" onclick="inject()">ENGAGE LOCK</button>
+        </div>
     </div>
-    <div class="audit-trail" id="audit">
-        [SYS] SYSTEM READY. AWAITING DATA INJECTION...
+
+    <div class="module-tier" style="min-height: 400px; margin-top: 30px;">
+        <h2>III. BOARDROOM FINAL ADJUDICATION</h2>
+        <div class="audit-term" style="height: 150px;">
+            > WAITING FOR TIER II REALITY LOCK...<br>
+            > STANDING BY FOR FINAL EXPORT COMMAND...
+        </div>
+        <button class="btn-exec" onclick="alert('Report Sealed.')">GENERATE FINAL REPORT</button>
     </div>
 </div>
 
 <script>
-    function log(msg) {
-        const a = document.getElementById('audit');
-        a.innerHTML += `<div>[${new Date().toLocaleTimeString()}] ${msg}</div>`;
-        a.scrollTop = a.scrollHeight;
+    const c = document.getElementById('canvas');
+    const ctx = c.getContext('2d');
+    function resize() { c.width = window.innerWidth; c.height = window.innerHeight; }
+    window.onresize = resize; resize();
+    const glyphs = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ$#@&";
+    const fontSize = 18;
+    const drops = Array(Math.floor(c.width/fontSize)).fill(1);
+    function draw() {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.1)"; ctx.fillRect(0, 0, c.width, c.height);
+        ctx.fillStyle = "#00ff41"; ctx.font = fontSize + "px monospace";
+        drops.forEach((y, i) => {
+            ctx.fillText(glyphs[Math.floor(Math.random()*glyphs.length)], i*fontSize, y*fontSize);
+            if(y*fontSize > c.height && Math.random() > 0.975) drops[i] = 0; drops[i]++;
+        });
     }
+    setInterval(draw, 45);
 
-    function lockFrame() {
-        const url = document.getElementById('img-url').value;
-        const img = document.getElementById('evidence-display');
-        const pText = document.getElementById('placeholder-text');
-        const ts = document.getElementById('ts-overlay');
-        
-        if(!url) return alert("INPUT REQUIRED FOR REALITY LOCK");
-        
-        img.src = url;
-        img.style.display = 'block';
-        pText.style.display = 'none';
-        ts.innerText = "CAPTURED: 2026-02-07 05:44:12 AM";
-        
-        log("REALITY LOCK ENGAGED: Frame sync at 05:44:12 AM matched to 05:40:00 Incident.");
-        document.getElementById('probability').innerText = "92% VERIFIED";
-        document.getElementById('probability').style.color = "#ffcc00";
-    }
-
-    function exportReport() {
-        log("COMPILING FINAL EVIDENCE PACKET...");
-        log("ATTACHING METADATA: File 2026-614 | s.244.2 Discharge Firearm.");
-        log("FINAL REPORT SEALED FOR BOARDROOM PRESENTATION.");
-        alert("Report Compiled: Metadata-verified images and time-stamped escape vectors are now locked into the claim file.");
+    function sync() { document.getElementById('l-feed').innerHTML += "<div>[SYS] > LOGIC SYNC COMPLETE.</div>"; }
+    function inject() {
+        const u = document.getElementById('url').value; if(!u) return;
+        document.getElementById('status').style.display = 'none';
+        const img = document.getElementById('render'); img.src = u; img.style.display = 'block';
+        document.getElementById('p-val').innerText = "92%"; document.getElementById('p-val').style.color = "#fff";
     }
 </script>
-
 </body>
 </html>
 
